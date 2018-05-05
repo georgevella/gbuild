@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace gbuild.tests
@@ -8,7 +7,6 @@ namespace gbuild.tests
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

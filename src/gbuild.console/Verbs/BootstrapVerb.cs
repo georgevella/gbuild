@@ -1,4 +1,5 @@
-﻿using GBuild.Console.VerbOptions;
+﻿using System;
+using GBuild.Console.VerbOptions;
 
 namespace GBuild.Console.Verbs
 {
@@ -6,7 +7,7 @@ namespace GBuild.Console.Verbs
     {
         public void Run(BootstrapOptions options)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

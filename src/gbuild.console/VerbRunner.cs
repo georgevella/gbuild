@@ -16,7 +16,7 @@
 
         public void Run(object options)
         {
-            _verb.Run((TVerbOptions)options);
+            _verb.Run((TVerbOptions) options);
         }
     }
 }

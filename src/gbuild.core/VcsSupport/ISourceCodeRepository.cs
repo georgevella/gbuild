@@ -24,13 +24,13 @@ namespace GBuild.Core.VcsSupport
 
     public class Branch
     {
-        public string Name { get; }
-        public Revision LatestRevision { get; }
-
         public Branch(string name, Revision latestRevision)
         {
             Name = name;
             LatestRevision = latestRevision;
         }
+
+        public string Name { get; }
+        public Revision LatestRevision { get; }
     }
 }

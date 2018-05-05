@@ -9,7 +9,7 @@ namespace GBuild.Core.Generator
         IVersionNumberGenerator GetGenerator(BranchStrategy branchStrategy);
     }
 
-    class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
+    internal class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
     {
         private readonly IEnumerable<IVersionNumberGenerator> _versionNumberGenerators;
 

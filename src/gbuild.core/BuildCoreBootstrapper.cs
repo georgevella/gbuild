@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using GBuild.Core.Configuration;
 using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
 using GBuild.Core.Generator;
 using GBuild.Core.VcsSupport;
 using GBuild.Core.VcsSupport.Git;
-using Serilog;
 using SimpleInjector;
 
 namespace GBuild.Core
@@ -20,7 +17,7 @@ namespace GBuild.Core
             var container = new Container();
             BuildDependencyInjectionContainer(container);
 
-            return container;            
+            return container;
         }
 
         public static void BuildDependencyInjectionContainer(Container container)
@@ -44,7 +41,7 @@ namespace GBuild.Core
                 BranchingModel = BranchingModelType.GitFlow,
                 Branches =
                 {
-                    new BranchStrategy()
+                    new BranchStrategy
                     {
                         Filter = "refs/heads/develop",
                         ParentBranch = "refs/heads/master"
@@ -53,7 +50,7 @@ namespace GBuild.Core
             });
 
             // version number generators
-            container.RegisterCollection<IVersionNumberGenerator>(new Assembly[] { Assembly.GetExecutingAssembly() });
+            container.RegisterCollection<IVersionNumberGenerator>(new[] {Assembly.GetExecutingAssembly()});
             container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
         }
     }

@@ -5,7 +5,8 @@ namespace GBuild.Core.Context.Data
 {
     public class SourceCodeInformation
     {
-        public SourceCodeInformation(DirectoryInfo repositoryRootDirectory, DirectoryInfo sourceCodeRootDirectory, IEnumerable<Project> projects)
+        public SourceCodeInformation(DirectoryInfo repositoryRootDirectory, DirectoryInfo sourceCodeRootDirectory,
+            IEnumerable<Project> projects)
         {
             RepositoryRootDirectory = repositoryRootDirectory;
             Projects = projects;
@@ -38,6 +39,6 @@ namespace GBuild.Core.Context.Data
     public enum ProjectType
     {
         LegacyCSharp,
-        CSharp,
+        CSharp
     }
 }

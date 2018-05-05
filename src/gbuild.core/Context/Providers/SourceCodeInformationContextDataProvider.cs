@@ -11,7 +11,8 @@ namespace GBuild.Core.Context.Providers
         private readonly ConfigurationFile _configuration;
         private readonly IContextData<ProcessInformation> _processInformation;
 
-        public SourceCodeInformationContextDataProvider(ConfigurationFile configuration, IContextData<ProcessInformation> processInformation)
+        public SourceCodeInformationContextDataProvider(ConfigurationFile configuration,
+            IContextData<ProcessInformation> processInformation)
         {
             _configuration = configuration;
             _processInformation = processInformation;
@@ -26,22 +27,20 @@ namespace GBuild.Core.Context.Providers
                 repositoryRootDirectory = repositoryRootDirectory.Parent;
                 dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
             }
-            
 
-            var sourceCodeRootDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, _configuration.SourceCodeRoot));
 
-            if (!sourceCodeRootDirectory.Exists)
-            {
-                throw new InvalidOperationException("Source code directory not found");
-            }
+            var sourceCodeRootDirectory =
+                new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, _configuration.SourceCodeRoot));
+
+            if (!sourceCodeRootDirectory.Exists) throw new InvalidOperationException("Source code directory not found");
 
             var projectFiles = sourceCodeRootDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories);
-            
+
             return new SourceCodeInformation(
                 repositoryRootDirectory,
                 sourceCodeRootDirectory,
                 projectFiles.Select(fi => new Project(fi.Name, fi, ProjectType.CSharp)).ToList()
-                );
+            );
         }
     }
 }

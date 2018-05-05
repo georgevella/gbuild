@@ -1,12 +1,12 @@
 ﻿namespace GBuild.Core.Context
 {
     public interface IContextData<out TContextData>
-        where TContextData: class
+        where TContextData : class
     {
         TContextData Data { get; }
     }
 
-    class ContextData<TContextData> : IContextData<TContextData> where TContextData : class
+    internal class ContextData<TContextData> : IContextData<TContextData> where TContextData : class
     {
         private readonly IContextDataProvider<TContextData> _contextDataProvider;
         private TContextData _data;

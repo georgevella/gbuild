@@ -32,9 +32,10 @@ namespace GBuild.Core.VcsSupport.Git
 
         public IEnumerable<Branch> Branches => _repository.Branches.Select(Convert).ToList();
         public IEnumerable<Tag> Tags => _repository.Tags.Select(Convert).ToList();
+
         public IEnumerable<Revision> GetCommitsBetween(Branch parentBranch, Branch branch)
         {
-            var filter = new CommitFilter()
+            var filter = new CommitFilter
             {
                 ExcludeReachableFrom = _repository.Branches[parentBranch.Name],
                 IncludeReachableFrom = _repository.Branches[branch.Name],
@@ -61,7 +62,7 @@ namespace GBuild.Core.VcsSupport.Git
 
         private Tag Convert(LibGit2Sharp.Tag tag)
         {
-            return new Tag(tag.CanonicalName, Convert((Commit)tag.Target));
+            return new Tag(tag.CanonicalName, Convert((Commit) tag.Target));
         }
     }
 }

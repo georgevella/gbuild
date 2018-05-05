@@ -2,21 +2,21 @@
 using System.Linq;
 using System.Reflection;
 using CommandLine;
-using GBuild.Console.VerbOptions;
 using GBuild.Core;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using SimpleInjector;
 
 namespace GBuild.Console
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // setup logging
             var configuration = new LoggerConfiguration()
-                .WriteTo.Console(                    
+                .WriteTo.Console(
                     theme: AnsiConsoleTheme.Code,
                     restrictedToMinimumLevel: LogEventLevel.Information
                 );
@@ -24,18 +24,18 @@ namespace GBuild.Console
             Log.Logger = configuration.CreateLogger();
 
             // setup dependency injection container
-            var container = new SimpleInjector.Container();
+            var container = new Container();
 
             BuildCoreBootstrapper.BuildDependencyInjectionContainer(container);
 
             // register all verb runners
-            var assemblyList = new List<Assembly>()
+            var assemblyList = new List<Assembly>
             {
                 Assembly.GetExecutingAssembly()
             };
 
             container.Register(typeof(IVerb<>), assemblyList);
-            
+
             // setup command line parser
             var verbTypes = Assembly.GetExecutingAssembly().DefinedTypes
                 .Select(t => new
@@ -47,7 +47,7 @@ namespace GBuild.Console
                 .Where(t => t.Verb != null).Select(t => t.Type)
                 .ToArray();
 
-            var parserResult = CommandLine.Parser.Default.ParseArguments(args, verbTypes);
+            var parserResult = Parser.Default.ParseArguments(args, verbTypes);
             parserResult.WithParsed(o =>
             {
                 var verbRunnerType = typeof(VerbRunner<>).MakeGenericType(o.GetType());
@@ -59,10 +59,7 @@ namespace GBuild.Console
             parserResult.WithNotParsed(errors =>
             {
 #if DEBUG
-                foreach (var error in errors)
-                {
-                    System.Console.WriteLine($"{error.Tag}: {error.GetType()}");
-                }
+                foreach (var error in errors) System.Console.WriteLine($"{error.Tag}: {error.GetType()}");
 #endif
             });
 

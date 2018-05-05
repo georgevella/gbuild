@@ -29,18 +29,11 @@ namespace GBuild.Core
             var sb = new StringBuilder();
             sb.Append($"{Major}.{Minor}.{Patch}");
 
-            if (!string.IsNullOrWhiteSpace(PrereleaseTag))
-            {
-                sb.Append($"-{PrereleaseTag}");
-            }
+            if (!string.IsNullOrWhiteSpace(PrereleaseTag)) sb.Append($"-{PrereleaseTag}");
 
-            if (!string.IsNullOrWhiteSpace(Metadata))
-            {
-                sb.Append($"+{Metadata}");
-            }
+            if (!string.IsNullOrWhiteSpace(Metadata)) sb.Append($"+{Metadata}");
 
             return sb.ToString();
-
         }
 
         public static SemanticVersion Parse(string rawSemanticVersion)
@@ -49,12 +42,12 @@ namespace GBuild.Core
         }
 
         public static SemanticVersion Create(
-            int major = 0, 
-            int minor = 0, 
-            int patch = 0, 
+            int major = 0,
+            int minor = 0,
+            int patch = 0,
             string prereleseTag = null,
             string metadata = null
-            )
+        )
         {
             // TODO: validate preprelease tag and metadata values
 
