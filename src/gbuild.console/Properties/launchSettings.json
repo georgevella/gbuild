@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "gbuild.console": {
+      "commandName": "Project",
+      "commandLineArgs": "describe",
+      "workingDirectory": "D:\\Sources\\dev\\libraries\\GlydeSdk\\src\\Glyde.Configuration\\"
+    }
+  }
+}
