@@ -28,7 +28,7 @@ namespace GBuild.Console
 
             BuildCoreBootstrapper.BuildDependencyInjectionContainer(container);
 
-
+            // register all verb runners
             var assemblyList = new List<Assembly>()
             {
                 Assembly.GetExecutingAssembly()
