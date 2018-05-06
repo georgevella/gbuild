@@ -1,0 +1,16 @@
+﻿issue-id-regex: ''
+source-code-root: src
+branching-model: GitFlow
+branches:
+- name: refs/heads/master
+  parent-branch: 
+  tag: ''
+  metadata: ''
+- name: refs/heads/develop
+  parent-branch: refs/heads/master
+  tag: dev
+  metadata: ''
+- name: refs/heads/feature/*
+  parent-branch: refs/heads/develop
+  tag: dev-{featurename}
+  metadata: ''

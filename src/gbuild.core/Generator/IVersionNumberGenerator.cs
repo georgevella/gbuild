@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using GBuild.Core.Configuration;
 using GBuild.Core.VcsSupport;
 
 namespace GBuild.Core.Generator
 {
     public interface IVersionNumberGenerator
     {
-        SemanticVersion GetVersion();
+        SemanticVersion GetVersion(BranchVersioningStrategy branchVersioningStrategy);
     }
 
     /// <summary>
@@ -21,14 +22,14 @@ namespace GBuild.Core.Generator
             _sourceCodeRepository = sourceCodeRepository;
         }
 
-        public SemanticVersion GetVersion()
+        public SemanticVersion GetVersion(BranchVersioningStrategy branchVersioningStrategy)
         {
             var commits = _sourceCodeRepository.GetCommitsBetween(
-                _sourceCodeRepository.Branches.First(b => b.Name == "refs/heads/master"),
+                _sourceCodeRepository.Branches.First(b => b.Name == branchVersioningStrategy.ParentBranch),
                 _sourceCodeRepository.CurrentBranch
             );
 
-            return SemanticVersion.Create(minor: 1, patch: 0, prereleseTag: $"dev-{commits.Count()}");
+            return SemanticVersion.Create(minor: 1, patch: 0, prereleseTag: $"{branchVersioningStrategy.Tag}-{commits.Count()}");
         }
     }
 }

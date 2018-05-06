@@ -7,13 +7,13 @@ using Serilog;
 
 namespace GBuild.Console.Verbs
 {
-    public class DescribeVerb : IVerb<DescribeOptions>
+    public class DryRunVerb : IVerb<DryRunOptions>
     {
         private readonly IContextData<BranchInformation> _branchInformation;
         private readonly IContextData<SourceCodeInformation> _sourceCodeInformation;
         private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
-        public DescribeVerb(IContextData<BranchInformation> branchInformation,
+        public DryRunVerb(IContextData<BranchInformation> branchInformation,
             IContextData<SourceCodeInformation> sourceCodeInformation,
             IVersionNumberGeneratorProvider versionNumberGeneratorProvider)
         {
@@ -22,7 +22,7 @@ namespace GBuild.Console.Verbs
             _versionNumberGeneratorProvider = versionNumberGeneratorProvider;
         }
 
-        public void Run(DescribeOptions options)
+        public void Run(DryRunOptions options)
         {
             Log.Information("Current Branch: {branch}", _branchInformation.Data.CurrentBranch);
             Log.Information("Current Directory: {repoRoot}",
@@ -32,8 +32,7 @@ namespace GBuild.Console.Verbs
             Log.Information("Projects found: {@projects}", _sourceCodeInformation.Data.Projects.Count());
             Log.Information("Branches: {@branches}", _branchInformation.Data.Branches);
 
-            Log.Information("Proposed version number for current repo: {version}",
-                _versionNumberGeneratorProvider.GetGenerator(null).GetVersion());
+            Log.Information("Version: {version}", _versionNumberGeneratorProvider.GetVersion());
         }
     }
 }

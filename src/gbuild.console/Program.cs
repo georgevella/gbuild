@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
 using GBuild.Core;
+using GBuild.Core.Configuration;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -23,10 +26,30 @@ namespace GBuild.Console
 
             Log.Logger = configuration.CreateLogger();
 
+            // configruation file
+            var configurationFile = ConfigurationFile.Defaults;
+
+            var repositoryRootDirectory = DetermineRepositoryRootDirectory();
+            var buildYamlFile = repositoryRootDirectory.GetFiles("build.yaml", SearchOption.TopDirectoryOnly)
+                .FirstOrDefault();
+            
+            if (buildYamlFile != null)
+            {
+                Log.Verbose("Configuration file found on disk at '{configFile}'", buildYamlFile.FullName);
+                using (var file = buildYamlFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    configurationFile = ConfigurationFileReader.Read(file);
+                }
+            }
+            else
+            {
+                Log.Verbose("Using configuration defaults");
+            }
+
             // setup dependency injection container
             var container = new Container();
 
-            BuildCoreBootstrapper.BuildDependencyInjectionContainer(container);
+            BuildCoreBootstrapper.BuildDependencyInjectionContainer(container, configurationFile);
 
             // register all verb runners
             var assemblyList = new List<Assembly>
@@ -66,6 +89,22 @@ namespace GBuild.Console
 #if DEBUG
             System.Console.ReadKey();
 #endif
+        }
+
+        private static DirectoryInfo DetermineRepositoryRootDirectory()
+        {
+            var repositoryRootDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+            var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+            while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
+            {
+                repositoryRootDirectory = repositoryRootDirectory.Parent;
+                dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+            }
+
+            if (dotGitDirectory.Exists)
+                return repositoryRootDirectory;
+
+            throw new InvalidOperationException("Cannot find git repository root.");
         }
     }
 }

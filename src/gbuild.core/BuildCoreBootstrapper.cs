@@ -12,15 +12,15 @@ namespace GBuild.Core
 {
     public static class BuildCoreBootstrapper
     {
-        internal static IServiceProvider Start()
+        internal static IServiceProvider Start(ConfigurationFile configurationFile)
         {
             var container = new Container();
-            BuildDependencyInjectionContainer(container);
+            BuildDependencyInjectionContainer(container, configurationFile);
 
             return container;
         }
 
-        public static void BuildDependencyInjectionContainer(Container container)
+        public static void BuildDependencyInjectionContainer(Container container, ConfigurationFile configurationFile)
         {
             IEnumerable<Assembly> assemblies = new[]
             {
@@ -35,19 +35,7 @@ namespace GBuild.Core
             container.RegisterSingleton<ISourceCodeRepository, GitSourceCodeRespository>();
 
             // configuration
-            container.RegisterInstance(new ConfigurationFile
-            {
-                SourceCodeRoot = "src",
-                BranchingModel = BranchingModelType.GitFlow,
-                Branches =
-                {
-                    new BranchStrategy
-                    {
-                        Filter = "refs/heads/develop",
-                        ParentBranch = "refs/heads/master"
-                    }
-                }
-            });
+            container.RegisterInstance(configurationFile);
 
             // version number generators
             container.RegisterCollection<IVersionNumberGenerator>(new[] {Assembly.GetExecutingAssembly()});

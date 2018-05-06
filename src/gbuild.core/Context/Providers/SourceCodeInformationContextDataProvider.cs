@@ -27,8 +27,7 @@ namespace GBuild.Core.Context.Providers
                 repositoryRootDirectory = repositoryRootDirectory.Parent;
                 dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
             }
-
-
+            
             var sourceCodeRootDirectory =
                 new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, _configuration.SourceCodeRoot));
 

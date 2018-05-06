@@ -2,7 +2,7 @@
   "profiles": {
     "gbuild.console": {
       "commandName": "Project",
-      "commandLineArgs": "describe"
+      "commandLineArgs": "dry-run"
     }
   }
 }
