@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using GBuild.Core.Configuration;
 using GBuild.Core.Context;
 using GBuild.Core.Generator;
 using GBuild.Core.VcsSupport;
 using GBuild.Core.VcsSupport.Git;
 using SimpleInjector;
+
+[assembly:InternalsVisibleTo("gbuild.tests")]
 
 namespace GBuild.Core
 {
