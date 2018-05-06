@@ -31,6 +31,8 @@ namespace GBuild.Core.Configuration
 			IssueIdRegex = ""
 		};
 
+		public string StartingVersion { get; set; } = "0.1.0";
+
 		/// <summary>
 		///     Regex used to identify issue IDs in commits and branch names.
 		/// </summary>
