@@ -23,5 +23,7 @@
         public string Tag { get; set; }
 
         public string Metadata { get; set; }
+
+        public VersionIncrementStrategy Increment { get; set; }
     }
 }

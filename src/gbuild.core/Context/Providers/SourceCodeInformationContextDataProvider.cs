@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using GBuild.Core.Configuration;
 using GBuild.Core.Context.Data;
+using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Providers
 {
@@ -38,7 +39,7 @@ namespace GBuild.Core.Context.Providers
             return new SourceCodeInformation(
                 repositoryRootDirectory,
                 sourceCodeRootDirectory,
-                projectFiles.Select(fi => new Project(fi.Name, fi, ProjectType.CSharp)).ToList()
+                projectFiles.Select(fi => new Module(fi.Name, fi, ModuleType.CSharp)).ToList()
             );
         }
     }

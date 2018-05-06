@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace GBuild.Core.VcsSupport
+namespace GBuild.Core.Models
 {
-    public class Revision
+    public class Commit
     {
-        public Revision(string message, string id, string committer, DateTimeOffset when)
+        public Commit(string message, string id, string committer, DateTimeOffset when)
         {
             Message = message;
             Id = id;

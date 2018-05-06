@@ -1,36 +1,22 @@
 ﻿using System.Collections.Generic;
+using GBuild.Core.Models;
 
 namespace GBuild.Core.VcsSupport
 {
-    public interface ISourceCodeRepository
-    {
-        Branch CurrentBranch { get; }
-        IEnumerable<Branch> Branches { get; }
-        IEnumerable<Tag> Tags { get; }
-        IEnumerable<Revision> GetCommitsBetween(Branch parentBranch, Branch branch);
-    }
+	public interface ISourceCodeRepository
+	{
+		Branch CurrentBranch { get; }
+		IEnumerable<Branch> Branches { get; }
+		IEnumerable<Tag> Tags { get; }
 
-    public class Tag
-    {
-        public Tag(string canonicalName, Revision revision)
-        {
-            CanonicalName = canonicalName;
-            Revision = revision;
-        }
+		IEnumerable<Commit> GetCommitsBetween(
+			Branch parentBranch,
+			Branch branch
+		);
 
-        public string CanonicalName { get; }
-        public Revision Revision { get; }
-    }
-
-    public class Branch
-    {
-        public Branch(string name, Revision latestRevision)
-        {
-            Name = name;
-            LatestRevision = latestRevision;
-        }
-
-        public string Name { get; }
-        public Revision LatestRevision { get; }
-    }
+		IEnumerable<ChangedFile> GetFilesChangedBetween(
+			Branch parentBranch,
+			Branch branch
+		);
+	}
 }

@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Data
 {
     public class SourceCodeInformation
     {
         public SourceCodeInformation(DirectoryInfo repositoryRootDirectory, DirectoryInfo sourceCodeRootDirectory,
-            IEnumerable<Project> projects)
+            IEnumerable<Module> modules)
         {
             RepositoryRootDirectory = repositoryRootDirectory;
-            Projects = projects;
+            Modules = modules;
             SourceCodeRootDirectory = sourceCodeRootDirectory;
         }
 
@@ -17,28 +18,6 @@ namespace GBuild.Core.Context.Data
 
         public DirectoryInfo SourceCodeRootDirectory { get; }
 
-        public IEnumerable<Project> Projects { get; }
-    }
-
-    public class Project
-    {
-        public Project(string name, FileInfo file, ProjectType type)
-        {
-            Name = name;
-            File = file;
-            Type = type;
-        }
-
-        public string Name { get; }
-
-        public FileInfo File { get; }
-
-        public ProjectType Type { get; }
-    }
-
-    public enum ProjectType
-    {
-        LegacyCSharp,
-        CSharp
+        public IEnumerable<Module> Modules { get; }
     }
 }
