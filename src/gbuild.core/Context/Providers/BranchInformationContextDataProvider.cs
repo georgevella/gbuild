@@ -34,7 +34,9 @@ namespace GBuild.Core.Context.Providers
 		)
 		{
 			if (currentBranch.Name == filter)
+			{
 				return true;
+			}
 
 			// TODO: pattern matching branch name
 			return false;

@@ -1,22 +1,28 @@
 ﻿namespace GBuild.Console
 {
-    public interface IVerbRunner
-    {
-        void Run(object options);
-    }
+	public interface IVerbRunner
+	{
+		void Run(
+			object options
+		);
+	}
 
-    internal class VerbRunner<TVerbOptions> : IVerbRunner
-    {
-        private readonly IVerb<TVerbOptions> _verb;
+	internal class VerbRunner<TVerbOptions> : IVerbRunner
+	{
+		private readonly IVerb<TVerbOptions> _verb;
 
-        public VerbRunner(IVerb<TVerbOptions> verb)
-        {
-            _verb = verb;
-        }
+		public VerbRunner(
+			IVerb<TVerbOptions> verb
+		)
+		{
+			_verb = verb;
+		}
 
-        public void Run(object options)
-        {
-            _verb.Run((TVerbOptions) options);
-        }
-    }
+		public void Run(
+			object options
+		)
+		{
+			_verb.Run((TVerbOptions) options);
+		}
+	}
 }

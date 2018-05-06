@@ -10,36 +10,41 @@ using SimpleInjector;
 
 namespace GBuild.Core
 {
-    public static class BuildCoreBootstrapper
-    {
-        internal static IServiceProvider Start(ConfigurationFile configurationFile)
-        {
-            var container = new Container();
-            BuildDependencyInjectionContainer(container, configurationFile);
+	public static class BuildCoreBootstrapper
+	{
+		internal static IServiceProvider Start(
+			ConfigurationFile configurationFile
+		)
+		{
+			var container = new Container();
+			BuildDependencyInjectionContainer(container, configurationFile);
 
-            return container;
-        }
+			return container;
+		}
 
-        public static void BuildDependencyInjectionContainer(Container container, ConfigurationFile configurationFile)
-        {
-            IEnumerable<Assembly> assemblies = new[]
-            {
-                Assembly.GetExecutingAssembly()
-            };
+		public static void BuildDependencyInjectionContainer(
+			Container container,
+			ConfigurationFile configurationFile
+		)
+		{
+			IEnumerable<Assembly> assemblies = new[]
+			{
+				Assembly.GetExecutingAssembly()
+			};
 
-            // context information
-            container.RegisterSingleton(typeof(IContextDataProvider<>), assemblies);
-            container.RegisterSingleton(typeof(IContextData<>), typeof(ContextData<>));
+			// context information
+			container.RegisterSingleton(typeof(IContextDataProvider<>), assemblies);
+			container.RegisterSingleton(typeof(IContextData<>), typeof(ContextData<>));
 
-            // vcs support
-            container.RegisterSingleton<ISourceCodeRepository, GitSourceCodeRespository>();
+			// vcs support
+			container.RegisterSingleton<ISourceCodeRepository, GitSourceCodeRespository>();
 
-            // configuration
-            container.RegisterInstance(configurationFile);
+			// configuration
+			container.RegisterInstance(configurationFile);
 
-            // version number generators
-            container.RegisterCollection<IVersionNumberGenerator>(new[] {Assembly.GetExecutingAssembly()});
-            container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
-        }
-    }
+			// version number generators
+			container.RegisterCollection<IVersionNumberGenerator>(new[] {Assembly.GetExecutingAssembly()});
+			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
+		}
+	}
 }

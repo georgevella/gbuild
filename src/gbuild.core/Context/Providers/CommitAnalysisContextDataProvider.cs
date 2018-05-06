@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using GBuild.Core.Context.Data;
 using GBuild.Core.Models;
@@ -43,7 +42,6 @@ namespace GBuild.Core.Context.Providers
 				parentBranch,
 				_sourceCodeRepository.CurrentBranch
 			);
-
 
 			// determine changed modules
 			var rootDirectory = new Uri(_sourceCodeInformation.Data.RepositoryRootDirectory.FullName.TrimEnd('\\') + "\\");

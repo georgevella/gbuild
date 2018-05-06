@@ -13,98 +13,105 @@ using SimpleInjector;
 
 namespace GBuild.Console
 {
-    internal class Program
-    {
-        private static void Main(string[] args)
-        {
-            // setup logging
-            var configuration = new LoggerConfiguration()
-                .WriteTo.Console(
-                    theme: AnsiConsoleTheme.Code,
-                    restrictedToMinimumLevel: LogEventLevel.Information
-                );
+	internal class Program
+	{
+		private static void Main(
+			string[] args
+		)
+		{
+			// setup logging
+			var configuration = new LoggerConfiguration()
+				.WriteTo.Console(
+					theme: AnsiConsoleTheme.Code,
+					restrictedToMinimumLevel: LogEventLevel.Information
+				);
 
-            Log.Logger = configuration.CreateLogger();
+			Log.Logger = configuration.CreateLogger();
 
-            // configruation file
-            var configurationFile = ConfigurationFile.Defaults;
+			// configruation file
+			var configurationFile = ConfigurationFile.Defaults;
 
-            var repositoryRootDirectory = DetermineRepositoryRootDirectory();
-            var buildYamlFile = repositoryRootDirectory.GetFiles("build.yaml", SearchOption.TopDirectoryOnly)
-                .FirstOrDefault();
-            
-            if (buildYamlFile != null)
-            {
-                Log.Verbose("Configuration file found on disk at '{configFile}'", buildYamlFile.FullName);
-                using (var file = buildYamlFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    configurationFile = ConfigurationFileReader.Read(file);
-                }
-            }
-            else
-            {
-                Log.Verbose("Using configuration defaults");
-            }
+			var repositoryRootDirectory = DetermineRepositoryRootDirectory();
+			var buildYamlFile = repositoryRootDirectory.GetFiles("build.yaml", SearchOption.TopDirectoryOnly)
+				.FirstOrDefault();
 
-            // setup dependency injection container
-            var container = new Container();
+			if (buildYamlFile != null)
+			{
+				Log.Verbose("Configuration file found on disk at '{configFile}'", buildYamlFile.FullName);
+				using (var file = buildYamlFile.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
+				{
+					configurationFile = ConfigurationFileReader.Read(file);
+				}
+			}
+			else
+			{
+				Log.Verbose("Using configuration defaults");
+			}
 
-            BuildCoreBootstrapper.BuildDependencyInjectionContainer(container, configurationFile);
+			// setup dependency injection container
+			var container = new Container();
 
-            // register all verb runners
-            var assemblyList = new List<Assembly>
-            {
-                Assembly.GetExecutingAssembly()
-            };
+			BuildCoreBootstrapper.BuildDependencyInjectionContainer(container, configurationFile);
 
-            container.Register(typeof(IVerb<>), assemblyList);
+			// register all verb runners
+			var assemblyList = new List<Assembly>
+			{
+				Assembly.GetExecutingAssembly()
+			};
 
-            // setup command line parser
-            var verbTypes = Assembly.GetExecutingAssembly().DefinedTypes
-                .Select(t => new
-                {
-                    TypeInfo = t,
-                    Type = t.AsType(),
-                    Verb = t.GetCustomAttribute<VerbAttribute>()
-                })
-                .Where(t => t.Verb != null).Select(t => t.Type)
-                .ToArray();
+			container.Register(typeof(IVerb<>), assemblyList);
 
-            var parserResult = Parser.Default.ParseArguments(args, verbTypes);
-            parserResult.WithParsed(o =>
-            {
-                var verbRunnerType = typeof(VerbRunner<>).MakeGenericType(o.GetType());
-                var verbRunner = (IVerbRunner) container.GetInstance(verbRunnerType);
+			// setup command line parser
+			var verbTypes = Assembly.GetExecutingAssembly().DefinedTypes
+				.Select(t => new
+				{
+					TypeInfo = t,
+					Type = t.AsType(),
+					Verb = t.GetCustomAttribute<VerbAttribute>()
+				})
+				.Where(t => t.Verb != null).Select(t => t.Type)
+				.ToArray();
 
-                verbRunner.Run(o);
-            });
+			var parserResult = Parser.Default.ParseArguments(args, verbTypes);
+			parserResult.WithParsed(o =>
+			{
+				var verbRunnerType = typeof(VerbRunner<>).MakeGenericType(o.GetType());
+				var verbRunner = (IVerbRunner) container.GetInstance(verbRunnerType);
 
-            parserResult.WithNotParsed(errors =>
-            {
+				verbRunner.Run(o);
+			});
+
+			parserResult.WithNotParsed(errors =>
+			{
 #if DEBUG
-                foreach (var error in errors) System.Console.WriteLine($"{error.Tag}: {error.GetType()}");
+				foreach (var error in errors)
+				{
+					System.Console.WriteLine($"{error.Tag}: {error.GetType()}");
+				}
 #endif
-            });
+			});
 
 #if DEBUG
-            System.Console.ReadKey();
+			System.Console.ReadKey();
 #endif
-        }
+		}
 
-        private static DirectoryInfo DetermineRepositoryRootDirectory()
-        {
-            var repositoryRootDirectory = new DirectoryInfo(Environment.CurrentDirectory);
-            var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
-            while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
-            {
-                repositoryRootDirectory = repositoryRootDirectory.Parent;
-                dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
-            }
+		private static DirectoryInfo DetermineRepositoryRootDirectory()
+		{
+			var repositoryRootDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
+			{
+				repositoryRootDirectory = repositoryRootDirectory.Parent;
+				dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			}
 
-            if (dotGitDirectory.Exists)
-                return repositoryRootDirectory;
+			if (dotGitDirectory.Exists)
+			{
+				return repositoryRootDirectory;
+			}
 
-            throw new InvalidOperationException("Cannot find git repository root.");
-        }
-    }
+			throw new InvalidOperationException("Cannot find git repository root.");
+		}
+	}
 }
