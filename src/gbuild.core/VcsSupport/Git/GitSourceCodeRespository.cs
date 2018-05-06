@@ -7,6 +7,7 @@ using GBuild.Core.Models;
 using LibGit2Sharp;
 using Branch = GBuild.Core.Models.Branch;
 using Commit = GBuild.Core.Models.Commit;
+using RepositoryInformation = GBuild.Core.Context.Data.RepositoryInformation;
 using Tag = GBuild.Core.Models.Tag;
 
 namespace GBuild.Core.VcsSupport.Git
@@ -16,7 +17,7 @@ namespace GBuild.Core.VcsSupport.Git
 		private readonly Repository _repository;
 
 		public GitSourceCodeRespository(
-			IContextData<SourceCodeInformation> sourceCodeInformation
+			IContextData<RepositoryInformation> sourceCodeInformation
 		)
 		{
 			_repository = new Repository(sourceCodeInformation.Data.RepositoryRootDirectory.FullName);
@@ -88,7 +89,7 @@ namespace GBuild.Core.VcsSupport.Git
 		)
 		{
 			return new Commit(
-				commit.Message,
+				commit.Message.TrimEnd('\r', '\n'),
 				commit.Sha,
 				commit.Committer.Email,
 				commit.Committer.When

@@ -4,9 +4,9 @@ using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Data
 {
-	public class SourceCodeInformation
+	public class RepositoryInformation
 	{
-		public SourceCodeInformation(
+		public RepositoryInformation(
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
 			IEnumerable<Module> modules

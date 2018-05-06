@@ -10,12 +10,12 @@ namespace GBuild.Console.Verbs
 	{
 		private readonly IContextData<BranchInformation> _branchInformation;
 		private readonly IContextData<CommitAnalysis> _commitAnalysis;
-		private readonly IContextData<SourceCodeInformation> _sourceCodeInformation;
+		private readonly IContextData<RepositoryInformation> _sourceCodeInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DryRunVerb(
 			IContextData<BranchInformation> branchInformation,
-			IContextData<SourceCodeInformation> sourceCodeInformation,
+			IContextData<RepositoryInformation> sourceCodeInformation,
 			IContextData<CommitAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)

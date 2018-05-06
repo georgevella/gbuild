@@ -7,12 +7,12 @@ using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Providers
 {
-	public class SourceCodeInformationContextDataProvider : IContextDataProvider<SourceCodeInformation>
+	public class RepositoryInformationContextDataProvider : IContextDataProvider<RepositoryInformation>
 	{
 		private readonly ConfigurationFile _configuration;
 		private readonly IContextData<ProcessInformation> _processInformation;
 
-		public SourceCodeInformationContextDataProvider(
+		public RepositoryInformationContextDataProvider(
 			ConfigurationFile configuration,
 			IContextData<ProcessInformation> processInformation
 		)
@@ -21,7 +21,7 @@ namespace GBuild.Core.Context.Providers
 			_processInformation = processInformation;
 		}
 
-		public SourceCodeInformation LoadContextData()
+		public RepositoryInformation LoadContextData()
 		{
 			var repositoryRootDirectory = _processInformation.Data.CurrentDirectory;
 			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
@@ -41,7 +41,7 @@ namespace GBuild.Core.Context.Providers
 
 			var projectFiles = sourceCodeRootDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories);
 
-			return new SourceCodeInformation(
+			return new RepositoryInformation(
 				repositoryRootDirectory,
 				sourceCodeRootDirectory,
 				projectFiles.Select(fi => new Module(fi.Name, fi, ModuleType.CSharp)).ToList()
