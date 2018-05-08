@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GBuild.Core.Models;
 
-namespace GBuild.Core.VcsSupport
+namespace GBuild.Core.Vcs
 {
 	public interface ISourceCodeRepository
 	{

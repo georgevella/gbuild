@@ -5,8 +5,7 @@ using System.Runtime.CompilerServices;
 using GBuild.Core.Configuration;
 using GBuild.Core.Context;
 using GBuild.Core.Generator;
-using GBuild.Core.VcsSupport;
-using GBuild.Core.VcsSupport.Git;
+using GBuild.Core.Vcs;
 using SimpleInjector;
 
 [assembly:InternalsVisibleTo("gbuild.tests")]
@@ -15,39 +14,42 @@ namespace GBuild.Core
 {
 	public static class BuildCoreBootstrapper
 	{
-		internal static IServiceProvider Start(
-			ConfigurationFile configurationFile
-		)
-		{
-			var container = new Container();
-			BuildDependencyInjectionContainer(container, configurationFile);
-
-			return container;
-		}
-
 		public static void BuildDependencyInjectionContainer(
 			Container container,
-			ConfigurationFile configurationFile
+			ConfigurationFile configurationFile,
+			Action<BuildCoreBootsrapperOptions> optionsFunc
 		)
 		{
-			IEnumerable<Assembly> assemblies = new[]
+			var options = new BuildCoreBootsrapperOptions();
+
+			optionsFunc(options);
+
+			var assemblies = new List<Assembly>
 			{
 				Assembly.GetExecutingAssembly()
 			};
+			assemblies.AddRange(options.Assemblies);
 
 			// context information
 			container.RegisterSingleton(typeof(IContextDataProvider<>), assemblies);
 			container.RegisterSingleton(typeof(IContextData<>), typeof(ContextData<>));
 
 			// vcs support
-			container.RegisterSingleton<ISourceCodeRepository, GitSourceCodeRespository>();
+			container.RegisterSingleton(typeof(ISourceCodeRepository), options.RepositoryType);
 
 			// configuration
 			container.RegisterInstance(configurationFile);
 
 			// version number generators
-			container.RegisterCollection<IVersionNumberGenerator>(new[] {Assembly.GetExecutingAssembly()});
+			container.RegisterCollection<IVersionNumberGenerator>(assemblies);
 			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
 		}
+	}
+
+	public class BuildCoreBootsrapperOptions
+	{
+		public List<Assembly> Assemblies { get; } = new List<Assembly>();
+
+		public Type RepositoryType { get; set; }
 	}
 }

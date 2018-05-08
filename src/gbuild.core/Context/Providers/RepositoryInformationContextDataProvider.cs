@@ -7,7 +7,7 @@ using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Providers
 {
-	public class RepositoryInformationContextDataProvider : IContextDataProvider<RepositoryInformation>
+	public abstract class RepositoryInformationContextDataProvider : IContextDataProvider<RepositoryInformation>
 	{
 		private readonly ConfigurationFile _configuration;
 		private readonly IContextData<ProcessInformation> _processInformation;
@@ -21,15 +21,15 @@ namespace GBuild.Core.Context.Providers
 			_processInformation = processInformation;
 		}
 
-		public RepositoryInformation LoadContextData()
+		protected IContextData<ProcessInformation> ProcessInformation => _processInformation;
+
+		protected ConfigurationFile Configuration => _configuration;
+
+		protected abstract DirectoryInfo GetRepositoryRootDirectory();
+
+		public virtual RepositoryInformation LoadContextData()
 		{
-			var repositoryRootDirectory = _processInformation.Data.CurrentDirectory;
-			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
-			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
-			{
-				repositoryRootDirectory = repositoryRootDirectory.Parent;
-				dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
-			}
+			var repositoryRootDirectory = GetRepositoryRootDirectory();
 
 			var sourceCodeRootDirectory =
 				new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, _configuration.SourceCodeRoot));

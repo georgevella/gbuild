@@ -2,7 +2,6 @@
 using GBuild.Core.Configuration;
 using GBuild.Core.Context;
 using GBuild.Core.Context.Data;
-using GBuild.Core.VcsSupport;
 
 namespace GBuild.Core.Generator
 {

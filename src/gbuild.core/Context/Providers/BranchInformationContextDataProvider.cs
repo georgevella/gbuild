@@ -2,7 +2,7 @@
 using GBuild.Core.Configuration;
 using GBuild.Core.Context.Data;
 using GBuild.Core.Models;
-using GBuild.Core.VcsSupport;
+using GBuild.Core.Vcs;
 
 namespace GBuild.Core.Context.Providers
 {

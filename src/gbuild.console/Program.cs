@@ -6,6 +6,7 @@ using System.Reflection;
 using CommandLine;
 using GBuild.Core;
 using GBuild.Core.Configuration;
+using GBuild.Core.Vcs.Git;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -51,7 +52,11 @@ namespace GBuild.Console
 			// setup dependency injection container
 			var container = new Container();
 
-			BuildCoreBootstrapper.BuildDependencyInjectionContainer(container, configurationFile);
+			BuildCoreBootstrapper.BuildDependencyInjectionContainer(
+				container, 
+				configurationFile,
+				options => options.UseGit()
+				);
 
 			// register all verb runners
 			var assemblyList = new List<Assembly>
