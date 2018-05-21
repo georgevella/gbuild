@@ -25,7 +25,7 @@ namespace GBuild.Core.Context.Providers
 			var branchVersioningStrategy =
 				_configurationFile.Branches.FirstOrDefault(b => MatchesCurrentBranch(_repository.CurrentBranch, b.Name));
 
-			return new BranchInformation(_repository.CurrentBranch, _repository.Branches, branchVersioningStrategy);
+			return new BranchInformation(_repository.CurrentBranch, branchVersioningStrategy);
 		}
 
 		private bool MatchesCurrentBranch(

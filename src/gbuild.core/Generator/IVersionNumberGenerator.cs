@@ -5,7 +5,7 @@ namespace GBuild.Core.Generator
 	public interface IVersionNumberGenerator
 	{
 		SemanticVersion GetVersion(
-			BranchVersioningStrategy branchVersioningStrategy
+			IBranchVersioningStrategy branchVersioningStrategy
 		);
 	}
 }

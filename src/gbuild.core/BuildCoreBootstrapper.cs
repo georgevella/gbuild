@@ -38,7 +38,7 @@ namespace GBuild.Core
 			container.RegisterSingleton(typeof(ISourceCodeRepository), options.RepositoryType);
 
 			// configuration
-			container.RegisterInstance(configurationFile);
+			container.RegisterInstance<IConfigurationFile>(configurationFile);
 
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(assemblies);

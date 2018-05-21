@@ -11,11 +11,11 @@ namespace GBuild.Core.Generator
 	/// </summary>
 	public class DevelopmentBranchVersionNumberGenerator : IVersionNumberGenerator
 	{
-		private readonly ConfigurationFile _configurationFile;
+		private readonly IConfigurationFile _configurationFile;
 		private readonly IContextData<CommitAnalysis> _commitAnalysis;
 
 		public DevelopmentBranchVersionNumberGenerator(
-			ConfigurationFile configurationFile,
+			IConfigurationFile configurationFile,
 			IContextData<CommitAnalysis> commitAnalysis
 		)
 		{
@@ -24,7 +24,7 @@ namespace GBuild.Core.Generator
 		}
 
 		public SemanticVersion GetVersion(
-			BranchVersioningStrategy branchVersioningStrategy
+			IBranchVersioningStrategy branchVersioningStrategy
 		)
 		{
 			var startingVersion = SemanticVersion.Parse(_configurationFile.StartingVersion);
@@ -33,7 +33,8 @@ namespace GBuild.Core.Generator
 				major: startingVersion.Major,
 				minor: startingVersion.Minor, 
 				patch: startingVersion.Patch, 
-				prereleseTag: $"{branchVersioningStrategy.Tag}-{_commitAnalysis.Data.Commits.Count()}"
+				prereleseTag: $"{branchVersioningStrategy.Tag}-{_commitAnalysis.Data.Commits.Count()}",
+				metadata: branchVersioningStrategy.Metadata
 				);
 		}
 	}

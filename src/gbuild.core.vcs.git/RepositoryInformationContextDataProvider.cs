@@ -9,13 +9,13 @@ using GBuild.Core.Models;
 
 namespace GBuild.Core.Vcs.Git
 {
-	public class GitRepositoryInformationContextDataProvider : RepositoryInformationContextDataProvider
+	public class GitRepositoryInformationContextDataProvider : ProjectInformationContextDataProvider
 	{
-		private readonly ConfigurationFile _configuration;
+		private readonly IConfigurationFile _configuration;
 		private readonly IContextData<ProcessInformation> _processInformation;
 
 		public GitRepositoryInformationContextDataProvider(
-			ConfigurationFile configuration,
+			IConfigurationFile configuration,
 			IContextData<ProcessInformation> processInformation
 		) : base(configuration, processInformation)
 		{

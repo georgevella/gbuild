@@ -78,6 +78,13 @@ namespace GBuild.Core
 			}
 		}
 
+		public static implicit operator SemanticVersion(
+			string v
+		)
+		{
+			return Parse(v);
+		}
+
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
@@ -195,6 +202,25 @@ namespace GBuild.Core
 			}
 
 			return semver;
+		}
+
+		public static SemanticVersion CreateFrom(
+			SemanticVersion version,
+			int? major = null,
+			int? minor = null,
+			int? patch = null,
+			string prereleaseTag = null,
+			string metadata = null
+		)
+		{
+			var actualMajor = major ?? version.Major;
+			var actualMinor = minor ?? version.Minor;
+			var actualPatch = patch ?? version.Patch;
+			var actualPrereleseTag = prereleaseTag ?? version.PrereleaseTag;
+			var actualMetadata = metadata ?? version.Metadata;
+
+			return Create(actualMajor, actualMinor, actualPatch, actualPrereleseTag, actualMetadata);
+
 		}
 
 		public static SemanticVersion Create(

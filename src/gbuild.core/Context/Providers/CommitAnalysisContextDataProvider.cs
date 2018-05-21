@@ -10,18 +10,18 @@ namespace GBuild.Core.Context.Providers
 	public class CommitAnalysisContextDataProvider : IContextDataProvider<CommitAnalysis>
 	{
 		private readonly IContextData<BranchInformation> _branchInformation;
-		private readonly IContextData<RepositoryInformation> _sourceCodeInformation;
+		private readonly IContextData<ProjectInformation> _projectInformation;
 		private readonly ISourceCodeRepository _sourceCodeRepository;
 
 		public CommitAnalysisContextDataProvider(
 			ISourceCodeRepository sourceCodeRepository,
 			IContextData<BranchInformation> branchInformation,
-			IContextData<RepositoryInformation> sourceCodeInformation
+			IContextData<ProjectInformation> projectInformation
 		)
 		{
 			_sourceCodeRepository = sourceCodeRepository;
 			_branchInformation = branchInformation;
-			_sourceCodeInformation = sourceCodeInformation;
+			_projectInformation = projectInformation;
 		}
 
 		public CommitAnalysis LoadContextData()
@@ -44,10 +44,10 @@ namespace GBuild.Core.Context.Providers
 			);
 
 			// determine changed modules
-			var rootDirectory = new Uri(_sourceCodeInformation.Data.RepositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
+			var rootDirectory = new Uri(_projectInformation.Data.RepositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
 
-			var moduleRootDirectories = _sourceCodeInformation.Data.Modules
-				.Select(m => new
+			var moduleRootDirectories = _projectInformation.Data.Modules.OfType<CsharpModule>()
+				.Select(m => new 
 					{
 						Module = m,
 						Uri = rootDirectory.MakeRelativeUri(new Uri(m.File.DirectoryName))

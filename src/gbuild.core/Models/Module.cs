@@ -1,25 +1,16 @@
-﻿using System.IO;
-
-namespace GBuild.Core.Models
+﻿namespace GBuild.Core.Models
 {
 	public class Module
 	{
 		public Module(
-			string name,
-			FileInfo file,
-			ModuleType type
+			string name
 		)
 		{
 			Name = name;
-			File = file;
-			Type = type;
+
 		}
 
 		public string Name { get; }
-
-		public FileInfo File { get; }
-
-		public ModuleType Type { get; }
 
 		protected bool Equals(
 			Module other
@@ -40,11 +31,6 @@ namespace GBuild.Core.Models
 			if (ReferenceEquals(this, obj))
 			{
 				return true;
-			}
-
-			if (obj.GetType() != GetType())
-			{
-				return false;
 			}
 
 			return Equals((Module) obj);

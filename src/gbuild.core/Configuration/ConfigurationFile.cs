@@ -3,7 +3,32 @@ using YamlDotNet.Serialization;
 
 namespace GBuild.Core.Configuration
 {
-	public class ConfigurationFile
+	public interface IConfigurationFile
+	{
+		string StartingVersion { get; set; }
+
+		/// <summary>
+		///     Regex used to identify issue IDs in commits and branch names.
+		/// </summary>
+		string IssueIdRegex { get; set; }
+
+		/// <summary>
+		///     Relative path to the location of all sources.
+		/// </summary>
+		string SourceCodeRoot { get; set; }
+
+		/// <summary>
+		///     The branching model used in this repository.
+		/// </summary>
+		BranchingModelType BranchingModel { get; set; }
+
+		/// <summary>
+		///     Branch specs.
+		/// </summary>
+		List<BranchVersioningStrategy> Branches { get; set; }
+	}
+
+	public class ConfigurationFile : IConfigurationFile
 	{
 		public static readonly ConfigurationFile Defaults = new ConfigurationFile
 		{
