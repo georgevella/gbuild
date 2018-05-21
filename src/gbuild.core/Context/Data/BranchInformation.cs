@@ -8,15 +8,15 @@ namespace GBuild.Core.Context.Data
 	{
 		public BranchInformation(
 			Branch currentBranch,
-			IBranchVersioningStrategy versioningStrategy
+			IBranchVersioningStrategyModel versioningStrategyModel
 		)
 		{
 			CurrentBranch = currentBranch;
-			VersioningStrategy = versioningStrategy;
+			VersioningStrategyModel = versioningStrategyModel;
 		}
 
 		public Branch CurrentBranch { get; }
 
-		public IBranchVersioningStrategy VersioningStrategy { get; }
+		public IBranchVersioningStrategyModel VersioningStrategyModel { get; }
 	}
 }

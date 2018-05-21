@@ -1,8 +1,8 @@
 ﻿namespace GBuild.Core.Configuration.Models
 {
-	public class BranchVersioningStrategy : IBranchVersioningStrategy
+	public class BranchVersioningStrategyModel : IBranchVersioningStrategyModel
 	{
-		public BranchVersioningStrategy()
+		public BranchVersioningStrategyModel()
 		{
 			Tag = string.Empty;
 			Metadata = string.Empty;

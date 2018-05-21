@@ -11,17 +11,17 @@ namespace GBuild.Core.Configuration
 		{
 			Branches =
 			{
-				new BranchVersioningStrategy
+				new BranchVersioningStrategyModel
 				{
 					Name = "refs/heads/master"
 				},
-				new BranchVersioningStrategy
+				new BranchVersioningStrategyModel
 				{
 					Name = "refs/heads/develop",
 					ParentBranch = "refs/heads/master",
 					Tag = "dev"
 				},
-				new BranchVersioningStrategy
+				new BranchVersioningStrategyModel
 				{
 					Name = "refs/heads/feature/*",
 					ParentBranch = "refs/heads/develop",
@@ -57,6 +57,6 @@ namespace GBuild.Core.Configuration
 		///     Branch specs.
 		/// </summary>
 		[YamlMember(Alias = "branches")]
-		public List<BranchVersioningStrategy> Branches { get; set; } = new List<BranchVersioningStrategy>();
+		public List<BranchVersioningStrategyModel> Branches { get; set; } = new List<BranchVersioningStrategyModel>();
 	}
 }

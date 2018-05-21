@@ -25,7 +25,7 @@ namespace GBuild.Core.Generator
 		}
 
 		public SemanticVersion GetVersion(
-			IBranchVersioningStrategy branchVersioningStrategy
+			IBranchVersioningStrategyModel branchVersioningStrategyModel
 		)
 		{
 			var startingVersion = SemanticVersion.Parse(_configurationFile.StartingVersion);
@@ -34,8 +34,8 @@ namespace GBuild.Core.Generator
 				major: startingVersion.Major,
 				minor: startingVersion.Minor, 
 				patch: startingVersion.Patch, 
-				prereleseTag: $"{branchVersioningStrategy.Tag}-{_commitAnalysis.Data.Commits.Count()}",
-				metadata: branchVersioningStrategy.Metadata
+				prereleseTag: $"{branchVersioningStrategyModel.Tag}-{_commitAnalysis.Data.Commits.Count()}",
+				metadata: branchVersioningStrategyModel.Metadata
 				);
 		}
 	}

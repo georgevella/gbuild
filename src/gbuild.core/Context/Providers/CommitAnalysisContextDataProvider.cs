@@ -26,7 +26,7 @@ namespace GBuild.Core.Context.Providers
 
 		public CommitAnalysis LoadContextData()
 		{
-			var branchVersioningStrategy = _branchInformation.Data.VersioningStrategy;
+			var branchVersioningStrategy = _branchInformation.Data.VersioningStrategyModel;
 
 			// TODO: how to handle branches that are not development / slaves of other branches
 

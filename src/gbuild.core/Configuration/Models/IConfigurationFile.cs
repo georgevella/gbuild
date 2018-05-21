@@ -24,6 +24,6 @@ namespace GBuild.Core.Configuration.Models
 		/// <summary>
 		///     Branch specs.
 		/// </summary>
-		List<BranchVersioningStrategy> Branches { get; set; }
+		List<BranchVersioningStrategyModel> Branches { get; set; }
 	}
 }

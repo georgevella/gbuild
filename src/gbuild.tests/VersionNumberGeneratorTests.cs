@@ -22,7 +22,7 @@ namespace gbuild.tests
 			var fixture = new Fixture();
 
 			var commitAnalysisMock = new Mock<IContextData<CommitAnalysis>>();
-			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategy>();
+			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
 			var configurationFileMock = new Mock<IConfigurationFile>();
 
 			configurationFileMock.SetupGet(x => x.StartingVersion).Returns("1.0.0");
@@ -64,7 +64,7 @@ namespace gbuild.tests
 			var fixture = new Fixture();
 
 			var commitAnalysisMock = new Mock<IContextData<CommitAnalysis>>();
-			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategy>();
+			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
 			var configurationFileMock = new Mock<IConfigurationFile>();
 
 			configurationFileMock.SetupGet(x => x.StartingVersion).Returns("1.0.0");

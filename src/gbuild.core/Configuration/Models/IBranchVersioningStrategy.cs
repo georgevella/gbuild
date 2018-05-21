@@ -1,6 +1,6 @@
 ﻿namespace GBuild.Core.Configuration
 {
-	public interface IBranchVersioningStrategy
+	public interface IBranchVersioningStrategyModel
 	{
 		string Name { get; set; }
 

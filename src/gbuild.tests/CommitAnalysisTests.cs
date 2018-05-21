@@ -25,7 +25,7 @@ namespace gbuild.tests
 			var repoMock = new Mock<ISourceCodeRepository>(MockBehavior.Strict);
 			var currentBranchInformationMock = new Mock<IContextData<BranchInformation>>(MockBehavior.Strict);
 			var projectInformationMock = new Mock<IContextData<ProjectInformation>>(MockBehavior.Strict);
-			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategy>(MockBehavior.Strict);
+			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>(MockBehavior.Strict);
 
 			branchVersioningStrategyMock.SetupGet(x => x.Tag).Returns("dev");
 			branchVersioningStrategyMock.SetupGet(x => x.ParentBranch).Returns("refs/heads/master");

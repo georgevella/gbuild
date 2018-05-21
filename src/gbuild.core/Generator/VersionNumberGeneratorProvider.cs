@@ -28,7 +28,7 @@ namespace GBuild.Core.Generator
 			// TODO: implement mapping between branch strategy and version number generator
 			var versionNumberGenerator = _versionNumberGenerators.First();
 
-			return versionNumberGenerator.GetVersion(_branchInformation.Data.VersioningStrategy);
+			return versionNumberGenerator.GetVersion(_branchInformation.Data.VersioningStrategyModel);
 		}
 	}
 }
