@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using GBuild.Core.Configuration;
+using GBuild.Core.Configuration.Models;
 using GBuild.Core.Context;
 using GBuild.Core.Generator;
 using GBuild.Core.Vcs;

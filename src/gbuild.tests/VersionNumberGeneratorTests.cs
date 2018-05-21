@@ -4,6 +4,7 @@ using AutoFixture;
 using FluentAssertions;
 using GBuild.Core;
 using GBuild.Core.Configuration;
+using GBuild.Core.Configuration.Models;
 using GBuild.Core.Context;
 using GBuild.Core.Context.Data;
 using GBuild.Core.Generator;
