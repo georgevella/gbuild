@@ -4,9 +4,9 @@ using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Data
 {
-	public class ProjectInformation
+	public class Workspace
 	{
-		public ProjectInformation(
+		public Workspace(
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
 			IEnumerable<Module> modules

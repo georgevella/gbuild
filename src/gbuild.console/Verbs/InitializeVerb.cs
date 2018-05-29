@@ -12,12 +12,12 @@ namespace GBuild.Console.Verbs
 	{
 		private readonly ConfigurationFile _configurationFile;
 		private readonly ILogger _log;
-		private readonly IContextData<ProcessInformation> _processInformation;
-		private readonly IContextData<ProjectInformation> _sourceCodeInformation;
+		private readonly IContextData<Process> _processInformation;
+		private readonly IContextData<Workspace> _sourceCodeInformation;
 
 		public InitializeVerb(
-			IContextData<ProcessInformation> processInformation,
-			IContextData<ProjectInformation> sourceCodeInformation,
+			IContextData<Process> processInformation,
+			IContextData<Workspace> sourceCodeInformation,
 			ConfigurationFile configurationFile
 		)
 		{

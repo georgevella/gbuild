@@ -8,27 +8,27 @@ using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Providers
 {
-	public abstract class ProjectInformationContextDataProvider : IContextDataProvider<ProjectInformation>
+	public abstract class WorkspaceContextDataProvider : IContextDataProvider<Workspace>
 	{
 		private readonly IConfigurationFile _configuration;
-		private readonly IContextData<ProcessInformation> _processInformation;
+		private readonly IContextData<Process> _processInformation;
 
-		protected ProjectInformationContextDataProvider(
+		protected WorkspaceContextDataProvider(
 			IConfigurationFile configuration,
-			IContextData<ProcessInformation> processInformation
+			IContextData<Process> processInformation
 		)
 		{
 			_configuration = configuration;
 			_processInformation = processInformation;
 		}
 
-		protected IContextData<ProcessInformation> ProcessInformation => _processInformation;
+		protected IContextData<Process> ProcessInformation => _processInformation;
 
 		protected IConfigurationFile Configuration => _configuration;
 
 		protected abstract DirectoryInfo GetRepositoryRootDirectory();
 
-		public virtual ProjectInformation LoadContextData()
+		public virtual Workspace LoadContextData()
 		{
 			var repositoryRootDirectory = GetRepositoryRootDirectory();
 
@@ -42,7 +42,7 @@ namespace GBuild.Core.Context.Providers
 
 			var projectFiles = sourceCodeRootDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories);
 
-			return new ProjectInformation(
+			return new Workspace(
 				repositoryRootDirectory,
 				sourceCodeRootDirectory,
 				projectFiles.Select(fi => new CsharpModule(fi.Name, fi, ModuleType.CSharp)).ToList()

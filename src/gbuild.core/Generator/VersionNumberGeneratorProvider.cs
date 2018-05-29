@@ -9,13 +9,13 @@ namespace GBuild.Core.Generator
 {
 	internal class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
 	{
-		private readonly IContextData<BranchInformation> _branchInformation;
+		private readonly IContextData<VersionControl> _branchInformation;
 		private readonly ConfigurationFile _configuration;
 		private readonly IEnumerable<IVersionNumberGenerator> _versionNumberGenerators;
 
 		public VersionNumberGeneratorProvider(
 			IEnumerable<IVersionNumberGenerator> versionNumberGenerators,
-			IContextData<BranchInformation> branchInformation,
+			IContextData<VersionControl> branchInformation,
 			ConfigurationFile configuration
 		)
 		{

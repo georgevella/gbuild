@@ -16,7 +16,7 @@ namespace GBuild.Core.Vcs.Git
 		private readonly Repository _repository;
 
 		public GitSourceCodeRespository(
-			IContextData<ProjectInformation> sourceCodeInformation
+			IContextData<Workspace> sourceCodeInformation
 		)
 		{
 			_repository = new Repository(sourceCodeInformation.Data.RepositoryRootDirectory.FullName);

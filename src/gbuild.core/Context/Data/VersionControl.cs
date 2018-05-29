@@ -5,9 +5,9 @@ using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Data
 {
-	public class BranchInformation
+	public class VersionControl
 	{
-		public BranchInformation(
+		public VersionControl(
 			Branch currentBranch,
 			IBranchVersioningStrategyModel versioningStrategyModel
 		)

@@ -7,12 +7,12 @@ using GBuild.Core.Vcs;
 
 namespace GBuild.Core.Context.Providers
 {
-	public class BranchInformationContextDataProvider : IContextDataProvider<BranchInformation>
+	public class VersionControlContextDataProvider : IContextDataProvider<VersionControl>
 	{
 		private readonly ConfigurationFile _configurationFile;
 		private readonly ISourceCodeRepository _repository;
 
-		public BranchInformationContextDataProvider(
+		public VersionControlContextDataProvider(
 			ISourceCodeRepository repository,
 			ConfigurationFile configurationFile
 		)
@@ -21,12 +21,12 @@ namespace GBuild.Core.Context.Providers
 			_configurationFile = configurationFile;
 		}
 
-		public BranchInformation LoadContextData()
+		public VersionControl LoadContextData()
 		{
 			var branchVersioningStrategy =
 				_configurationFile.Branches.FirstOrDefault(b => MatchesCurrentBranch(_repository.CurrentBranch, b.Name));
 
-			return new BranchInformation(_repository.CurrentBranch, branchVersioningStrategy);
+			return new VersionControl(_repository.CurrentBranch, branchVersioningStrategy);
 		}
 
 		private bool MatchesCurrentBranch(

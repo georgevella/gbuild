@@ -24,8 +24,8 @@ namespace gbuild.tests
 
 			var fixture = new Fixture();
 			var repoMock = new Mock<ISourceCodeRepository>(MockBehavior.Strict);
-			var currentBranchInformationMock = new Mock<IContextData<BranchInformation>>(MockBehavior.Strict);
-			var projectInformationMock = new Mock<IContextData<ProjectInformation>>(MockBehavior.Strict);
+			var currentBranchInformationMock = new Mock<IContextData<VersionControl>>(MockBehavior.Strict);
+			var projectInformationMock = new Mock<IContextData<Workspace>>(MockBehavior.Strict);
 			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>(MockBehavior.Strict);
 
 			branchVersioningStrategyMock.SetupGet(x => x.Tag).Returns("dev");
@@ -61,10 +61,10 @@ namespace gbuild.tests
 				.Returns(fixture.CreateMany<Commit>(5));
 
 			currentBranchInformationMock.SetupGet(x => x.Data)
-				.Returns(new BranchInformation(developBranch, branchVersioningStrategyMock.Object));
+				.Returns(new VersionControl(developBranch, branchVersioningStrategyMock.Object));
 
 			projectInformationMock.SetupGet(x => x.Data).Returns(
-				new ProjectInformation(
+				new Workspace(
 					new DirectoryInfo(Environment.CurrentDirectory),
 					new DirectoryInfo("./src"),
 					new Module[]

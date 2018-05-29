@@ -4,13 +4,13 @@ using GBuild.Core.Context.Data;
 
 namespace GBuild.Core.Context.Providers
 {
-	public class ProcessInformationContextDataProvider : IContextDataProvider<ProcessInformation>
+	public class ProcessContextDataProvider : IContextDataProvider<Process>
 	{
-		public ProcessInformation LoadContextData()
+		public Process LoadContextData()
 		{
 			var currentDirectory = new DirectoryInfo(Environment.CurrentDirectory);
 
-			return new ProcessInformation(currentDirectory);
+			return new Process(currentDirectory);
 		}
 	}
 }

@@ -9,14 +9,14 @@ namespace GBuild.Core.Context.Providers
 {
 	public class CommitAnalysisContextDataProvider : IContextDataProvider<CommitAnalysis>
 	{
-		private readonly IContextData<BranchInformation> _branchInformation;
-		private readonly IContextData<ProjectInformation> _projectInformation;
+		private readonly IContextData<VersionControl> _branchInformation;
+		private readonly IContextData<Workspace> _projectInformation;
 		private readonly ISourceCodeRepository _sourceCodeRepository;
 
 		public CommitAnalysisContextDataProvider(
 			ISourceCodeRepository sourceCodeRepository,
-			IContextData<BranchInformation> branchInformation,
-			IContextData<ProjectInformation> projectInformation
+			IContextData<VersionControl> branchInformation,
+			IContextData<Workspace> projectInformation
 		)
 		{
 			_sourceCodeRepository = sourceCodeRepository;

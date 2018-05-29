@@ -8,14 +8,14 @@ namespace GBuild.Console.Verbs
 {
 	public class DryRunVerb : IVerb<DryRunOptions>
 	{
-		private readonly IContextData<BranchInformation> _branchInformation;
+		private readonly IContextData<VersionControl> _branchInformation;
 		private readonly IContextData<CommitAnalysis> _commitAnalysis;
-		private readonly IContextData<ProjectInformation> _sourceCodeInformation;
+		private readonly IContextData<Workspace> _sourceCodeInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DryRunVerb(
-			IContextData<BranchInformation> branchInformation,
-			IContextData<ProjectInformation> sourceCodeInformation,
+			IContextData<VersionControl> branchInformation,
+			IContextData<Workspace> sourceCodeInformation,
 			IContextData<CommitAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)

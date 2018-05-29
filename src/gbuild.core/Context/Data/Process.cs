@@ -2,9 +2,9 @@
 
 namespace GBuild.Core.Context.Data
 {
-	public class ProcessInformation
+	public class Process
 	{
-		public ProcessInformation(
+		public Process(
 			DirectoryInfo currentDirectory
 		)
 		{
