@@ -6,14 +6,14 @@ using Serilog;
 
 namespace GBuild.Console.Verbs
 {
-	public class DryRunVerb : IVerb<DryRunOptions>
+	public class DescribeVerb : IVerb<DescribeOptions>
 	{
 		private readonly IContextData<VersionControl> _branchInformation;
 		private readonly IContextData<CommitAnalysis> _commitAnalysis;
 		private readonly IContextData<Workspace> _sourceCodeInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
-		public DryRunVerb(
+		public DescribeVerb(
 			IContextData<VersionControl> branchInformation,
 			IContextData<Workspace> sourceCodeInformation,
 			IContextData<CommitAnalysis> commitAnalysis,
@@ -27,7 +27,7 @@ namespace GBuild.Console.Verbs
 		}
 
 		public void Run(
-			DryRunOptions options
+			DescribeOptions options
 		)
 		{
 			Log.Information("Current Branch: {branch}", _branchInformation.Data.CurrentBranch);
