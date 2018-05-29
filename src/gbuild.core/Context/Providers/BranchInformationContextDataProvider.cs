@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using GBuild.Core.Configuration;
+using GBuild.Core.Configuration.Models;
 using GBuild.Core.Context.Data;
 using GBuild.Core.Models;
 using GBuild.Core.Vcs;

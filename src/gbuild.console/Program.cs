@@ -6,6 +6,7 @@ using System.Reflection;
 using CommandLine;
 using GBuild.Core;
 using GBuild.Core.Configuration;
+using GBuild.Core.Configuration.Models;
 using GBuild.Core.Vcs.Git;
 using Serilog;
 using Serilog.Events;

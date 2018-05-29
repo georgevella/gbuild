@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GBuild.Core.Configuration;
+using GBuild.Core.Configuration.Models;
 using GBuild.Core.Context;
 using GBuild.Core.Context.Data;
 

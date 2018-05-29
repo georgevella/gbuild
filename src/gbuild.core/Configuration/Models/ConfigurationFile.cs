@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using GBuild.Core.Configuration.Models;
 using YamlDotNet.Serialization;
 
-namespace GBuild.Core.Configuration
+namespace GBuild.Core.Configuration.Models
 {
 
 	public class ConfigurationFile : IConfigurationFile

@@ -1,4 +1,4 @@
-﻿namespace GBuild.Core.Configuration
+﻿namespace GBuild.Core.Configuration.Models
 {
 	public enum VersionIncrementStrategy
 	{
