@@ -9,19 +9,17 @@ namespace GBuild.Core.Generator
 {
 	internal class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
 	{
-		private readonly IContextData<VersionControl> _branchInformation;
-		private readonly ConfigurationFile _configuration;
+		private readonly IContextData<CommitAnalysisResult> _commitAnalysis;
 		private readonly IEnumerable<IVersionNumberGenerator> _versionNumberGenerators;
 
 		public VersionNumberGeneratorProvider(
 			IEnumerable<IVersionNumberGenerator> versionNumberGenerators,
-			IContextData<VersionControl> branchInformation,
+			IContextData<CommitAnalysisResult> commitAnalysis,
 			ConfigurationFile configuration
 		)
 		{
 			_versionNumberGenerators = versionNumberGenerators;
-			_branchInformation = branchInformation;
-			_configuration = configuration;
+			_commitAnalysis = commitAnalysis;
 		}
 
 		public SemanticVersion GetVersion()
@@ -29,7 +27,7 @@ namespace GBuild.Core.Generator
 			// TODO: implement mapping between branch strategy and version number generator
 			var versionNumberGenerator = _versionNumberGenerators.First();
 
-			return versionNumberGenerator.GetVersion(_branchInformation.Data.VersioningStrategyModel);
+			return versionNumberGenerator.GetVersion(_commitAnalysis.Data.VersioningStrategyModel);
 		}
 	}
 }

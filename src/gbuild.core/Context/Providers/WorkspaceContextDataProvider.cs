@@ -45,7 +45,7 @@ namespace GBuild.Core.Context.Providers
 			return new Workspace(
 				repositoryRootDirectory,
 				sourceCodeRootDirectory,
-				projectFiles.Select(fi => new CsharpModule(fi.Name, fi, ModuleType.CSharp)).ToList()
+				projectFiles.Select(fi => new CsharpProject(fi.Name, fi, ModuleType.CSharp)).ToList()
 			);
 		}
 	}

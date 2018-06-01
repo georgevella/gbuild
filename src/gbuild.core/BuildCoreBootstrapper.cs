@@ -6,7 +6,7 @@ using GBuild.Core.Configuration;
 using GBuild.Core.Configuration.Models;
 using GBuild.Core.Context;
 using GBuild.Core.Generator;
-using GBuild.Core.Vcs;
+using LibGit2Sharp;
 using SimpleInjector;
 
 [assembly:InternalsVisibleTo("gbuild.tests")]
@@ -20,7 +20,7 @@ namespace GBuild.Core
 			ConfigurationFile configurationFile,
 			Action<BuildCoreBootsrapperOptions> optionsFunc
 		)
-		{
+		{			
 			var options = new BuildCoreBootsrapperOptions();
 
 			optionsFunc(options);
@@ -36,10 +36,11 @@ namespace GBuild.Core
 			container.RegisterSingleton(typeof(IContextData<>), typeof(ContextData<>));
 
 			// vcs support
-			container.RegisterSingleton(typeof(ISourceCodeRepository), options.RepositoryType);
+			container.RegisterSingleton<IRepository, RepositoryWrapper>();
 
 			// configuration
 			container.RegisterInstance<IConfigurationFile>(configurationFile);
+			container.RegisterSingleton<IWorkspaceConfiguration, WorkspaceConfiguration>();
 
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(assemblies);

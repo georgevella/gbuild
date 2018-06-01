@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using AutoFixture;
+using GBuild.Core.CommitAnalysis;
+using GBuild.Core.CommitAnalysis.Git;
 using GBuild.Core.Configuration;
 using GBuild.Core.Configuration.Models;
 using GBuild.Core.Context;
 using GBuild.Core.Context.Data;
 using GBuild.Core.Context.Providers;
 using GBuild.Core.Models;
-using GBuild.Core.Vcs;
 using Moq;
 using Xunit;
+using Branch = LibGit2Sharp.Branch;
 
 namespace gbuild.tests
 {
@@ -23,64 +26,40 @@ namespace gbuild.tests
 			// repo has a tag on master, master branch and develop branch
 
 			var fixture = new Fixture();
-			var repoMock = new Mock<ISourceCodeRepository>(MockBehavior.Strict);
-			var currentBranchInformationMock = new Mock<IContextData<VersionControl>>(MockBehavior.Strict);
-			var projectInformationMock = new Mock<IContextData<Workspace>>(MockBehavior.Strict);
+			var repoMock = new Mock<IGitRepository>(MockBehavior.Strict);
+			var workspaceMock = new Mock<IContextData<Workspace>>(MockBehavior.Strict);
 			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>(MockBehavior.Strict);
+			var workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>(MockBehavior.Strict);
+
+			workspaceConfigurationMock.SetupGet(x => x.BranchVersioningStrategies).Returns(
+				() => new List<IBranchVersioningStrategyModel>()
+				{
+					branchVersioningStrategyMock.Object
+				});
 
 			branchVersioningStrategyMock.SetupGet(x => x.Tag).Returns("dev");
 			branchVersioningStrategyMock.SetupGet(x => x.ParentBranch).Returns("refs/heads/master");
 			branchVersioningStrategyMock.SetupGet(x => x.Metadata).Returns("metatag");
 			branchVersioningStrategyMock.SetupGet(x => x.Increment).Returns(VersionIncrementStrategy.Minor);
 
-			var developBranch = new Branch("refs/heads/develop", fixture.Create<Commit>());
-			var masterBranch = new Branch("refs/heads/master", fixture.Create<Commit>());
-			var tagOnMaster = new Tag("refs/tags/1.2.0", masterBranch.LatestCommit);
-
-			repoMock.SetupGet(x => x.Branches).Returns(
-				new []
-				{
-					developBranch,
-					masterBranch, 
-				}
-			);
-
-			repoMock.SetupGet(x => x.Tags).Returns(new[]
-			{
-				tagOnMaster
-			});
-
-			repoMock.SetupGet(x => x.CurrentBranch).Returns(developBranch);
-
-			repoMock.Setup(
-					x => x.GetCommitsBetween(
-						It.Is<Branch>(b => b.Equals(masterBranch)),
-						It.Is<Branch>(b => b.Equals(developBranch))
-					)
-				)
-				.Returns(fixture.CreateMany<Commit>(5));
-
-			currentBranchInformationMock.SetupGet(x => x.Data)
-				.Returns(new VersionControl(developBranch, branchVersioningStrategyMock.Object));
-
-			projectInformationMock.SetupGet(x => x.Data).Returns(
+			workspaceMock.SetupGet(x => x.Data).Returns(
 				new Workspace(
 					new DirectoryInfo(Environment.CurrentDirectory),
 					new DirectoryInfo("./src"),
-					new Module[]
+					new Project[]
 					{
-						new Module("Module1"),
+						new Project("Module1", new DirectoryInfo("./src/Module1"))
 					})
 			);
 
-			var sut = new CommitAnalysisContextDataProvider(
-				repoMock.Object,
-				currentBranchInformationMock.Object,
-				projectInformationMock.Object
+			var sut = new GitCommitHistoryAnalyser(
+				workspaceConfigurationMock.Object,
+				repoMock.Object,				
+				workspaceMock.Object
 			);
 
 			// test
-			var commitAnalysis = sut.LoadContextData();			
+			var commitAnalysis = sut.Run();
 		}
 	}
 }

@@ -9,6 +9,7 @@ using GBuild.Core.Context;
 using GBuild.Core.Context.Data;
 using GBuild.Core.Generator;
 using GBuild.Core.Models;
+using LibGit2Sharp;
 using Moq;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace gbuild.tests
 		{
 			var fixture = new Fixture();
 
-			var commitAnalysisMock = new Mock<IContextData<CommitAnalysis>>();
+			var commitAnalysisMock = new Mock<IContextData<CommitAnalysisResult>>();
 			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
 			var configurationFileMock = new Mock<IConfigurationFile>();
 
@@ -35,8 +36,8 @@ namespace gbuild.tests
 
 			commitAnalysisMock.SetupGet(x => x.Data)
 				.Returns(
-					new CommitAnalysis(
-						Enumerable.Empty<Module>(),
+					new CommitAnalysisResult(
+						Enumerable.Empty<Project>(),
 						fixture.CreateMany<Commit>(5), 
 						false, false
 					)
@@ -63,7 +64,7 @@ namespace gbuild.tests
 		{
 			var fixture = new Fixture();
 
-			var commitAnalysisMock = new Mock<IContextData<CommitAnalysis>>();
+			var commitAnalysisMock = new Mock<IContextData<CommitAnalysisResult>>();
 			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
 			var configurationFileMock = new Mock<IConfigurationFile>();
 
@@ -77,8 +78,8 @@ namespace gbuild.tests
 
 			commitAnalysisMock.SetupGet(x => x.Data)
 				.Returns(
-					new CommitAnalysis(
-						Enumerable.Empty<Module>(),
+					new CommitAnalysisResult(
+						Enumerable.Empty<Project>(),
 						fixture.CreateMany<Commit>(5), 
 						false, false
 					)

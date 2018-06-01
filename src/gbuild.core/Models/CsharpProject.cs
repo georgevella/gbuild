@@ -2,18 +2,18 @@
 
 namespace GBuild.Core.Models
 {
-	public class CsharpModule : Module
+	public class CsharpProject : Project
 	{
 		public FileInfo File { get; }
 
 		public ModuleType Type { get; }
 
-		public CsharpModule(
+		public CsharpProject(
 			string name,
 			FileInfo file,
 			ModuleType type
 		)
-			: base(name)
+			: base(name, file.Directory)
 		{
 			File = file;
 			Type = type;

@@ -1,19 +1,25 @@
-﻿namespace GBuild.Core.Models
+﻿using System.IO;
+
+namespace GBuild.Core.Models
 {
-	public class Module
+	public class Project
 	{
-		public Module(
-			string name
+		public Project(
+			string name,
+			DirectoryInfo path
 		)
 		{
 			Name = name;
+			Path = path;
 
 		}
 
 		public string Name { get; }
 
+		public DirectoryInfo Path { get; }
+
 		protected bool Equals(
-			Module other
+			Project other
 		)
 		{
 			return string.Equals(Name, other.Name);
@@ -33,7 +39,7 @@
 				return true;
 			}
 
-			return Equals((Module) obj);
+			return Equals((Project) obj);
 		}
 
 		public override int GetHashCode()

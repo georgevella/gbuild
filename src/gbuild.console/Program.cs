@@ -6,8 +6,8 @@ using System.Reflection;
 using CommandLine;
 using GBuild.Core;
 using GBuild.Core.Configuration;
+using GBuild.Core.Configuration.IO;
 using GBuild.Core.Configuration.Models;
-using GBuild.Core.Vcs.Git;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -56,7 +56,10 @@ namespace GBuild.Console
 			BuildCoreBootstrapper.BuildDependencyInjectionContainer(
 				container, 
 				configurationFile,
-				options => options.UseGit()
+				options =>
+				{
+					
+				}
 				);
 
 			// register all verb runners

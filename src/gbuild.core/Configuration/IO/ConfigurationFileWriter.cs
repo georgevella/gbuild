@@ -6,7 +6,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace GBuild.Core.Configuration
 {
-	public static class ConfigurationWriter
+	public static class ConfigurationFileWriter
 	{
 		public static void Write(
 			ConfigurationFile configurationFile,

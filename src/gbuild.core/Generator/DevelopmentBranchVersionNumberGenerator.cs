@@ -13,11 +13,11 @@ namespace GBuild.Core.Generator
 	public class DevelopmentBranchVersionNumberGenerator : IVersionNumberGenerator
 	{
 		private readonly IConfigurationFile _configurationFile;
-		private readonly IContextData<CommitAnalysis> _commitAnalysis;
+		private readonly IContextData<CommitAnalysisResult> _commitAnalysis;
 
 		public DevelopmentBranchVersionNumberGenerator(
 			IConfigurationFile configurationFile,
-			IContextData<CommitAnalysis> commitAnalysis
+			IContextData<CommitAnalysisResult> commitAnalysis
 		)
 		{
 			_configurationFile = configurationFile;

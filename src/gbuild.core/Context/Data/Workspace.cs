@@ -9,7 +9,7 @@ namespace GBuild.Core.Context.Data
 		public Workspace(
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
-			IEnumerable<Module> modules
+			IEnumerable<Project> modules
 		)
 		{
 			RepositoryRootDirectory = repositoryRootDirectory;
@@ -21,6 +21,6 @@ namespace GBuild.Core.Context.Data
 
 		public DirectoryInfo SourceCodeRootDirectory { get; }
 
-		public IEnumerable<Module> Modules { get; }
+		public IEnumerable<Project> Modules { get; }
 	}
 }

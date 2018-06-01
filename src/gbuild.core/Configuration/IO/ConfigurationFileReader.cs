@@ -4,7 +4,7 @@ using GBuild.Core.Configuration.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace GBuild.Core.Configuration
+namespace GBuild.Core.Configuration.IO
 {
 	public static class ConfigurationFileReader
 	{

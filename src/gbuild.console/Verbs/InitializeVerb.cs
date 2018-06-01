@@ -57,7 +57,7 @@ namespace GBuild.Console.Verbs
 
 			using (var file = File.OpenWrite(buildFilePath))
 			{
-				ConfigurationWriter.Write(_configurationFile, file, true);
+				ConfigurationFileWriter.Write(_configurationFile, file, true);
 				file.Flush();
 			}
 		}

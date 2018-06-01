@@ -8,19 +8,16 @@ namespace GBuild.Console.Verbs
 {
 	public class DescribeVerb : IVerb<DescribeOptions>
 	{
-		private readonly IContextData<VersionControl> _branchInformation;
-		private readonly IContextData<CommitAnalysis> _commitAnalysis;
+		private readonly IContextData<CommitAnalysisResult> _commitAnalysis;
 		private readonly IContextData<Workspace> _sourceCodeInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DescribeVerb(
-			IContextData<VersionControl> branchInformation,
 			IContextData<Workspace> sourceCodeInformation,
-			IContextData<CommitAnalysis> commitAnalysis,
+			IContextData<CommitAnalysisResult> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
 		{
-			_branchInformation = branchInformation;
 			_sourceCodeInformation = sourceCodeInformation;
 			_commitAnalysis = commitAnalysis;
 			_versionNumberGeneratorProvider = versionNumberGeneratorProvider;
@@ -30,7 +27,7 @@ namespace GBuild.Console.Verbs
 			DescribeOptions options
 		)
 		{
-			Log.Information("Current Branch: {branch}", _branchInformation.Data.CurrentBranch);
+			//Log.Information("Current Branch: {branch}", _commitAnalysis.Data.CurrentBranch);
 			Log.Information("Current Directory: {repoRoot}",
 							_sourceCodeInformation.Data.RepositoryRootDirectory.FullName);
 			Log.Information("Current Directory: {srcRoot}",

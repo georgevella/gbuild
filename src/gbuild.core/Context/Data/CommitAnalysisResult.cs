@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
+using GBuild.Core.Configuration.Models;
 using GBuild.Core.Models;
+using LibGit2Sharp;
 
 namespace GBuild.Core.Context.Data
 {
-	public class CommitAnalysis
+	public class CommitAnalysisResult
 	{
-		public CommitAnalysis(
-			IEnumerable<Module> changedModules,
-			IEnumerable<Commit> commits,
+		public CommitAnalysisResult(
+			IEnumerable<Project> changedModules,
+			int numberOfChanges,
 			bool hasBreakingChanges,
 			bool hasNewFeatures
 		)
 		{
 			ChangedModules = changedModules;
-			Commits = commits;
+			NumberOfChanges = numberOfChanges;
 			HasBreakingChanges = hasBreakingChanges;
 			HasNewFeatures = hasNewFeatures;
 		}
@@ -21,12 +23,11 @@ namespace GBuild.Core.Context.Data
 		/// <summary>
 		///     Modules changed in this branch.
 		/// </summary>
-		public IEnumerable<Module> ChangedModules { get; }
+		public IEnumerable<Project> ChangedModules { get; }
 
-		/// <summary>
-		///     Commits submitted to a branch that are not present since the last tag or from a parent branch.
-		/// </summary>
-		public IEnumerable<Commit> Commits { get; }
+		public int NumberOfChanges { get; }
+
+		public IBranchVersioningStrategyModel VersioningStrategyModel { get; }
 
 		public bool HasBreakingChanges { get; }
 
