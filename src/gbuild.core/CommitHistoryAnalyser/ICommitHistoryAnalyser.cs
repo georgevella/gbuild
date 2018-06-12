@@ -1,9 +1,9 @@
 ﻿using GBuild.Models;
 
-namespace GBuild.CommitAnalysis
+namespace GBuild.CommitHistoryAnalyser
 {
 	public interface ICommitHistoryAnalyser
 	{
-		CommitAnalysisResult Run();
+		CommitHistoryAnalysis Run();
 	}
 }

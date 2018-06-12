@@ -5,9 +5,9 @@ using GBuild.Configuration.Models;
 
 namespace GBuild.Models
 {
-	public class CommitAnalysisResult
+	public class CommitHistoryAnalysis
 	{
-		public CommitAnalysisResult(
+		public CommitHistoryAnalysis(
 			IDictionary<Project, List<Commit>> changedProjects,
 			IEnumerable<Commit> commits,
 			IEnumerable<ChangedFile> changedFiles,
