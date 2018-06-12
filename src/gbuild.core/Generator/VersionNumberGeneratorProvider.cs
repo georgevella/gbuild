@@ -22,7 +22,7 @@ namespace GBuild.Core.Generator
 			_commitAnalysis = commitAnalysis;
 		}
 
-		public SemanticVersion GetVersion()
+		public WorkspaceVersionNumbers GetVersion()
 		{
 			// TODO: implement mapping between branch strategy and version number generator
 			var versionNumberGenerator = _versionNumberGenerators.First();

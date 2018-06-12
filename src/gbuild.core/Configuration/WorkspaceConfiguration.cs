@@ -10,11 +10,16 @@ namespace GBuild.Core.Configuration
 		public WorkspaceConfiguration(IConfigurationFile configurationFile)
 		{
 			BranchVersioningStrategies = configurationFile.Branches;
+
+			StartingVersion = SemanticVersion.Parse(configurationFile.StartingVersion);
 		}
+
+		public SemanticVersion StartingVersion { get; }
 	}
 
 	public interface IWorkspaceConfiguration
 	{
 		IEnumerable<IBranchVersioningStrategyModel> BranchVersioningStrategies { get; }
+		SemanticVersion StartingVersion { get; }
 	}
 }

@@ -47,11 +47,11 @@ namespace GBuild.Console.Verbs
 				Log.Information($"+ {changedModule.Name}");
 			}
 
-			Log.Information("Commits:");
-			foreach (var commit in _commitAnalysis.Data.Commits)
-			{
-				Log.Information($"{commit.Id}: {commit.Message}");
-			}
+//			Log.Information("Commits:");
+//			foreach (var commit in _commitAnalysis.Data.Commits)
+//			{
+//				Log.Information($"{commit.Id}: {commit.Message}");
+//			}
 		}
 	}
 }

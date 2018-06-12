@@ -2,6 +2,6 @@
 {
 	public interface IVersionNumberGeneratorProvider
 	{
-		SemanticVersion GetVersion();
+		WorkspaceVersionNumbers GetVersion();
 	}
 }

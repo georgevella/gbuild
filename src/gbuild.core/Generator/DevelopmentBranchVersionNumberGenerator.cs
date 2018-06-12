@@ -12,11 +12,11 @@ namespace GBuild.Core.Generator
 	/// </summary>
 	public class DevelopmentBranchVersionNumberGenerator : IVersionNumberGenerator
 	{
-		private readonly IConfigurationFile _configurationFile;
+		private readonly IWorkspaceConfiguration _configurationFile;
 		private readonly IContextData<CommitAnalysisResult> _commitAnalysis;
 
 		public DevelopmentBranchVersionNumberGenerator(
-			IConfigurationFile configurationFile,
+			IWorkspaceConfiguration configurationFile,
 			IContextData<CommitAnalysisResult> commitAnalysis
 		)
 		{
@@ -24,19 +24,21 @@ namespace GBuild.Core.Generator
 			_commitAnalysis = commitAnalysis;
 		}
 
-		public SemanticVersion GetVersion(
+		public WorkspaceVersionNumbers GetVersion(
 			IBranchVersioningStrategyModel branchVersioningStrategyModel
 		)
 		{
-			var startingVersion = SemanticVersion.Parse(_configurationFile.StartingVersion);
+			var startingVersion = _configurationFile.StartingVersion;
 
-			return SemanticVersion.Create(
-				major: startingVersion.Major,
-				minor: startingVersion.Minor, 
-				patch: startingVersion.Patch, 
-				prereleseTag: $"{branchVersioningStrategyModel.Tag}-{_commitAnalysis.Data.NumberOfChanges}",
-				metadata: branchVersioningStrategyModel.Metadata
-				);
+			var projectVersionNumbers = _commitAnalysis.Data.ChangedModules.ToDictionary(x => x, x => SemanticVersion.Create(
+																 major: startingVersion.Major,
+																 minor: startingVersion.Minor,
+																 patch: startingVersion.Patch,
+																 prereleseTag: $"{branchVersioningStrategyModel.Tag}-{_commitAnalysis.Data.NumberOfChanges}",
+																 metadata: branchVersioningStrategyModel.Metadata
+															 ));
+
+			return new WorkspaceVersionNumbers(projectVersionNumbers);
 		}
 	}
 }
