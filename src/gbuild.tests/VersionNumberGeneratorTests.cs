@@ -21,7 +21,19 @@ namespace gbuild.tests
 	public class VersionNumberGeneratorTests
 	{
 		[Fact]
-		public void DevelopmentBranch_NoTags()
+		public void Independent_NoTags_NoChanges()
+		{
+
+		}
+
+		[Fact]
+		public void Independent_NoTags_MultiProject()
+		{
+
+		}
+
+		[Fact]
+		public void Independent_NoTags_SingleProject()
 		{
 			var fixture = new Fixture();
 

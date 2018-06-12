@@ -1,2 +1,3 @@
 - Workspace contains multiple projects and workspace configuration
 - Workspace is root of git repo
+- tags are applied on master branch
