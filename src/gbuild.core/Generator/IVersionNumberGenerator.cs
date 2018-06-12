@@ -1,8 +1,6 @@
-﻿using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Models;
+﻿using GBuild.Models;
 
-namespace GBuild.Core.Generator
+namespace GBuild.Generator
 {
 	public interface IVersionNumberGenerator
 	{

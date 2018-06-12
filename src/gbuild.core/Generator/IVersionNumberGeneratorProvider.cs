@@ -1,4 +1,4 @@
-﻿namespace GBuild.Core.Generator
+﻿namespace GBuild.Generator
 {
 	public interface IVersionNumberGeneratorProvider
 	{

@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GBuild.Core.CommitAnalysis;
-using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Exceptions;
-using GBuild.Core.Models;
-using LibGit2Sharp;
+﻿using GBuild.CommitAnalysis;
+using GBuild.Models;
 
-namespace GBuild.Core.Context.Providers
+namespace GBuild.Context.Providers
 {
 	public class CommitAnalysisContextDataProvider : IContextDataProvider<CommitAnalysisResult>
 	{

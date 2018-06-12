@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using GBuild.Core.Configuration.Models;
+using GBuild.Configuration.Models;
 
-namespace GBuild.Core.Configuration
+namespace GBuild.Configuration
 {
 	/// <summary>
 	///		Processed data from configuration file.

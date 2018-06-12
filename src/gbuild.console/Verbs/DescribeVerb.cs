@@ -1,8 +1,7 @@
 ﻿using GBuild.Console.VerbOptions;
-using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Generator;
-using GBuild.Core.Models;
+using GBuild.Context;
+using GBuild.Generator;
+using GBuild.Models;
 using Serilog;
 
 namespace GBuild.Console.Verbs

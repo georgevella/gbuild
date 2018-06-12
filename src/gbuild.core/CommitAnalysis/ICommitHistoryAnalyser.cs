@@ -1,6 +1,6 @@
-﻿using GBuild.Core.Context.Data;
+﻿using GBuild.Models;
 
-namespace GBuild.Core.CommitAnalysis
+namespace GBuild.CommitAnalysis
 {
 	public interface ICommitHistoryAnalyser
 	{

@@ -1,4 +1,4 @@
-﻿namespace GBuild.Core.Models
+﻿namespace GBuild.Models
 {
 	public class ChangedFile
 	{

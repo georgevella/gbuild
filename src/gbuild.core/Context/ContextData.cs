@@ -1,4 +1,4 @@
-﻿namespace GBuild.Core.Context
+﻿namespace GBuild.Context
 {
 	internal class ContextData<TContextData> : IContextData<TContextData> where TContextData : class
 	{

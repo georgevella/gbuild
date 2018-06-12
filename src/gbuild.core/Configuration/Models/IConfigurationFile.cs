@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GBuild.Core.Configuration.Models
+namespace GBuild.Configuration.Models
 {
 	public interface IConfigurationFile
 	{

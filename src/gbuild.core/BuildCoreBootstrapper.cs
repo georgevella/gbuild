@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Context;
-using GBuild.Core.Generator;
+using GBuild.Configuration;
+using GBuild.Configuration.Models;
+using GBuild.Context;
+using GBuild.Generator;
 using LibGit2Sharp;
 using SimpleInjector;
 
 [assembly:InternalsVisibleTo("gbuild.tests")]
 
-namespace GBuild.Core
+namespace GBuild
 {
 	public static class BuildCoreBootstrapper
 	{

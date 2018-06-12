@@ -4,17 +4,16 @@ using System.IO;
 using System.Linq;
 using AutoFixture;
 using FluentAssertions;
-using GBuild.Core;
-using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Generator;
-using GBuild.Core.Models;
+using GBuild;
+using GBuild.Configuration;
+using GBuild.Configuration.Models;
+using GBuild.Context;
+using GBuild.Generator;
+using GBuild.Models;
 using LibGit2Sharp;
 using Moq;
 using Xunit;
-using Commit = GBuild.Core.Models.Commit;
+using Commit = GBuild.Models.Commit;
 
 namespace gbuild.tests
 {

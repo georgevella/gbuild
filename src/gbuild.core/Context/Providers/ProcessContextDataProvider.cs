@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Models;
+using GBuild.Models;
 
-namespace GBuild.Core.Context.Providers
+namespace GBuild.Context.Providers
 {
 	public class ProcessContextDataProvider : IContextDataProvider<Process>
 	{

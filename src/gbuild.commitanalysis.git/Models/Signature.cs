@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GBuild.Core.CommitAnalysis.Git.Models
+namespace gbuild.commitanalysis.git.Models
 {
 	public class Signature
 	{

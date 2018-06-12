@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GBuild.Core.Exceptions
+namespace GBuild.Exceptions
 {
 	public class CommitAnalysisException : Exception
 	{

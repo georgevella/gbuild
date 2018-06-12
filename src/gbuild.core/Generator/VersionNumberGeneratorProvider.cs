@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
+using GBuild.Configuration.Models;
+using GBuild.Context;
+using GBuild.Models;
 
-namespace GBuild.Core.Generator
+namespace GBuild.Generator
 {
 	internal class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
 	{

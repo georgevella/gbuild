@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using System.Text;
-using GBuild.Core.Configuration.Models;
+using GBuild.Configuration.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace GBuild.Core.Configuration.IO
+namespace GBuild.Configuration.IO
 {
 	public static class ConfigurationFileWriter
 	{

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using LibGit2Sharp;
-using Branch = GBuild.Core.CommitAnalysis.Git.Models.Branch;
+using Branch = gbuild.commitanalysis.git.Models.Branch;
 
-namespace GBuild.Core.CommitAnalysis
+namespace gbuild.commitanalysis.git
 {
 	public interface IGitRepository
 	{

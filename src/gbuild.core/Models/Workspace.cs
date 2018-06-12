@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace GBuild.Core.Models
+namespace GBuild.Models
 {
 	public class Workspace
 	{

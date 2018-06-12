@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Models;
-using LibGit2Sharp;
-using Commit = GBuild.Core.Models.Commit;
+using GBuild.Configuration.Models;
 
-namespace GBuild.Core.Context.Data
+namespace GBuild.Models
 {
 	public class CommitAnalysisResult
 	{

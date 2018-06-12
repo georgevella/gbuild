@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using FluentAssertions;
-using GBuild.Core;
+using GBuild;
 using Xunit;
 
 namespace gbuild.tests

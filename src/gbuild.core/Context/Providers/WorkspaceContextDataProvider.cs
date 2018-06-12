@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Models;
+using GBuild.Configuration.Models;
+using GBuild.Models;
 
-namespace GBuild.Core.Context.Providers
+namespace GBuild.Context.Providers
 {
 	public abstract class WorkspaceContextDataProvider : IContextDataProvider<Workspace>
 	{

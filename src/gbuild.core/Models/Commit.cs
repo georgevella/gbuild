@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GBuild.Core.Models
+namespace GBuild.Models
 {
 	public class Commit
 	{

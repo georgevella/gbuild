@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbuild.console", "gbuild.co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gbuild.tests", "gbuild.tests\gbuild.tests.csproj", "{4EF9FE42-E955-4CB1-B393-B081428078EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gbuild.core.commitanalysis.git", "gbuild.core.commitanalysis.git\gbuild.core.commitanalysis.git.csproj", "{317C5AA0-D7EB-46B2-9B02-C9BF02FAA306}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gbuild.commitanalysis.git", "gbuild.commitanalysis.git\gbuild.commitanalysis.git.csproj", "{317C5AA0-D7EB-46B2-9B02-C9BF02FAA306}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

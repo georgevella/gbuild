@@ -1,4 +1,4 @@
-﻿namespace GBuild.Core.Configuration.Models
+﻿namespace GBuild.Configuration.Models
 {
 	public class BranchVersioningStrategyModel : IBranchVersioningStrategyModel
 	{

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GBuild.Core.Configuration;
-using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Exceptions;
-using GBuild.Core.Models;
+using GBuild.CommitAnalysis;
+using GBuild.Configuration;
+using GBuild.Context;
+using GBuild.Exceptions;
+using GBuild.Models;
 using LibGit2Sharp;
-using Branch = GBuild.Core.CommitAnalysis.Git.Models.Branch;
-using Commit = GBuild.Core.CommitAnalysis.Git.Models.Commit;
+using Branch = gbuild.commitanalysis.git.Models.Branch;
+using Commit = gbuild.commitanalysis.git.Models.Commit;
 
-namespace GBuild.Core.CommitAnalysis.Git
+namespace gbuild.commitanalysis.git
 {
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
@@ -69,7 +69,7 @@ namespace GBuild.Core.CommitAnalysis.Git
 				})
 				.ToDictionary(m => m.Path, m => m.Module);
 
-			var changedModules = new Dictionary<Project, List<Core.Models.Commit>>();
+			var changedModules = new Dictionary<Project, List<GBuild.Models.Commit>>();
 
 			foreach (var commit in commits)
 			{
@@ -83,7 +83,7 @@ namespace GBuild.Core.CommitAnalysis.Git
 							{
 								changedModules.Add(
 									rootDir.Value,
-									new List<Core.Models.Commit>()
+									new List<GBuild.Models.Commit>()
 									{
 										commit
 									}
@@ -109,7 +109,7 @@ namespace GBuild.Core.CommitAnalysis.Git
 			);
 		}
 
-		public IList<Core.Models.Commit> GetNewCommits(
+		public IList<GBuild.Models.Commit> GetNewCommits(
 			Branch sourceBranch,
 			Branch branch
 		)
@@ -124,14 +124,14 @@ namespace GBuild.Core.CommitAnalysis.Git
 			return _sourceCodeRepository.Commits.QueryBy(filter).Select(BuildCommitEntry).ToList();
 		}
 
-		private Core.Models.Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
+		private GBuild.Models.Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
 		{
 			var treeChanges = _sourceCodeRepository.CompareTrees(arg.Parents.Single().Tree, arg.Tree);
 
 			Commit commit = arg;
 			var changedFiles = treeChanges.Select(e => new ChangedFile(e.Path)).ToList();
 
-			return new Core.Models.Commit(commit.Id, commit.Committer.Name, commit.Message, changedFiles);
+			return new GBuild.Models.Commit(commit.Id, commit.Committer.Name, commit.Message, changedFiles);
 		}
 
 		public IEnumerable<TreeEntryChanges> GetChangedFiles(

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace GBuild.Core
+namespace GBuild
 {
 	public class BuildCoreBootsrapperOptions
 	{

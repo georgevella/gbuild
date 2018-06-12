@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace GBuild.Core.Models
+namespace GBuild.Models
 {
 	public class CsharpProject : Project
 	{

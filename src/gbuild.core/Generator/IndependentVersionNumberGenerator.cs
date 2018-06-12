@@ -1,11 +1,8 @@
-﻿using System.Linq;
-using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Models;
+﻿using GBuild.Configuration;
+using GBuild.Context;
+using GBuild.Models;
 
-namespace GBuild.Core.Generator
+namespace GBuild.Generator
 {
 	/// <summary>
 	///     Version number generator for a branch that is the 'development' counter part of an other branch designated as the

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
+using GBuild.Context;
+using GBuild.Models;
 using LibGit2Sharp;
-using GBuild.Core.Models;
 using Commit = LibGit2Sharp.Commit;
 
-namespace GBuild.Core
+namespace GBuild
 {
 	public class RepositoryWrapper : IRepository
 	{

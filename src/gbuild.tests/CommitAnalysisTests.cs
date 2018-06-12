@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using AutoFixture;
-using GBuild.Core.CommitAnalysis;
+using GBuild.Configuration;
+using GBuild.Configuration.Models;
+using GBuild.Context;
 using GBuild.Core.CommitAnalysis.Git;
-using GBuild.Core.Configuration;
-using GBuild.Core.Configuration.Models;
-using GBuild.Core.Context;
-using GBuild.Core.Context.Data;
-using GBuild.Core.Context.Providers;
-using GBuild.Core.Models;
+using GBuild.Models;
 using Moq;
 using Xunit;
 using Branch = LibGit2Sharp.Branch;

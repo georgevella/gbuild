@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using GBuild.Core.Models;
+using GBuild.Models;
 
-namespace GBuild.Core.Generator
+namespace GBuild.Generator
 {
 	public class WorkspaceVersionNumbers : ReadOnlyDictionary<Project, SemanticVersion>
 	{
