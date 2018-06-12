@@ -34,7 +34,7 @@ namespace GBuild.Core.Generator
 				major: startingVersion.Major,
 				minor: startingVersion.Minor, 
 				patch: startingVersion.Patch, 
-				prereleseTag: $"{branchVersioningStrategyModel.Tag}-{_commitAnalysis.Data.Commits.Count()}",
+				prereleseTag: $"{branchVersioningStrategyModel.Tag}-{_commitAnalysis.Data.NumberOfChanges}",
 				metadata: branchVersioningStrategyModel.Metadata
 				);
 		}

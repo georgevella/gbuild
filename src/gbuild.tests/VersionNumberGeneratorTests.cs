@@ -38,7 +38,7 @@ namespace gbuild.tests
 				.Returns(
 					new CommitAnalysisResult(
 						Enumerable.Empty<Project>(),
-						fixture.CreateMany<Commit>(5), 
+						5, 
 						false, false
 					)
 				);
@@ -80,7 +80,7 @@ namespace gbuild.tests
 				.Returns(
 					new CommitAnalysisResult(
 						Enumerable.Empty<Project>(),
-						fixture.CreateMany<Commit>(5), 
+						5, 
 						false, false
 					)
 				);
