@@ -1,9 +1,9 @@
-﻿using GBuild.CommitAnalysis;
+﻿using GBuild.CommitHistoryAnalyser;
 using GBuild.Models;
 
 namespace GBuild.Context.Providers
 {
-	public class CommitAnalysisContextDataProvider : IContextDataProvider<CommitAnalysisResult>
+	public class CommitAnalysisContextDataProvider : IContextDataProvider<CommitHistoryAnalysis>
 	{
 		private readonly ICommitHistoryAnalyser _commitHistoryAnalyser;
 
@@ -15,7 +15,7 @@ namespace GBuild.Context.Providers
 			_commitHistoryAnalyser = commitHistoryAnalyser;
 		}
 
-		public CommitAnalysisResult LoadContextData()
+		public CommitHistoryAnalysis LoadContextData()
 		{
 			return _commitHistoryAnalyser.Run();
 		}

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using AutoFixture;
+using gbuild.commitanalysis.git;
 using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Context;
-using GBuild.Core.CommitAnalysis.Git;
 using GBuild.Models;
 using Moq;
 using Xunit;

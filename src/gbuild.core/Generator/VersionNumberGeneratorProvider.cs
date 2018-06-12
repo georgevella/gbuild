@@ -8,12 +8,12 @@ namespace GBuild.Generator
 {
 	internal class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
 	{
-		private readonly IContextData<CommitAnalysisResult> _commitAnalysis;
+		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
 		private readonly IEnumerable<IVersionNumberGenerator> _versionNumberGenerators;
 
 		public VersionNumberGeneratorProvider(
 			IEnumerable<IVersionNumberGenerator> versionNumberGenerators,
-			IContextData<CommitAnalysisResult> commitAnalysis,
+			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			ConfigurationFile configuration
 		)
 		{

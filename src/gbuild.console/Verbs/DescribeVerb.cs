@@ -8,13 +8,13 @@ namespace GBuild.Console.Verbs
 {
 	public class DescribeVerb : IVerb<DescribeOptions>
 	{
-		private readonly IContextData<CommitAnalysisResult> _commitAnalysis;
+		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
 		private readonly IContextData<Workspace> _sourceCodeInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DescribeVerb(
 			IContextData<Workspace> sourceCodeInformation,
-			IContextData<CommitAnalysisResult> commitAnalysis,
+			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
 		{
@@ -42,7 +42,7 @@ namespace GBuild.Console.Verbs
 
 			Log.Information("Changed Projects: ");
 
-			foreach (var changedModule in _commitAnalysis.Data.ChangedProjects)
+			foreach (var changedModule in _commitAnalysis.Data.ChangedProjects.Keys)
 			{
 				Log.Information($"+ {changedModule.Name}");
 			}

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GBuild.CommitAnalysis;
+using GBuild.CommitHistoryAnalyser;
 using GBuild.Configuration;
 using GBuild.Context;
 using GBuild.Exceptions;
@@ -28,7 +28,7 @@ namespace gbuild.commitanalysis.git
 			_workspace = workspace;
 		}
 
-		public CommitAnalysisResult Run()
+		public CommitHistoryAnalysis Run()
 		{
 			var currentBranch = _sourceCodeRepository.Branches.First(b => b.IsCurrentRepositoryHead);
 
@@ -99,7 +99,7 @@ namespace gbuild.commitanalysis.git
 				}
 			}
 
-			return new CommitAnalysisResult(
+			return new CommitHistoryAnalysis(
 				changedModules,
 				commits,
 				files.Select( f => new ChangedFile( f.Path )),
