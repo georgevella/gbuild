@@ -2,6 +2,7 @@
 using GBuild.Core.Context;
 using GBuild.Core.Context.Data;
 using GBuild.Core.Generator;
+using GBuild.Core.Models;
 using Serilog;
 
 namespace GBuild.Console.Verbs
@@ -33,16 +34,16 @@ namespace GBuild.Console.Verbs
 			Log.Information("Current Directory: {srcRoot}",
 							_sourceCodeInformation.Data.SourceCodeRootDirectory.FullName);
 			Log.Information("Projects found: ");
-			foreach (var module in _sourceCodeInformation.Data.Modules)
+			foreach (var module in _sourceCodeInformation.Data.Projects)
 			{
 				Log.Information($"+ {module.Name}");
 			}
 
 			Log.Information("Version: {version}", _versionNumberGeneratorProvider.GetVersion());
 
-			Log.Information("Changed Modules: ");
+			Log.Information("Changed Projects: ");
 
-			foreach (var changedModule in _commitAnalysis.Data.ChangedModules)
+			foreach (var changedModule in _commitAnalysis.Data.ChangedProjects)
 			{
 				Log.Information($"+ {changedModule.Name}");
 			}

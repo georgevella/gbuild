@@ -16,10 +16,4 @@ namespace GBuild.Core.Configuration
 
 		public SemanticVersion StartingVersion { get; }
 	}
-
-	public interface IWorkspaceConfiguration
-	{
-		IEnumerable<IBranchVersioningStrategyModel> BranchVersioningStrategies { get; }
-		SemanticVersion StartingVersion { get; }
-	}
 }

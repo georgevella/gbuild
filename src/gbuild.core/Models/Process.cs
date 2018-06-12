@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace GBuild.Core.Context.Data
+namespace GBuild.Core.Models
 {
 	public class Process
 	{

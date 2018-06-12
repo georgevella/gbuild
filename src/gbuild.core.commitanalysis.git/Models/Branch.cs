@@ -1,4 +1,4 @@
-﻿namespace GBuild.Core.CommitAnalysis.Git
+﻿namespace GBuild.Core.CommitAnalysis.Git.Models
 {
 	public class Branch
 	{

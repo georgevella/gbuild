@@ -2,6 +2,8 @@
 using GBuild.Core.Context;
 using GBuild.Core.Context.Data;
 using LibGit2Sharp;
+using GBuild.Core.Models;
+using Commit = LibGit2Sharp.Commit;
 
 namespace GBuild.Core
 {
@@ -67,7 +69,7 @@ namespace GBuild.Core
 			return _repository.Lookup(objectish, type);
 		}
 
-		public Commit Commit(
+		public LibGit2Sharp.Commit Commit(
 			string message,
 			Signature author,
 			Signature committer,

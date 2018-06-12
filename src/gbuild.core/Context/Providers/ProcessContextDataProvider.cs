@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using GBuild.Core.Context.Data;
+using GBuild.Core.Models;
 
 namespace GBuild.Core.Context.Providers
 {

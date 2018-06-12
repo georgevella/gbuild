@@ -7,6 +7,8 @@ using GBuild.Core.Context.Data;
 using GBuild.Core.Exceptions;
 using GBuild.Core.Models;
 using LibGit2Sharp;
+using Branch = GBuild.Core.CommitAnalysis.Git.Models.Branch;
+using Commit = GBuild.Core.CommitAnalysis.Git.Models.Commit;
 
 namespace GBuild.Core.CommitAnalysis.Git
 {
@@ -53,7 +55,7 @@ namespace GBuild.Core.CommitAnalysis.Git
 			// determine changed modules
 			var rootDirectory = new Uri(_workspace.Data.RepositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
 
-			var moduleRootDirectories = _workspace.Data.Modules.OfType<CsharpProject>()
+			var moduleRootDirectories = _workspace.Data.Projects.OfType<CsharpProject>()
 				.Select(m => new
 					{
 						Module = m,
@@ -67,27 +69,47 @@ namespace GBuild.Core.CommitAnalysis.Git
 				})
 				.ToDictionary(m => m.Path, m => m.Module);
 
-			var changedModules = new List<Project>();
+			var changedModules = new Dictionary<Project, List<Core.Models.Commit>>();
 
-			foreach (var file in files)
-			foreach (var rootDir in moduleRootDirectories)
+			foreach (var commit in commits)
 			{
-				if (file.Path.StartsWith(rootDir.Key, StringComparison.OrdinalIgnoreCase) &&
-					!changedModules.Contains(rootDir.Value))
+				foreach (var file in commit.ChangedFiles)
 				{
-					changedModules.Add(rootDir.Value);
+					foreach (var rootDir in moduleRootDirectories)
+					{
+						if (file.Path.StartsWith(rootDir.Key, StringComparison.OrdinalIgnoreCase))
+						{
+							if (!changedModules.ContainsKey(rootDir.Value))
+							{
+								changedModules.Add(
+									rootDir.Value,
+									new List<Core.Models.Commit>()
+									{
+										commit
+									}
+								);
+							}
+							else
+							{
+								changedModules[rootDir.Value].Add(commit);
+							}
+						}
+					}
+
 				}
 			}
 
 			return new CommitAnalysisResult(
 				changedModules,
-				commits.Count(),
+				commits,
+				files.Select( f => new ChangedFile( f.Path )),
 				false,
-				false
+				false,
+				branchVersioningStrategy
 			);
 		}
 
-		public IEnumerable<Commit> GetNewCommits(
+		public IList<Core.Models.Commit> GetNewCommits(
 			Branch sourceBranch,
 			Branch branch
 		)
@@ -99,7 +121,17 @@ namespace GBuild.Core.CommitAnalysis.Git
 				SortBy = CommitSortStrategies.Time
 			};
 
-			return _sourceCodeRepository.Commits.QueryBy(filter).Cast<Commit>();
+			return _sourceCodeRepository.Commits.QueryBy(filter).Select(BuildCommitEntry).ToList();
+		}
+
+		private Core.Models.Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
+		{
+			var treeChanges = _sourceCodeRepository.CompareTrees(arg.Parents.Single().Tree, arg.Tree);
+
+			Commit commit = arg;
+			var changedFiles = treeChanges.Select(e => new ChangedFile(e.Path)).ToList();
+
+			return new Core.Models.Commit(commit.Id, commit.Committer.Name, commit.Message, changedFiles);
 		}
 
 		public IEnumerable<TreeEntryChanges> GetChangedFiles(

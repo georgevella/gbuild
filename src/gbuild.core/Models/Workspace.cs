@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using GBuild.Core.Models;
 
-namespace GBuild.Core.Context.Data
+namespace GBuild.Core.Models
 {
 	public class Workspace
 	{
 		public Workspace(
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
-			IEnumerable<Project> modules
+			IEnumerable<Project> projects
 		)
 		{
 			RepositoryRootDirectory = repositoryRootDirectory;
-			Modules = modules;
+			Projects = projects;
 			SourceCodeRootDirectory = sourceCodeRootDirectory;
 		}
 
@@ -21,6 +20,6 @@ namespace GBuild.Core.Context.Data
 
 		public DirectoryInfo SourceCodeRootDirectory { get; }
 
-		public IEnumerable<Project> Modules { get; }
+		public IEnumerable<Project> Projects { get; }
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GBuild.Core.Configuration;
 using GBuild.Core.Configuration.Models;
@@ -25,9 +26,11 @@ namespace GBuild.Core.Generator
 		public WorkspaceVersionNumbers GetVersion()
 		{
 			// TODO: implement mapping between branch strategy and version number generator
-			var versionNumberGenerator = _versionNumberGenerators.First();
+//			var versionNumberGenerator = _versionNumberGenerators.First();
+//
+//			return versionNumberGenerator.GetVersion(_commitAnalysis.Data.VersioningStrategyModel);
 
-			return versionNumberGenerator.GetVersion(_commitAnalysis.Data.VersioningStrategyModel);
+			throw new NotImplementedException();
 		}
 	}
 }

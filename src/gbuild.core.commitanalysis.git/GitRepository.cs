@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
-using Branch = GBuild.Core.CommitAnalysis.Git.Branch;
+using Branch = GBuild.Core.CommitAnalysis.Git.Models.Branch;
 
 namespace GBuild.Core.CommitAnalysis
 {
@@ -20,6 +20,11 @@ namespace GBuild.Core.CommitAnalysis
 		public IEnumerable<TreeEntryChanges> CompareTrees(Tree oldTree, Tree newTree)
 		{
 			return _repository.Diff.Compare<TreeChanges>(oldTree, newTree);
+		}
+
+		public IEnumerable<PatchEntryChanges> ComparePatch(Tree oldTree, Tree newTree)
+		{
+			return _repository.Diff.Compare<Patch>(oldTree, newTree);
 		}
 	}
 }

@@ -40,7 +40,7 @@ namespace GBuild.Core
 
 			// configuration
 			container.RegisterInstance<IConfigurationFile>(configurationFile);
-			container.RegisterSingleton<IWorkspaceConfiguration, WorkspaceConfiguration>();
+			container.RegisterSingleton<IWorkspaceConfiguration, Configuration.WorkspaceConfiguration>();
 
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(assemblies);
