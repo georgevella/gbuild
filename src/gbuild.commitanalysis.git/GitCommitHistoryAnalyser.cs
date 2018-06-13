@@ -105,7 +105,8 @@ namespace gbuild.commitanalysis.git
 				files.Select( f => new ChangedFile( f.Path )),
 				false,
 				false,
-				branchVersioningStrategy
+				branchVersioningStrategy,
+				Enumerable.Empty<Release>() // TODO
 			);
 		}
 

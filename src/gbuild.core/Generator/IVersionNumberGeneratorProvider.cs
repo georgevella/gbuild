@@ -1,7 +1,9 @@
-﻿namespace GBuild.Generator
+﻿using GBuild.Models;
+
+namespace GBuild.Generator
 {
 	public interface IVersionNumberGeneratorProvider
 	{
-		WorkspaceVersionNumbers GetVersion();
+		WorkspaceVersionInfo GetVersion();
 	}
 }

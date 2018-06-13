@@ -21,7 +21,7 @@ namespace GBuild.Generator
 			_commitAnalysis = commitAnalysis;
 		}
 
-		public WorkspaceVersionNumbers GetVersion()
+		public WorkspaceVersionInfo GetVersion()
 		{
 			// TODO: implement mapping between branch strategy and version number generator
 //			var versionNumberGenerator = _versionNumberGenerators.First();
