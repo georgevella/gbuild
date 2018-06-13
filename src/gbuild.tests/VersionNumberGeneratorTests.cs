@@ -70,7 +70,8 @@ namespace gbuild.tests
 						_fixture.CreateMany<ChangedFile>(5),
 						false,
 						false,
-						_branchVersioningStrategyMock.Object
+						_branchVersioningStrategyMock.Object,
+						Enumerable.Empty<Release>()
 					)
 				);
 
@@ -127,7 +128,8 @@ namespace gbuild.tests
 						_fixture.CreateMany<ChangedFile>(5),
 						false,
 						false,
-						_branchVersioningStrategyMock.Object
+						_branchVersioningStrategyMock.Object,
+						Enumerable.Empty<Release>()
 					)
 				);
 
@@ -179,7 +181,8 @@ namespace gbuild.tests
 						_fixture.CreateMany<ChangedFile>(5),
 						false, 
 						false,
-						_branchVersioningStrategyMock.Object
+						_branchVersioningStrategyMock.Object,
+						Enumerable.Empty<Release>()
 					)
 				);
 
@@ -210,51 +213,71 @@ namespace gbuild.tests
 		}
 
 		[Fact]
-		public void DevelopmentBranch_WithTags()
+		public void Independent_WithTags_SingleProjectChange_NoBreakingChanges()
 		{
-//			var fixture = new Fixture();
-//
-//			var commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
-//			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
-//			var work = new Mock<IWorkspaceConfiguration>();
-//
-//			work.SetupGet(x => x.StartingVersion).Returns("1.0.0");
-//
-//			branchVersioningStrategyMock.SetupGet(x => x.Tag).Returns("dev");
-//			branchVersioningStrategyMock.SetupGet(x => x.ParentBranch).Returns("refs/heads/master");
-//			branchVersioningStrategyMock.SetupGet(x => x.Metadata).Returns("metatag");
-//			branchVersioningStrategyMock.SetupGet(x => x.Increment).Returns(VersionIncrementStrategy.Minor);
-//
-//			var project1 = new Project("Project 1", new DirectoryInfo("src/project1/"));
-//			var project2 = new Project("Project 2", new DirectoryInfo("src/project2/"));
-//
-//			var changedProjects = new[]
-//			{
-//				new Project("Test roject", new DirectoryInfo("testpath")),
-//			};
-//
-//			commitAnalysisMock.SetupGet(x => x.Data)
-//				.Returns(
-//					new CommitHistoryAnalysis(
-//						changedProjects,
-//						5, 
-//						false, false
-//					)
-//				);
-//
-//			var generator = new IndependentVersionNumberGenerator(
-//				work.Object, 
-//				commitAnalysisMock.Object
-//				);
-//
-//			var version = generator.GetVersion(project2);
-//
-//			var expectedVersion = SemanticVersion.CreateFrom(
-//				work.Object.StartingVersion,
-//				prereleaseTag: "dev-5",
-//				metadata: "metatag"
-//			);
-//			version.Should().Be(expectedVersion);
+			const int project1Commits = 7;
+			const int project2Commits = 3;
+			SemanticVersion project1ReleaseVersion = "1.2.0";
+			SemanticVersion project2ReleaseVersion = "2.4.0";
+
+			// expected
+			var expectedProject1Version = SemanticVersion.CreateFrom(
+				project1ReleaseVersion.IncrementMinor(),
+				prereleaseTag: $"dev-{project1Commits}",
+				metadata: "metatag"
+			);
+			var expectedProject2Version = SemanticVersion.CreateFrom(
+				project2ReleaseVersion.IncrementMinor(),
+				prereleaseTag: $"dev-{project2Commits}",
+				metadata: "metatag"
+			);
+
+			// setup			
+
+			var changedProjects = new Dictionary<Project, List<Commit>>()
+			{
+				{
+					_project2,
+					new List<Commit>(_fixture.CreateMany<Commit>(project2Commits))
+				}
+			};
+
+			_commitAnalysisMock.SetupGet(x => x.Data)
+				.Returns(
+					new CommitHistoryAnalysis(
+						changedProjects,
+						_fixture.CreateMany<Commit>(5),
+						_fixture.CreateMany<ChangedFile>(5),
+						false,
+						false,
+						_branchVersioningStrategyMock.Object,
+						new []
+						{
+							new Release(
+								_fixture.Create<DateTime>(),
+								new Dictionary<Project, SemanticVersion>()
+								{
+									{ _project1 , project1ReleaseVersion },
+									{ _project2, project2ReleaseVersion }
+								}
+								), 
+						}
+					)
+				);
+
+			var generator = new IndependentVersionNumberGenerator(
+				_workspaceConfigurationMock.Object,
+				_commitAnalysisMock.Object,
+				_workspaceContextDataMock.Object
+			);
+
+			// act
+			var project1Version = generator.GetVersion(_project1);
+			var project2Version = generator.GetVersion(_project2);
+
+			// verify
+			project1Version.Should().Be(expectedProject1Version);
+			project2Version.Should().Be(expectedProject2Version);
 		}
 	}
 }

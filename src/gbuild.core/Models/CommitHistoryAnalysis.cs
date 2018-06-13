@@ -13,14 +13,17 @@ namespace GBuild.Models
 			IEnumerable<ChangedFile> changedFiles,
 			bool hasBreakingChanges,
 			bool hasNewFeatures,
-			IBranchVersioningStrategyModel versioningStrategyModel)
+			IBranchVersioningStrategyModel versioningStrategyModel,
+			IEnumerable<Release> releases
+			)
 		{
 			ChangedProjects = new ReadOnlyDictionary<Project, List<Commit>>(changedProjects);
 			Commits = commits.ToList();
-			ChangedFiles = changedFiles;
+			ChangedFiles = changedFiles.ToList();
 			HasBreakingChanges = hasBreakingChanges;
 			HasNewFeatures = hasNewFeatures;
 			VersioningStrategyModel = versioningStrategyModel;
+			Releases = releases.ToList();
 		}
 
 		/// <summary>
@@ -28,11 +31,13 @@ namespace GBuild.Models
 		/// </summary>
 		public IReadOnlyDictionary<Project, List<Commit>> ChangedProjects { get; }
 
-		public IEnumerable<ChangedFile> ChangedFiles { get; }
+		public IReadOnlyCollection<ChangedFile> ChangedFiles { get; }
 
 		public IReadOnlyCollection<Commit> Commits { get; }
 
 		public IBranchVersioningStrategyModel VersioningStrategyModel { get; }
+
+		public IReadOnlyCollection<Release> Releases { get; }
 
 		public bool HasBreakingChanges { get; }
 

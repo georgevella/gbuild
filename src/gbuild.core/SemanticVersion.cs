@@ -236,6 +236,15 @@ namespace GBuild
 			return new SemanticVersion(major, minor, patch, prereleseTag, metadata);
 		}
 
+		public SemanticVersion IncrementMinor()
+		{
+			return new SemanticVersion(this.Major, this.Minor++, 0);
+		}
+		public SemanticVersion IncrementMajor()
+		{
+			return new SemanticVersion(this.Major++, 0, 0);
+		}
+
 		private enum ParsingMode
 		{
 			Numeric,
