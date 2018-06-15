@@ -20,13 +20,13 @@ namespace gbuild.tests
 {
 	public class VersionNumberGeneratorTests
 	{
-		private Fixture _fixture = new Fixture();
-		private Mock<IContextData<CommitHistoryAnalysis>> _commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
-		private Mock<IContextData<Workspace>> _workspaceContextDataMock = new Mock<IContextData<Workspace>>();
-		private Mock<IBranchVersioningStrategyModel> _branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
-		private Mock<IWorkspaceConfiguration> _workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>();
-		private Project _project1 = new Project("Project 1", new DirectoryInfo("src/project1/"));
-		private Project _project2 = new Project("Project 2", new DirectoryInfo("src/project2/"));
+		private readonly Fixture _fixture = new Fixture();
+		private readonly Mock<IContextData<CommitHistoryAnalysis>> _commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
+		private readonly Mock<IContextData<Workspace>> _workspaceContextDataMock = new Mock<IContextData<Workspace>>();
+		private readonly Mock<IBranchVersioningStrategyModel> _branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
+		private readonly Mock<IWorkspaceConfiguration> _workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>();
+		private readonly Project _project1 = new Project("Project 1", new DirectoryInfo("src/project1/"));
+		private readonly Project _project2 = new Project("Project 2", new DirectoryInfo("src/project2/"));
 
 		public VersionNumberGeneratorTests()
 		{
@@ -59,8 +59,8 @@ namespace gbuild.tests
 		public void Independent_NoTags_NoChanges()
 		{
 			// setup
-			const int project1Commits = 0;
-			const int project2Commits = 0;
+			const int PROJECT1_COMMITS = 0;
+			const int PROJECT2_COMMITS = 0;
 
 			_commitAnalysisMock.SetupGet(x => x.Data)
 				.Returns(
@@ -87,12 +87,12 @@ namespace gbuild.tests
 
 			var expectedProject1Version = SemanticVersion.CreateFrom(
 				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{project1Commits}",
+				prereleaseTag: $"dev-{PROJECT1_COMMITS}",
 				metadata: "metatag"
 			);
 			var expectedProject2Version = SemanticVersion.CreateFrom(
 				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{project2Commits}",
+				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
 				metadata: "metatag"
 			);
 
@@ -105,18 +105,18 @@ namespace gbuild.tests
 		public void Independent_NoTags_MultiProject()
 		{
 			// setup
-			const int project1Commits = 7;
-			const int project2Commits = 3;
+			const int PROJECT1_COMMITS = 7;
+			const int PROJECT2_COMMITS = 3;
 
 			var changedProjects = new Dictionary<Project, List<Commit>>()
 			{
 				{
 					_project1,
-					new List<Commit>(_fixture.CreateMany<Commit>(project1Commits))
+					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT1_COMMITS))
 				},
 				{
 					_project2,
-					new List<Commit>(_fixture.CreateMany<Commit>(project2Commits))
+					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT2_COMMITS))
 				}
 			};
 
@@ -145,12 +145,12 @@ namespace gbuild.tests
 
 			var expectedProject1Version = SemanticVersion.CreateFrom(
 				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{project1Commits}",
+				prereleaseTag: $"dev-{PROJECT1_COMMITS}",
 				metadata: "metatag"
 			);
 			var expectedProject2Version = SemanticVersion.CreateFrom(
 				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{project2Commits}",
+				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
 				metadata: "metatag"
 			);
 
@@ -163,13 +163,13 @@ namespace gbuild.tests
 		public void Independent_NoTags_SingleProjectChange()
 		{
 			// setup
-			const int project2Commits = 3;
+			const int PROJECT2_COMMITS = 3;
 
 			var changedProjects = new Dictionary<Project, List<Commit>>()
 			{
 				{
 					_project2, 
-					new List<Commit>(_fixture.CreateMany<Commit>(project2Commits))
+					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT2_COMMITS))
 				}
 			};
 
@@ -203,7 +203,7 @@ namespace gbuild.tests
 			);
 			var expectedProject2Version = SemanticVersion.CreateFrom(
 				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{project2Commits}",
+				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
 				metadata: "metatag"
 			);
 
@@ -215,20 +215,20 @@ namespace gbuild.tests
 		[Fact]
 		public void Independent_WithTags_SingleProjectChange_NoBreakingChanges()
 		{
-			const int project1Commits = 7;
-			const int project2Commits = 3;
+			const int PROJECT1_COMMITS = 0;
+			const int PROJECT2_COMMITS = 3;
 			SemanticVersion project1ReleaseVersion = "1.2.0";
 			SemanticVersion project2ReleaseVersion = "2.4.0";
 
 			// expected
 			var expectedProject1Version = SemanticVersion.CreateFrom(
 				project1ReleaseVersion.IncrementMinor(),
-				prereleaseTag: $"dev-{project1Commits}",
+				prereleaseTag: $"dev-{PROJECT1_COMMITS}",
 				metadata: "metatag"
 			);
 			var expectedProject2Version = SemanticVersion.CreateFrom(
 				project2ReleaseVersion.IncrementMinor(),
-				prereleaseTag: $"dev-{project2Commits}",
+				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
 				metadata: "metatag"
 			);
 
@@ -238,7 +238,7 @@ namespace gbuild.tests
 			{
 				{
 					_project2,
-					new List<Commit>(_fixture.CreateMany<Commit>(project2Commits))
+					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT2_COMMITS))
 				}
 			};
 
@@ -257,7 +257,7 @@ namespace gbuild.tests
 								_fixture.Create<DateTime>(),
 								new Dictionary<Project, SemanticVersion>()
 								{
-									{ _project1 , project1ReleaseVersion },
+									{ _project1, project1ReleaseVersion },
 									{ _project2, project2ReleaseVersion }
 								}
 								), 

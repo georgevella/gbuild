@@ -238,11 +238,11 @@ namespace GBuild
 
 		public SemanticVersion IncrementMinor()
 		{
-			return new SemanticVersion(this.Major, this.Minor++, 0);
+			return new SemanticVersion(this.Major, this.Minor+1, 0);
 		}
 		public SemanticVersion IncrementMajor()
 		{
-			return new SemanticVersion(this.Major++, 0, 0);
+			return new SemanticVersion(this.Major+1, 0, 0);
 		}
 
 		private enum ParsingMode

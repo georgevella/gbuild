@@ -1,4 +1,5 @@
-﻿using GBuild.Configuration;
+﻿using System.Linq;
+using GBuild.Configuration;
 using GBuild.Context;
 using GBuild.Models;
 
@@ -28,19 +29,30 @@ namespace GBuild.Generator
 		{
 			var branchVersioningStrategyModel = _commitAnalysis.VersioningStrategyModel;
 
-			var startingVersion = _workspaceConfiguration.StartingVersion;			
+			var baseVersion = _workspaceConfiguration.StartingVersion;
+			int projectCommitCount = 0;
 
 			// TODO: check if we have any releases from the commit history analyser
-			int projectCommitCount = 0;
+			if (_commitAnalysis.Releases.Any())
+			{
+				var release = _commitAnalysis.Releases.First();
+
+				baseVersion = _commitAnalysis.HasBreakingChanges 
+					? release.VersionNumbers[project].IncrementMajor() 
+					: release.VersionNumbers[project].IncrementMinor();
+
+				
+			}
+
 			if (_commitAnalysis.ChangedProjects.TryGetValue(project, out var commits))
 			{
 				projectCommitCount = commits.Count;
 			}
-			
+
 			return SemanticVersion.Create(
-				major: startingVersion.Major,
-				minor: startingVersion.Minor,
-				patch: startingVersion.Patch,
+				major: baseVersion.Major,
+				minor: baseVersion.Minor,
+				patch: baseVersion.Patch,
 				prereleseTag: $"{branchVersioningStrategyModel.Tag}-{projectCommitCount}",
 				metadata: branchVersioningStrategyModel.Metadata
 			);
