@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AutoFixture;
 using gbuild.commitanalysis.git;
 using GBuild.Configuration;
@@ -46,7 +47,10 @@ namespace gbuild.tests
 					new Project[]
 					{
 						new Project("Module1", new DirectoryInfo("./src/Module1"))
-					})
+					},
+					Enumerable.Empty<Release>()
+					)
+
 			);
 
 			var sut = new GitCommitHistoryAnalyser(

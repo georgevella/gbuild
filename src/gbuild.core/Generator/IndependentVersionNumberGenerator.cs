@@ -33,9 +33,9 @@ namespace GBuild.Generator
 			int projectCommitCount = 0;
 
 			// TODO: check if we have any releases from the commit history analyser
-			if (_commitAnalysis.Releases.Any())
+			if (_workspace.Releases.Any())
 			{
-				var release = _commitAnalysis.Releases.First();
+				var release = _workspace.Releases.First();
 
 				baseVersion = _commitAnalysis.HasBreakingChanges 
 					? release.VersionNumbers[project].IncrementMajor() 

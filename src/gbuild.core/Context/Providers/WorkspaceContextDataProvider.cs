@@ -6,27 +6,38 @@ using GBuild.Models;
 
 namespace GBuild.Context.Providers
 {
-	public abstract class WorkspaceContextDataProvider : IContextDataProvider<Workspace>
+	public class WorkspaceContextDataProvider : IContextDataProvider<Workspace>
 	{
 		private readonly IConfigurationFile _configuration;
 		private readonly IContextData<Process> _processInformation;
+		private readonly IContextData<Models.ReleaseHistory> _releaseHistory;
 
-		protected WorkspaceContextDataProvider(
+		public WorkspaceContextDataProvider(
 			IConfigurationFile configuration,
-			IContextData<Process> processInformation
+			IContextData<Process> processInformation,
+			IContextData<Models.ReleaseHistory> releaseHistory
 		)
 		{
 			_configuration = configuration;
 			_processInformation = processInformation;
+			_releaseHistory = releaseHistory;
 		}
 
-		protected IContextData<Process> ProcessInformation => _processInformation;
+		private DirectoryInfo GetRepositoryRootDirectory()
+		{
+			var repositoryRootDirectory = _processInformation.Data.CurrentDirectory;
+			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
+			{
+				repositoryRootDirectory = repositoryRootDirectory.Parent;
+				dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			}
 
-		protected IConfigurationFile Configuration => _configuration;
+			return repositoryRootDirectory;
+		}
 
-		protected abstract DirectoryInfo GetRepositoryRootDirectory();
 
-		public virtual Workspace LoadContextData()
+		public Workspace LoadContextData()
 		{
 			var repositoryRootDirectory = GetRepositoryRootDirectory();
 
@@ -43,7 +54,8 @@ namespace GBuild.Context.Providers
 			return new Workspace(
 				repositoryRootDirectory,
 				sourceCodeRootDirectory,
-				projectFiles.Select(fi => new CsharpProject(fi.Name, fi, ModuleType.CSharp)).ToList()
+				projectFiles.Select(fi => new CsharpProject(fi.Name, fi, ModuleType.CSharp)).ToList(),
+				_releaseHistory.Data.Releases
 			);
 		}
 	}

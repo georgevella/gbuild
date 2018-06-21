@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AutoFixture;
@@ -18,7 +17,7 @@ using Commit = GBuild.Models.Commit;
 
 namespace gbuild.tests
 {
-	public class VersionNumberGeneratorTests
+	public class VersionNumberGeneratorNoReleases
 	{
 		private readonly Fixture _fixture = new Fixture();
 		private readonly Mock<IContextData<CommitHistoryAnalysis>> _commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
@@ -28,7 +27,7 @@ namespace gbuild.tests
 		private readonly Project _project1 = new Project("Project 1", new DirectoryInfo("src/project1/"));
 		private readonly Project _project2 = new Project("Project 2", new DirectoryInfo("src/project2/"));
 
-		public VersionNumberGeneratorTests()
+		public VersionNumberGeneratorNoReleases()
 		{
 			_workspaceConfigurationMock.SetupGet(x => x.StartingVersion).Returns("1.0.0");
 
@@ -50,13 +49,14 @@ namespace gbuild.tests
 					{
 						_project1,
 						_project2
-					}
+					},
+					Enumerable.Empty<Release>()
 				)
 			);
 		}
 
 		[Fact]
-		public void Independent_NoTags_NoChanges()
+		public void Independent_NoChanges()
 		{
 			// setup
 			const int PROJECT1_COMMITS = 0;
@@ -70,8 +70,7 @@ namespace gbuild.tests
 						_fixture.CreateMany<ChangedFile>(5),
 						false,
 						false,
-						_branchVersioningStrategyMock.Object,
-						Enumerable.Empty<Release>()
+						_branchVersioningStrategyMock.Object
 					)
 				);
 
@@ -102,7 +101,7 @@ namespace gbuild.tests
 		}
 
 		[Fact]
-		public void Independent_NoTags_MultiProject()
+		public void Independent_MultiProjectChange()
 		{
 			// setup
 			const int PROJECT1_COMMITS = 7;
@@ -128,8 +127,7 @@ namespace gbuild.tests
 						_fixture.CreateMany<ChangedFile>(5),
 						false,
 						false,
-						_branchVersioningStrategyMock.Object,
-						Enumerable.Empty<Release>()
+						_branchVersioningStrategyMock.Object
 					)
 				);
 
@@ -160,7 +158,7 @@ namespace gbuild.tests
 		}
 
 		[Fact]
-		public void Independent_NoTags_SingleProjectChange()
+		public void Independent_SingleProjectChange()
 		{
 			// setup
 			const int PROJECT2_COMMITS = 3;
@@ -181,8 +179,7 @@ namespace gbuild.tests
 						_fixture.CreateMany<ChangedFile>(5),
 						false, 
 						false,
-						_branchVersioningStrategyMock.Object,
-						Enumerable.Empty<Release>()
+						_branchVersioningStrategyMock.Object
 					)
 				);
 
@@ -206,74 +203,6 @@ namespace gbuild.tests
 				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
 				metadata: "metatag"
 			);
-
-			// verify
-			project1Version.Should().Be(expectedProject1Version);
-			project2Version.Should().Be(expectedProject2Version);
-		}
-
-		[Fact]
-		public void Independent_WithTags_SingleProjectChange_NoBreakingChanges()
-		{
-			const int PROJECT1_COMMITS = 0;
-			const int PROJECT2_COMMITS = 3;
-			SemanticVersion project1ReleaseVersion = "1.2.0";
-			SemanticVersion project2ReleaseVersion = "2.4.0";
-
-			// expected
-			var expectedProject1Version = SemanticVersion.CreateFrom(
-				project1ReleaseVersion.IncrementMinor(),
-				prereleaseTag: $"dev-{PROJECT1_COMMITS}",
-				metadata: "metatag"
-			);
-			var expectedProject2Version = SemanticVersion.CreateFrom(
-				project2ReleaseVersion.IncrementMinor(),
-				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
-				metadata: "metatag"
-			);
-
-			// setup			
-
-			var changedProjects = new Dictionary<Project, List<Commit>>()
-			{
-				{
-					_project2,
-					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT2_COMMITS))
-				}
-			};
-
-			_commitAnalysisMock.SetupGet(x => x.Data)
-				.Returns(
-					new CommitHistoryAnalysis(
-						changedProjects,
-						_fixture.CreateMany<Commit>(5),
-						_fixture.CreateMany<ChangedFile>(5),
-						false,
-						false,
-						_branchVersioningStrategyMock.Object,
-						new []
-						{
-							new Release(
-								_fixture.Create<DateTime>(),
-								new Dictionary<Project, SemanticVersion>()
-								{
-									{ _project1, project1ReleaseVersion },
-									{ _project2, project2ReleaseVersion }
-								}
-								), 
-						}
-					)
-				);
-
-			var generator = new IndependentVersionNumberGenerator(
-				_workspaceConfigurationMock.Object,
-				_commitAnalysisMock.Object,
-				_workspaceContextDataMock.Object
-			);
-
-			// act
-			var project1Version = generator.GetVersion(_project1);
-			var project2Version = generator.GetVersion(_project2);
 
 			// verify
 			project1Version.Should().Be(expectedProject1Version);
