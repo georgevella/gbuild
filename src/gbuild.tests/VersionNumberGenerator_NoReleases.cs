@@ -38,8 +38,6 @@ namespace gbuild.tests
 				increment: VersionIncrementStrategy.Minor
 			);
 
-
-
 			// build workspace context data
 			_workspaceContextDataMock.SetupGet(x => x.Data).Returns(
 				new Workspace(
@@ -56,23 +54,44 @@ namespace gbuild.tests
 			);
 		}
 
-		[Fact]
-		public void Independent_NoChanges()
+		[Theory]
+		// no changes
+		[InlineData(0,0,0,0)]
+		// multi project change
+		[InlineData(7,10,7,3)]
+		// single project change
+		[InlineData(7, 10, 7, 0)]
+		public void IndependentVersioning(
+			int totalCommits,
+			int totalChangedFiles,
+			int project1Commits,
+			int project2Commits
+		)
 		{
 			// setup
-			const int PROJECT1_COMMITS = 0;
-			const int PROJECT2_COMMITS = 0;
+			var changedProjects = new Dictionary<Project, int>();
+			if (project1Commits > 0)
+			{
+				changedProjects[_project1] = project1Commits;
+			}
 
-			_commitAnalysisMock.SetupGet(x => x.Data)
-				.Returns(
-					new CommitHistoryAnalysis(
-						new Dictionary<Project, List<Commit>>(), 
-						_fixture.CreateMany<Commit>(7),
-						_fixture.CreateMany<ChangedFile>(5),
-						false,
-						false
-					)
-				);
+			if (project2Commits > 0)
+			{
+				changedProjects[_project2] = project2Commits;
+			}
+
+			_commitAnalysisMock.Setup(_fixture, totalCommits, totalChangedFiles, changedProjects);
+
+			var expectedProject1Version = SemanticVersion.CreateFrom(
+				_workspaceConfigurationMock.Object.StartingVersion,
+				prereleaseTag: $"dev-{project1Commits}",
+				metadata: "metatag"
+			);
+			var expectedProject2Version = SemanticVersion.CreateFrom(
+				_workspaceConfigurationMock.Object.StartingVersion,
+				prereleaseTag: $"dev-{project2Commits}",
+				metadata: "metatag"
+			);
 
 			var generator = new IndependentVersionNumberGenerator(
 				_workspaceConfigurationMock.Object,
@@ -84,127 +103,10 @@ namespace gbuild.tests
 			var project1Version = generator.GetVersion(_project1);
 			var project2Version = generator.GetVersion(_project2);
 
-			var expectedProject1Version = SemanticVersion.CreateFrom(
-				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{PROJECT1_COMMITS}",
-				metadata: "metatag"
-			);
-			var expectedProject2Version = SemanticVersion.CreateFrom(
-				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
-				metadata: "metatag"
-			);
-
 			// verify
 			project1Version.Should().Be(expectedProject1Version);
 			project2Version.Should().Be(expectedProject2Version);
-		}
 
-		[Fact]
-		public void Independent_MultiProjectChange()
-		{
-			// setup
-			const int PROJECT1_COMMITS = 7;
-			const int PROJECT2_COMMITS = 3;
-
-			var changedProjects = new Dictionary<Project, List<Commit>>()
-			{
-				{
-					_project1,
-					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT1_COMMITS))
-				},
-				{
-					_project2,
-					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT2_COMMITS))
-				}
-			};
-
-			_commitAnalysisMock.SetupGet(x => x.Data)
-				.Returns(
-					new CommitHistoryAnalysis(
-						changedProjects,
-						_fixture.CreateMany<Commit>(7),
-						_fixture.CreateMany<ChangedFile>(5),
-						false,
-						false
-					)
-				);
-
-			var generator = new IndependentVersionNumberGenerator(
-				_workspaceConfigurationMock.Object,
-				_commitAnalysisMock.Object,
-				_workspaceContextDataMock.Object
-			);
-
-			// act
-			var project1Version = generator.GetVersion(_project1);
-			var project2Version = generator.GetVersion(_project2);
-
-			var expectedProject1Version = SemanticVersion.CreateFrom(
-				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{PROJECT1_COMMITS}",
-				metadata: "metatag"
-			);
-			var expectedProject2Version = SemanticVersion.CreateFrom(
-				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
-				metadata: "metatag"
-			);
-
-			// verify
-			project1Version.Should().Be(expectedProject1Version);
-			project2Version.Should().Be(expectedProject2Version);
-		}
-
-		[Fact]
-		public void Independent_SingleProjectChange()
-		{
-			// setup
-			const int PROJECT2_COMMITS = 3;
-
-			var changedProjects = new Dictionary<Project, List<Commit>>()
-			{
-				{
-					_project2, 
-					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT2_COMMITS))
-				}
-			};
-
-			_commitAnalysisMock.SetupGet(x => x.Data)
-				.Returns(
-					new CommitHistoryAnalysis(
-						changedProjects,
-						_fixture.CreateMany<Commit>(5),
-						_fixture.CreateMany<ChangedFile>(5),
-						false, 
-						false
-					)
-				);
-
-			var generator = new IndependentVersionNumberGenerator(
-				_workspaceConfigurationMock.Object, 
-				_commitAnalysisMock.Object,
-				_workspaceContextDataMock.Object
-				);
-
-			// act
-			var project1Version = generator.GetVersion(_project1);
-			var project2Version = generator.GetVersion(_project2);
-
-			var expectedProject1Version = SemanticVersion.CreateFrom(
-				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-0",
-				metadata: "metatag"
-			);
-			var expectedProject2Version = SemanticVersion.CreateFrom(
-				_workspaceConfigurationMock.Object.StartingVersion,
-				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
-				metadata: "metatag"
-			);
-
-			// verify
-			project1Version.Should().Be(expectedProject1Version);
-			project2Version.Should().Be(expectedProject2Version);
 		}
 	}
 }
