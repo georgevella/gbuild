@@ -39,9 +39,7 @@ namespace GBuild.Generator
 
 				baseVersion = _commitAnalysis.HasBreakingChanges 
 					? release.VersionNumbers[project].IncrementMajor() 
-					: release.VersionNumbers[project].IncrementMinor();
-
-				
+					: release.VersionNumbers[project].IncrementMinor();				
 			}
 
 			if (_commitAnalysis.ChangedProjects.TryGetValue(project, out var commits))

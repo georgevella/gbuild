@@ -29,7 +29,8 @@ namespace GBuild.Configuration.Models
 			},
 			SourceCodeRoot = "src",
 			BranchingModel = BranchingModelType.GitFlow,
-			IssueIdRegex = ""
+			IssueIdRegex = "",
+			Versioning = VersioningMode.Independent
 		};
 
 		public string StartingVersion { get; set; } = "0.1.0";
@@ -57,5 +58,14 @@ namespace GBuild.Configuration.Models
 		/// </summary>
 		[YamlMember(Alias = "branches")]
 		public List<BranchVersioningStrategyModel> Branches { get; set; } = new List<BranchVersioningStrategyModel>();
+
+		[YamlMember(Alias = "versioning")]
+		public VersioningMode Versioning { get; set; }
+	}
+
+	public enum VersioningMode
+	{
+		Fixed,
+		Independent
 	}
 }
