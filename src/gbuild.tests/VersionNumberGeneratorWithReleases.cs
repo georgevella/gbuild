@@ -67,46 +67,46 @@ namespace gbuild.tests
 					_branchVersioningStrategyMock.Object
 				)
 			);
-		}		
+		}
 
-		[Fact]
-		public void Independent_WithTags_SingleProjectChange_NoBreakingChanges()
+		[Theory]
+		// no changes
+		[InlineData(0, 0, 0, 0)]
+		// multi project change
+		[InlineData(7, 10, 7, 3)]
+		// single project change
+		[InlineData(7, 10, 7, 0)]
+		public void IndependentVersioning(
+			int totalCommits,
+			int totalChangedFiles,
+			int project1Commits,
+			int project2Commits
+		)
 		{
-			const int PROJECT1_COMMITS = 0;
-			const int PROJECT2_COMMITS = 3;			
+			// setup
+			var changedProjects = new Dictionary<Project, int>();
+			if (project1Commits > 0)
+			{
+				changedProjects[_project1] = project1Commits;
+			}
 
-			// expected
+			if (project2Commits > 0)
+			{
+				changedProjects[_project2] = project2Commits;
+			}
+
+			_commitAnalysisMock.Setup(_fixture, totalCommits, totalChangedFiles, changedProjects);
+
 			var expectedProject1Version = SemanticVersion.CreateFrom(
 				_project1ReleaseVersion.IncrementMinor(),
-				prereleaseTag: $"dev-{PROJECT1_COMMITS}",
+				prereleaseTag: $"dev-{project1Commits}",
 				metadata: "metatag"
 			);
 			var expectedProject2Version = SemanticVersion.CreateFrom(
 				_project2ReleaseVersion.IncrementMinor(),
-				prereleaseTag: $"dev-{PROJECT2_COMMITS}",
+				prereleaseTag: $"dev-{project2Commits}",
 				metadata: "metatag"
 			);
-
-			// setup			
-
-			var changedProjects = new Dictionary<Project, List<Commit>>()
-			{
-				{
-					_project2,
-					new List<Commit>(_fixture.CreateMany<Commit>(PROJECT2_COMMITS))
-				}
-			};
-
-			_commitAnalysisMock.SetupGet(x => x.Data)
-				.Returns(
-					new CommitHistoryAnalysis(
-						changedProjects,
-						_fixture.CreateMany<Commit>(5),
-						_fixture.CreateMany<ChangedFile>(5),
-						false,
-						false					
-					)
-				);
 
 			var generator = new IndependentVersionNumberGenerator(
 				_workspaceConfigurationMock.Object,
@@ -121,6 +121,7 @@ namespace gbuild.tests
 			// verify
 			project1Version.Should().Be(expectedProject1Version);
 			project2Version.Should().Be(expectedProject2Version);
+
 		}
 	}
 }
