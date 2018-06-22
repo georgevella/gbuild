@@ -10,5 +10,6 @@ namespace GBuild.Configuration
 	{
 		IEnumerable<IBranchVersioningStrategyModel> BranchVersioningStrategies { get; }
 		SemanticVersion StartingVersion { get; }
+		string SourceCodeRoot { get; }
 	}
 }

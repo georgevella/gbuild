@@ -48,13 +48,13 @@ namespace gbuild.tests
 					{
 						new Project("Module1", new DirectoryInfo("./src/Module1"))
 					},
-					Enumerable.Empty<Release>()
+					Enumerable.Empty<Release>(),
+					branchVersioningStrategyMock.Object
 					)
 
 			);
 
 			var sut = new GitCommitHistoryAnalyser(
-				workspaceConfigurationMock.Object,
 				repoMock.Object,				
 				workspaceMock.Object
 			);

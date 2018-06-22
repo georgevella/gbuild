@@ -12,7 +12,11 @@ namespace GBuild.Configuration
 			BranchVersioningStrategies = configurationFile.Branches;
 
 			StartingVersion = SemanticVersion.Parse(configurationFile.StartingVersion);
+
+			SourceCodeRoot = configurationFile.SourceCodeRoot;
 		}
+
+		public string SourceCodeRoot { get; }
 
 		public SemanticVersion StartingVersion { get; }
 	}

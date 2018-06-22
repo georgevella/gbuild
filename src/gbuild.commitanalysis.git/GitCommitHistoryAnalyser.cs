@@ -15,15 +15,12 @@ namespace gbuild.commitanalysis.git
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
 		private readonly IContextData<Workspace> _workspace;
-		private readonly IWorkspaceConfiguration _workspaceConfiguration;
 		private readonly IGitRepository _sourceCodeRepository;
 
 		public GitCommitHistoryAnalyser(
-			IWorkspaceConfiguration workspaceConfiguration,
 			IGitRepository sourceCodeRepository,
 			IContextData<Workspace> workspace)
 		{
-			_workspaceConfiguration = workspaceConfiguration;
 			_sourceCodeRepository = sourceCodeRepository;
 			_workspace = workspace;
 		}
@@ -32,14 +29,8 @@ namespace gbuild.commitanalysis.git
 		{
 			var currentBranch = _sourceCodeRepository.Branches.First(b => b.IsCurrentRepositoryHead);
 
-			var branchVersioningStrategy =
-				_workspaceConfiguration.BranchVersioningStrategies.FirstOrDefault(b => MatchesCurrentBranch(currentBranch, b.Name));
-
-			if (branchVersioningStrategy == null)
-				throw new CommitAnalysisException("Could not determine branch version strategy from current branch");
-
 			// TODO: how to handle branches that are not development / slaves of other branches
-			var parentBranch = _sourceCodeRepository.Branches.First(b => b.CanonicalName == branchVersioningStrategy.ParentBranch);
+			var parentBranch = _sourceCodeRepository.Branches.First(b => b.CanonicalName == _workspace.Data.BranchVersioningStrategy.ParentBranch);
 
 			var commits = GetNewCommits(
 				parentBranch,
@@ -104,8 +95,7 @@ namespace gbuild.commitanalysis.git
 				commits,
 				files.Select( f => new ChangedFile( f.Path )),
 				false,
-				false,
-				branchVersioningStrategy
+				false
 			);
 		}
 
@@ -154,20 +144,6 @@ namespace gbuild.commitanalysis.git
 			var treeChanges = _sourceCodeRepository.CompareTrees(oldestCommit.Tree, newestCommit.Tree);
 
 			return treeChanges;
-		}
-
-		private bool MatchesCurrentBranch(
-			Branch currentBranch,
-			string filter
-		)
-		{
-			if (currentBranch.CanonicalName == filter)
-			{
-				return true;
-			}
-
-			// TODO: pattern matching branch name
-			return false;
 		}
 	}
 }

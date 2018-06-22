@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using GBuild.Context;
 using GBuild.Models;
 using LibGit2Sharp;
@@ -10,9 +11,23 @@ namespace GBuild
 	{
 		private readonly IRepository _repository;
 
-		public RepositoryWrapper(IContextData<Workspace> sourceCodeInformation)
+		private static string GetRepositoryRootDirectory(IContextData<Process> processContextData)
 		{
-			_repository = new Repository(sourceCodeInformation.Data.RepositoryRootDirectory.FullName);
+			var repositoryRootDirectory = processContextData.Data.CurrentDirectory;
+			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+
+			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
+			{
+				repositoryRootDirectory = repositoryRootDirectory.Parent;
+				dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			}
+
+			return repositoryRootDirectory.FullName;
+		}
+
+		public RepositoryWrapper(IContextData<Process> processContextData)
+		{
+			_repository = new Repository(GetRepositoryRootDirectory(processContextData));
 		}
 
 		public void Dispose()

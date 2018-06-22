@@ -27,7 +27,7 @@ namespace GBuild.Generator
 
 		public SemanticVersion GetVersion(Project project)
 		{
-			var branchVersioningStrategyModel = _commitAnalysis.VersioningStrategyModel;
+			var branchVersioningStrategyModel = _workspace.BranchVersioningStrategy;
 
 			var baseVersion = _workspaceConfiguration.StartingVersion;
 			int projectCommitCount = 0;

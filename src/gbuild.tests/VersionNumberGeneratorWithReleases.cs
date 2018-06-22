@@ -63,7 +63,8 @@ namespace gbuild.tests
 								{ _project2, _project2ReleaseVersion }
 							}
 						),
-					}
+					},
+					_branchVersioningStrategyMock.Object
 				)
 			);
 		}		
@@ -103,8 +104,7 @@ namespace gbuild.tests
 						_fixture.CreateMany<Commit>(5),
 						_fixture.CreateMany<ChangedFile>(5),
 						false,
-						false,
-						_branchVersioningStrategyMock.Object						
+						false					
 					)
 				);
 

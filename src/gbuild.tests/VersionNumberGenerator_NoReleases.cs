@@ -50,7 +50,8 @@ namespace gbuild.tests
 						_project1,
 						_project2
 					},
-					Enumerable.Empty<Release>()
+					Enumerable.Empty<Release>(),
+					_branchVersioningStrategyMock.Object
 				)
 			);
 		}
@@ -69,8 +70,7 @@ namespace gbuild.tests
 						_fixture.CreateMany<Commit>(7),
 						_fixture.CreateMany<ChangedFile>(5),
 						false,
-						false,
-						_branchVersioningStrategyMock.Object
+						false
 					)
 				);
 
@@ -126,8 +126,7 @@ namespace gbuild.tests
 						_fixture.CreateMany<Commit>(7),
 						_fixture.CreateMany<ChangedFile>(5),
 						false,
-						false,
-						_branchVersioningStrategyMock.Object
+						false
 					)
 				);
 
@@ -178,8 +177,7 @@ namespace gbuild.tests
 						_fixture.CreateMany<Commit>(5),
 						_fixture.CreateMany<ChangedFile>(5),
 						false, 
-						false,
-						_branchVersioningStrategyMock.Object
+						false
 					)
 				);
 
