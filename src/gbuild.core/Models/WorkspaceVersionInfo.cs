@@ -11,10 +11,5 @@ namespace GBuild.Models
 			: base(dictionary)
 		{
 		}
-
-		public WorkspaceVersionInfo() : this (new Dictionary<Project, SemanticVersion>())
-		{
-			
-		}
 	}
 }

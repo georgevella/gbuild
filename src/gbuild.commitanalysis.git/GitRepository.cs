@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using gbuild.commitanalysis.git.Extensions;
 using LibGit2Sharp;
 using Branch = gbuild.commitanalysis.git.Models.Branch;
 
 namespace gbuild.commitanalysis.git
 {
-	class GitRepository : IGitRepository
+	public class GitRepository : IGitRepository
 	{
 		private readonly IRepository _repository;
 
@@ -13,9 +14,6 @@ namespace gbuild.commitanalysis.git
 		{
 			_repository = repository;
 		}
-
-		public IEnumerable<Branch> Branches => _repository.Branches.Cast<Branch>().ToList();
-		public IQueryableCommitLog Commits => _repository.Commits;
 
 		public IEnumerable<TreeEntryChanges> CompareTrees(Tree oldTree, Tree newTree)
 		{

@@ -14,7 +14,7 @@
 			IsCurrentRepositoryHead = isCurrentRepositoryHead;
 		}
 
-		public static explicit operator Branch(
+		public static implicit operator Branch(
 			LibGit2Sharp.Branch source
 		)
 		{

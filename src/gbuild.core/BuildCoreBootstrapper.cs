@@ -6,6 +6,7 @@ using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Generator;
+using GBuild.ReleaseHistory;
 using LibGit2Sharp;
 using SimpleInjector;
 
@@ -44,7 +45,7 @@ namespace GBuild
 
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(assemblies);
-			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
+			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();			
 		}
 	}
 }

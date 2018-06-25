@@ -1,3 +1,4 @@
 - Workspace contains multiple projects and workspace configuration
 - Workspace is root of git repo
 - tags are applied on master branch
+- if a release of a project exits, but dev branch has no changes on said project, than any project that references it should point to the released version

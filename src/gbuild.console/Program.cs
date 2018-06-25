@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
+using gbuild.commitanalysis.git;
+using GBuild.CommitHistoryAnalyser;
 using GBuild.Configuration.IO;
 using GBuild.Configuration.Models;
+using GBuild.ReleaseHistory;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -67,6 +70,12 @@ namespace GBuild.Console
 			};
 
 			container.Register(typeof(IVerb<>), assemblyList);
+
+			// 
+			container.RegisterSingleton<IReleaseHistoryProvider, ReleaseHistoryProvider>();
+			container.RegisterSingleton<ICommitHistoryAnalyser, GitCommitHistoryAnalyser>();
+			container.RegisterSingleton<IGitRepository, GitRepository>();
+
 
 			// setup command line parser
 			var verbTypes = Assembly.GetExecutingAssembly().DefinedTypes

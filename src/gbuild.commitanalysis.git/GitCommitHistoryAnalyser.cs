@@ -15,22 +15,25 @@ namespace gbuild.commitanalysis.git
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
 		private readonly IContextData<Workspace> _workspace;
-		private readonly IGitRepository _sourceCodeRepository;
+		private readonly IGitRepository _sourceCodeRepositoryHelpers;
+		private readonly IRepository _gitRepository;
 
 		public GitCommitHistoryAnalyser(
-			IGitRepository sourceCodeRepository,
+			IGitRepository sourceCodeRepositoryHelpers,
+			IRepository gitRepository,
 			IContextData<Workspace> workspace)
 		{
-			_sourceCodeRepository = sourceCodeRepository;
+			_sourceCodeRepositoryHelpers = sourceCodeRepositoryHelpers;
+			_gitRepository = gitRepository;
 			_workspace = workspace;
 		}
 
 		public CommitHistoryAnalysis Run()
 		{
-			var currentBranch = _sourceCodeRepository.Branches.First(b => b.IsCurrentRepositoryHead);
+			var currentBranch = _gitRepository.Branches.First(b => b.IsCurrentRepositoryHead);
 
 			// TODO: how to handle branches that are not development / slaves of other branches
-			var parentBranch = _sourceCodeRepository.Branches.First(b => b.CanonicalName == _workspace.Data.BranchVersioningStrategy.ParentBranch);
+			var parentBranch = _gitRepository.Branches.First(b => b.CanonicalName == _workspace.Data.BranchVersioningStrategy.ParentBranch);
 
 			var commits = GetNewCommits(
 				parentBranch,
@@ -60,7 +63,7 @@ namespace gbuild.commitanalysis.git
 				})
 				.ToDictionary(m => m.Path, m => m.Module);
 
-			var changedModules = new Dictionary<Project, List<GBuild.Models.Commit>>();
+			var changedProjects = new Dictionary<Project, List<GBuild.Models.Commit>>();
 
 			foreach (var commit in commits)
 			{
@@ -70,9 +73,9 @@ namespace gbuild.commitanalysis.git
 					{
 						if (file.Path.StartsWith(rootDir.Key, StringComparison.OrdinalIgnoreCase))
 						{
-							if (!changedModules.ContainsKey(rootDir.Value))
+							if (!changedProjects.ContainsKey(rootDir.Value))
 							{
-								changedModules.Add(
+								changedProjects.Add(
 									rootDir.Value,
 									new List<GBuild.Models.Commit>()
 									{
@@ -82,7 +85,7 @@ namespace gbuild.commitanalysis.git
 							}
 							else
 							{
-								changedModules[rootDir.Value].Add(commit);
+								changedProjects[rootDir.Value].Add(commit);
 							}
 						}
 					}
@@ -91,7 +94,7 @@ namespace gbuild.commitanalysis.git
 			}
 
 			return new CommitHistoryAnalysis(
-				changedModules,
+				changedProjects,
 				commits,
 				files.Select( f => new ChangedFile( f.Path )),
 				false,
@@ -100,8 +103,8 @@ namespace gbuild.commitanalysis.git
 		}
 
 		public IList<GBuild.Models.Commit> GetNewCommits(
-			Branch sourceBranch,
-			Branch branch
+			LibGit2Sharp.Branch sourceBranch,
+			LibGit2Sharp.Branch branch
 		)
 		{
 			var filter = new CommitFilter
@@ -111,12 +114,12 @@ namespace gbuild.commitanalysis.git
 				SortBy = CommitSortStrategies.Time
 			};
 
-			return _sourceCodeRepository.Commits.QueryBy(filter).Select(BuildCommitEntry).ToList();
+			return _gitRepository.Commits.QueryBy(filter).Select(BuildCommitEntry).ToList();
 		}
 
 		private GBuild.Models.Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
 		{
-			var treeChanges = _sourceCodeRepository.CompareTrees(arg.Parents.Single().Tree, arg.Tree);
+			var treeChanges = _sourceCodeRepositoryHelpers.CompareTrees(arg.Parents.Single().Tree, arg.Tree);
 
 			Commit commit = arg;
 			var changedFiles = treeChanges.Select(e => new ChangedFile(e.Path)).ToList();
@@ -125,8 +128,8 @@ namespace gbuild.commitanalysis.git
 		}
 
 		public IEnumerable<TreeEntryChanges> GetChangedFiles(
-			Branch parentBranch,
-			Branch branch
+			LibGit2Sharp.Branch parentBranch,
+			LibGit2Sharp.Branch branch
 		)
 		{
 			var filter = new CommitFilter
@@ -136,12 +139,12 @@ namespace gbuild.commitanalysis.git
 				SortBy = CommitSortStrategies.Time
 			};
 
-			var commits = _sourceCodeRepository.Commits.QueryBy(filter).ToList();
+			var commits = _gitRepository.Commits.QueryBy(filter).ToList();
 
 			var newestCommit = commits.First();
 			var oldestCommit = commits.Last();
 
-			var treeChanges = _sourceCodeRepository.CompareTrees(oldestCommit.Tree, newestCommit.Tree);
+			var treeChanges = _sourceCodeRepositoryHelpers.CompareTrees(oldestCommit.Tree, newestCommit.Tree);
 
 			return treeChanges;
 		}

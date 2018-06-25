@@ -9,16 +9,16 @@ namespace GBuild.Console.Verbs
 	public class DescribeVerb : IVerb<DescribeOptions>
 	{
 		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
-		private readonly IContextData<Workspace> _sourceCodeInformation;
+		private readonly IContextData<Workspace> _workspaceInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DescribeVerb(
-			IContextData<Workspace> sourceCodeInformation,
+			IContextData<Workspace> workspaceInformation,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
 		{
-			_sourceCodeInformation = sourceCodeInformation;
+			_workspaceInformation = workspaceInformation;
 			_commitAnalysis = commitAnalysis;
 			_versionNumberGeneratorProvider = versionNumberGeneratorProvider;
 		}
@@ -29,16 +29,14 @@ namespace GBuild.Console.Verbs
 		{
 			//Log.Information("Current Branch: {branch}", _commitAnalysis.Data.CurrentBranch);
 			Log.Information("Current Directory: {repoRoot}",
-							_sourceCodeInformation.Data.RepositoryRootDirectory.FullName);
+							_workspaceInformation.Data.RepositoryRootDirectory.FullName);
 			Log.Information("Current Directory: {srcRoot}",
-							_sourceCodeInformation.Data.SourceCodeRootDirectory.FullName);
+							_workspaceInformation.Data.SourceCodeRootDirectory.FullName);
 			Log.Information("Projects found: ");
-			foreach (var module in _sourceCodeInformation.Data.Projects)
+			foreach (var module in _workspaceInformation.Data.Projects)
 			{
 				Log.Information($"+ {module.Name}");
-			}
-
-			Log.Information("Version: {version}", _versionNumberGeneratorProvider.GetVersion());
+			}			
 
 			Log.Information("Changed Projects: ");
 
@@ -47,11 +45,20 @@ namespace GBuild.Console.Verbs
 				Log.Information($"+ {changedModule.Name}");
 			}
 
-//			Log.Information("Commits:");
-//			foreach (var commit in _commitAnalysis.Data.Commits)
-//			{
-//				Log.Information($"{commit.Id}: {commit.Message}");
-//			}
+			var workspaceVersionInfo = _versionNumberGeneratorProvider.GetVersion();
+
+			Log.Information("Workspace Version Numbers:");
+
+			foreach (var wvi in workspaceVersionInfo)
+			{
+				Log.Information($"+ {wvi.Key.Name} -> {wvi.Value}");
+			}			
+
+			//			Log.Information("Commits:");
+			//			foreach (var commit in _commitAnalysis.Data.Commits)
+			//			{
+			//				Log.Information($"{commit.Id}: {commit.Message}");
+			//			}
 		}
 	}
 }

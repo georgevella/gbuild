@@ -71,7 +71,7 @@ namespace GBuild.Context.Providers
 			return new Workspace(
 				repositoryRootDirectory,
 				sourceCodeRootDirectory,
-				projectFiles.Select(fi => new CsharpProject(fi.Name, fi, ModuleType.CSharp)).ToList(),
+				projectFiles.Select(fi => new CsharpProject(Path.GetFileNameWithoutExtension(fi.Name), fi, ModuleType.CSharp)).ToList(),
 				_releaseHistoryProvider.GetAllReleases(),
 				branchVersioningStrategy
 			);

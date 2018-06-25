@@ -6,9 +6,6 @@ namespace gbuild.commitanalysis.git
 {
 	public interface IGitRepository
 	{
-		IEnumerable<Branch> Branches { get; }
-		IQueryableCommitLog Commits { get; }
-
 		IEnumerable<TreeEntryChanges> CompareTrees(
 			Tree oldTree,
 			Tree newTree

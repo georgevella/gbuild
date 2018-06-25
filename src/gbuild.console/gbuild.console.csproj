@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\gbuild.commitanalysis.git\gbuild.commitanalysis.git.csproj" />
     <ProjectReference Include="..\gbuild.core\gbuild.core.csproj" />
   </ItemGroup>
 
