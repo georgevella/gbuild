@@ -9,12 +9,12 @@ namespace GBuild.Generator
 {
 	internal class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
 	{
-		private readonly IContextData<Workspace> _workspaceContextData;
+		private readonly IContextData<WorkspaceDescription> _workspaceContextData;
 		private readonly IEnumerable<IVersionNumberGenerator> _versionNumberGenerators;
 
 		public VersionNumberGeneratorProvider(
 			IEnumerable<IVersionNumberGenerator> versionNumberGenerators,
-			IContextData<Workspace> workspaceContextData
+			IContextData<WorkspaceDescription> workspaceContextData
 		)
 		{
 			_versionNumberGenerators = versionNumberGenerators;

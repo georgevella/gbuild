@@ -7,23 +7,21 @@ using GBuild.Context;
 using GBuild.Exceptions;
 using GBuild.Models;
 using LibGit2Sharp;
-using Branch = gbuild.commitanalysis.git.Models.Branch;
-using Commit = gbuild.commitanalysis.git.Models.Commit;
 
 namespace gbuild.commitanalysis.git
 {
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
-		private readonly IContextData<Workspace> _workspace;
-		private readonly IGitRepository _sourceCodeRepositoryHelpers;
+		private readonly IContextData<WorkspaceDescription> _workspace;
+		private readonly IGitRepositoryHelpers _gitRepositoryHelpersHelpers;
 		private readonly IRepository _gitRepository;
 
 		public GitCommitHistoryAnalyser(
-			IGitRepository sourceCodeRepositoryHelpers,
+			IGitRepositoryHelpers gitRepositoryHelpersHelpers,
 			IRepository gitRepository,
-			IContextData<Workspace> workspace)
+			IContextData<WorkspaceDescription> workspace)
 		{
-			_sourceCodeRepositoryHelpers = sourceCodeRepositoryHelpers;
+			_gitRepositoryHelpersHelpers = gitRepositoryHelpersHelpers;
 			_gitRepository = gitRepository;
 			_workspace = workspace;
 		}
@@ -124,13 +122,12 @@ namespace gbuild.commitanalysis.git
 
 			foreach (var parent in arg.Parents)
 			{
-				treeChanges.AddRange(_sourceCodeRepositoryHelpers.CompareTrees(parent.Tree, arg.Tree));
+				treeChanges.AddRange(_gitRepositoryHelpersHelpers.CompareTrees(parent.Tree, arg.Tree));
 			}
 
-			Commit commit = arg;
 			var changedFiles = treeChanges.Select(e => new ChangedFile(e.Path)).ToList();
 
-			return new GBuild.Models.Commit(commit.Id, commit.Committer.Name, commit.Message, changedFiles);
+			return new GBuild.Models.Commit(arg.Id.Sha, arg.Committer.Name, arg.Message, changedFiles);
 		}
 
 		public IEnumerable<TreeEntryChanges> GetChangedFiles(
@@ -150,7 +147,7 @@ namespace gbuild.commitanalysis.git
 			var newestCommit = commits.First();
 			var oldestCommit = commits.Last();
 
-			var treeChanges = _sourceCodeRepositoryHelpers.CompareTrees(oldestCommit.Tree, newestCommit.Tree);
+			var treeChanges = _gitRepositoryHelpersHelpers.CompareTrees(oldestCommit.Tree, newestCommit.Tree);
 
 			return treeChanges;
 		}

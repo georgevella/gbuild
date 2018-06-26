@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using gbuild.commitanalysis.git.Extensions;
 using LibGit2Sharp;
-using Branch = gbuild.commitanalysis.git.Models.Branch;
 
 namespace gbuild.commitanalysis.git
 {
-	public class GitRepository : IGitRepository
+	public class GitRepositoryHelpers : IGitRepositoryHelpers
 	{
 		private readonly IRepository _repository;
 
-		public GitRepository(IRepository repository)
+		public GitRepositoryHelpers(IRepository repository)
 		{
 			_repository = repository;
 		}

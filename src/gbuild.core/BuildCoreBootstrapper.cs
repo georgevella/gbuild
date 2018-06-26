@@ -7,6 +7,7 @@ using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Generator;
 using GBuild.ReleaseHistory;
+using GBuild.Workspace;
 using LibGit2Sharp;
 using SimpleInjector;
 
@@ -18,7 +19,6 @@ namespace GBuild
 	{
 		public static void BuildDependencyInjectionContainer(
 			Container container,
-			ConfigurationFile configurationFile,
 			Action<BuildCoreBootsrapperOptions> optionsFunc
 		)
 		{			
@@ -40,8 +40,11 @@ namespace GBuild
 			container.RegisterSingleton<IRepository, RepositoryWrapper>();
 
 			// configuration
-			container.RegisterInstance<IConfigurationFile>(configurationFile);
-			container.RegisterSingleton<IWorkspaceConfiguration, Configuration.WorkspaceConfiguration>();
+			container.RegisterSingleton<IConfigurationFile, ConfigurationFileLoaderService>();
+			container.RegisterSingleton<IWorkspaceConfiguration, WorkspaceConfiguration>();
+
+			// workspace
+			container.RegisterSingleton<IWorkspaceRootDirectoryProvider, WorkspaceRootDirectoryProvider>();
 
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(assemblies);

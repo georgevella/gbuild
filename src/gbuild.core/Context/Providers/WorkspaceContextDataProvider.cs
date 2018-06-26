@@ -6,51 +6,40 @@ using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Models;
 using GBuild.ReleaseHistory;
+using GBuild.Workspace;
 using LibGit2Sharp;
 
 namespace GBuild.Context.Providers
 {
-	public class WorkspaceContextDataProvider : IContextDataProvider<Workspace>
+	public class WorkspaceContextDataProvider : IContextDataProvider<WorkspaceDescription>
 	{
 		private readonly IWorkspaceConfiguration _configuration;
+		private readonly IWorkspaceRootDirectoryProvider _workspaceRootDirectoryProvider;
 		private readonly IContextData<Process> _processInformation;
 		private readonly IReleaseHistoryProvider _releaseHistoryProvider;
 		private readonly IRepository _sourceCodeRepository;
 
 		public WorkspaceContextDataProvider(
 			IWorkspaceConfiguration configuration,
-
+			IWorkspaceRootDirectoryProvider workspaceRootDirectoryProvider,
 			IContextData<Process> processInformation,
 			IReleaseHistoryProvider releaseHistoryProvider, 
 			IRepository sourceCodeRepository
 		)
 		{
 			_configuration = configuration;
+			_workspaceRootDirectoryProvider = workspaceRootDirectoryProvider;
 			_processInformation = processInformation;
 			_releaseHistoryProvider = releaseHistoryProvider;
 			_sourceCodeRepository = sourceCodeRepository;
 		}
 
-		private DirectoryInfo GetRepositoryRootDirectory()
+		public WorkspaceDescription LoadContextData()
 		{
-			var repositoryRootDirectory = _processInformation.Data.CurrentDirectory;
-			var dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
-			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
-			{
-				repositoryRootDirectory = repositoryRootDirectory.Parent;
-				dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
-			}
-
-			return repositoryRootDirectory;
-		}
-
-
-		public Workspace LoadContextData()
-		{
-			var repositoryRootDirectory = GetRepositoryRootDirectory();
+			var workspaceRootDirectory = _workspaceRootDirectoryProvider.GetWorkspaceRootDirectory();
 
 			var sourceCodeRootDirectory =
-				new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, _configuration.SourceCodeRoot));
+				new DirectoryInfo(Path.Combine(workspaceRootDirectory.FullName, _configuration.SourceCodeRoot));
 
 			if (!sourceCodeRootDirectory.Exists)
 			{
@@ -69,8 +58,8 @@ namespace GBuild.Context.Providers
 			if (branchVersioningStrategy == null)
 				throw new Exception("Could not determine branch version strategy from current branch");
 
-			return new Workspace(
-				repositoryRootDirectory,
+			return new WorkspaceDescription(
+				workspaceRootDirectory,
 				sourceCodeRootDirectory,
 				projectFiles.Select(fi => new CsharpProject(Path.GetFileNameWithoutExtension(fi.Name), fi, ModuleType.CSharp)).ToList(),
 				_releaseHistoryProvider.GetAllReleases(),

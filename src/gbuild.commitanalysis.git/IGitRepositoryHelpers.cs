@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using LibGit2Sharp;
-using Branch = gbuild.commitanalysis.git.Models.Branch;
 
 namespace gbuild.commitanalysis.git
 {
-	public interface IGitRepository
+	public interface IGitRepositoryHelpers
 	{
 		IEnumerable<TreeEntryChanges> CompareTrees(
 			Tree oldTree,

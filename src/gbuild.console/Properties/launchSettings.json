@@ -2,8 +2,7 @@
   "profiles": {
     "gbuild.console": {
       "commandName": "Project",
-      "commandLineArgs": "describe",
-      "workingDirectory": "C:\\GIT\\work\\obgframework\\obg.samplehost\\submodules\\obg.core\\"
+      "commandLineArgs": "describe"
     }
   }
 }

@@ -1,4 +1,5 @@
-﻿using GBuild.Console.VerbOptions;
+﻿using System.Linq;
+using GBuild.Console.VerbOptions;
 using GBuild.Context;
 using GBuild.Generator;
 using GBuild.Models;
@@ -9,11 +10,11 @@ namespace GBuild.Console.Verbs
 	public class DescribeVerb : IVerb<DescribeOptions>
 	{
 		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
-		private readonly IContextData<Workspace> _workspaceInformation;
+		private readonly IContextData<WorkspaceDescription> _workspaceInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DescribeVerb(
-			IContextData<Workspace> workspaceInformation,
+			IContextData<WorkspaceDescription> workspaceInformation,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
@@ -32,26 +33,17 @@ namespace GBuild.Console.Verbs
 							_workspaceInformation.Data.RepositoryRootDirectory.FullName);
 			Log.Information("Current Directory: {srcRoot}",
 							_workspaceInformation.Data.SourceCodeRootDirectory.FullName);
-			Log.Information("Projects found: ");
-			foreach (var module in _workspaceInformation.Data.Projects)
-			{
-				Log.Information($"+ {module.Name}");
-			}			
 
-			Log.Information("Changed Projects: ");
-
-			foreach (var changedModule in _commitAnalysis.Data.ChangedProjects.Keys)
-			{
-				Log.Information($"+ {changedModule.Name}");
-			}
+			Log.Information($"Projects found: {string.Join(",", _workspaceInformation.Data.Projects.Select( _ => _.Name))}");			
+			Log.Information($"Changed Projects: {string.Join(",", _commitAnalysis.Data.ChangedProjects.Keys.Select(_ => _.Name))}");
 
 			var workspaceVersionInfo = _versionNumberGeneratorProvider.GetVersion();
-
-			Log.Information("Workspace Version Numbers:");
+			var longestProjectName = workspaceVersionInfo.Keys.Select(x => x.Name.Length).Max();
+			Log.Information("WorkspaceDescription Version Numbers:");
 
 			foreach (var wvi in workspaceVersionInfo)
 			{
-				Log.Information($"+ {wvi.Key.Name} -> {wvi.Value}");
+				Log.Information($"+ {wvi.Key.Name.PadLeft(longestProjectName)} : no-rel -> {wvi.Value}");
 			}			
 
 			//			Log.Information("Commits:");
