@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GBuild.Models;
-using GBuild.ReleaseHistory;
 using LibGit2Sharp;
 
-namespace gbuild.commitanalysis.git
+namespace GBuild.ReleaseHistory
 {
-	public class ReleaseHistoryProvider : IReleaseHistoryProvider
+	public class GitReleaseHistoryProvider : IReleaseHistoryProvider
 	{
 		private readonly IRepository _repository;
 
-		public ReleaseHistoryProvider(IRepository repository)
+		public GitReleaseHistoryProvider(IRepository repository)
 		{
 			_repository = repository;
 		}

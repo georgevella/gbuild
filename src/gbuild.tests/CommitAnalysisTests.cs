@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AutoFixture;
-using gbuild.commitanalysis.git;
 using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Context;

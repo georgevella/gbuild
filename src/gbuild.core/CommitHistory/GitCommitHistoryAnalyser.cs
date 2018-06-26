@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GBuild.CommitHistory;
-using GBuild.Configuration;
 using GBuild.Context;
-using GBuild.Exceptions;
 using GBuild.Models;
+using GBuild.Vcs;
 using LibGit2Sharp;
 
-namespace gbuild.commitanalysis.git
+namespace GBuild.CommitHistory
 {
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{

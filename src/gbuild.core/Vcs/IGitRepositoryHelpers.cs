@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using LibGit2Sharp;
 
-namespace gbuild.commitanalysis.git
+namespace GBuild.Vcs
 {
 	public interface IGitRepositoryHelpers
 	{
