@@ -1,4 +1,4 @@
-﻿using GBuild.CommitHistoryAnalyser;
+﻿using GBuild.CommitHistory;
 using GBuild.Models;
 
 namespace GBuild.Context.Providers

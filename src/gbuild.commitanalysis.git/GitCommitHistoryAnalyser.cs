@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GBuild.CommitHistoryAnalyser;
+using GBuild.CommitHistory;
 using GBuild.Configuration;
 using GBuild.Context;
 using GBuild.Exceptions;

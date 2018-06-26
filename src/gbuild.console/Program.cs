@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using CommandLine;
 using gbuild.commitanalysis.git;
-using GBuild.CommitHistoryAnalyser;
+using GBuild.CommitHistory;
 using GBuild.Configuration.IO;
 using GBuild.Configuration.Models;
 using GBuild.ReleaseHistory;
