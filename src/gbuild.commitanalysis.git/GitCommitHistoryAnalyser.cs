@@ -119,7 +119,13 @@ namespace gbuild.commitanalysis.git
 
 		private GBuild.Models.Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
 		{
-			var treeChanges = _sourceCodeRepositoryHelpers.CompareTrees(arg.Parents.Single().Tree, arg.Tree);
+			// TODO: store merge commit parental history
+			var treeChanges = new List<TreeEntryChanges>();
+
+			foreach (var parent in arg.Parents)
+			{
+				treeChanges.AddRange(_sourceCodeRepositoryHelpers.CompareTrees(parent.Tree, arg.Tree));
+			}
 
 			Commit commit = arg;
 			var changedFiles = treeChanges.Select(e => new ChangedFile(e.Path)).ToList();

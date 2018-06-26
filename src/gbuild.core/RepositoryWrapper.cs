@@ -14,12 +14,12 @@ namespace GBuild
 		private static string GetRepositoryRootDirectory(IContextData<Process> processContextData)
 		{
 			var repositoryRootDirectory = processContextData.Data.CurrentDirectory;
-			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			var dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
 
 			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
 			{
 				repositoryRootDirectory = repositoryRootDirectory.Parent;
-				dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+				dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
 			}
 
 			return repositoryRootDirectory.FullName;

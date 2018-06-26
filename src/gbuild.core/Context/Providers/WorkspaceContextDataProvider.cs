@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Models;
@@ -33,11 +34,11 @@ namespace GBuild.Context.Providers
 		private DirectoryInfo GetRepositoryRootDirectory()
 		{
 			var repositoryRootDirectory = _processInformation.Data.CurrentDirectory;
-			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			var dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
 			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
 			{
 				repositoryRootDirectory = repositoryRootDirectory.Parent;
-				dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+				dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
 			}
 
 			return repositoryRootDirectory;
@@ -86,6 +87,16 @@ namespace GBuild.Context.Providers
 			{
 				return true;
 			}
+
+			try
+			{
+				if (Regex.IsMatch(currentBranch.CanonicalName, filter))
+				{
+					return true;
+				}
+			}
+			catch {  }
+			
 
 			// TODO: pattern matching branch name
 			return false;

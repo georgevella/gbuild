@@ -34,7 +34,7 @@ namespace GBuild.Console
 			// configruation file
 			var configurationFile = ConfigurationFile.Defaults;
 
-			var repositoryRootDirectory = DetermineRepositoryRootDirectory();
+			var repositoryRootDirectory = GetRepositoryRootDirectory();
 			var buildYamlFile = repositoryRootDirectory.GetFiles("build.yaml", SearchOption.TopDirectoryOnly)
 				.FirstOrDefault();
 
@@ -112,14 +112,14 @@ namespace GBuild.Console
 #endif
 		}
 
-		private static DirectoryInfo DetermineRepositoryRootDirectory()
+		private static DirectoryInfo GetRepositoryRootDirectory()
 		{
 			var repositoryRootDirectory = new DirectoryInfo(Environment.CurrentDirectory);
-			var dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+			var dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
 			while (!dotGitDirectory.Exists && repositoryRootDirectory.Parent != null)
 			{
 				repositoryRootDirectory = repositoryRootDirectory.Parent;
-				dotGitDirectory = new DirectoryInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
+				dotGitDirectory = new FileInfo(Path.Combine(repositoryRootDirectory.FullName, ".git"));
 			}
 
 			if (dotGitDirectory.Exists)
