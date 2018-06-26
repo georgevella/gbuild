@@ -45,12 +45,6 @@ namespace GBuild.Console.Verbs
 			{
 				Log.Information($"+ {wvi.Key.Name.PadLeft(longestProjectName)} : no-rel -> {wvi.Value}");
 			}			
-
-			//			Log.Information("Commits:");
-			//			foreach (var commit in _commitAnalysis.Data.Commits)
-			//			{
-			//				Log.Information($"{commit.Id}: {commit.Message}");
-			//			}
 		}
 	}
 }
