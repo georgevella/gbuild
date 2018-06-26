@@ -37,13 +37,17 @@ namespace GBuild.Console.Verbs
 			Log.Information($"Projects found: {string.Join(",", _workspaceInformation.Data.Projects.Select( _ => _.Name))}");			
 			Log.Information($"Changed Projects: {string.Join(",", _commitAnalysis.Data.ChangedProjects.Keys.Select(_ => _.Name))}");
 
-			var workspaceVersionInfo = _versionNumberGeneratorProvider.GetVersion();
-			var longestProjectName = workspaceVersionInfo.Keys.Select(x => x.Name.Length).Max();
+			Log.Information("");
+			
+			var currentVersions = _workspaceInformation.Data.ProjectLatestVersion;
+			var nextVersions = _versionNumberGeneratorProvider.GetVersion();
+			var longestProjectName = nextVersions.Keys.Select(x => x.Name.Length).Max();
 			Log.Information("WorkspaceDescription Version Numbers:");
 
-			foreach (var wvi in workspaceVersionInfo)
+			foreach (var wvi in nextVersions)
 			{
-				Log.Information($"+ {wvi.Key.Name.PadLeft(longestProjectName)} : no-rel -> {wvi.Value}");
+				var currrentVersion = currentVersions.ContainsKey(wvi.Key) ? currentVersions[wvi.Key].ToString() : "no-rel";
+				Log.Information($"+ {wvi.Key.Name.PadLeft(longestProjectName)} : {currrentVersion} -> {wvi.Value}");
 			}			
 		}
 	}

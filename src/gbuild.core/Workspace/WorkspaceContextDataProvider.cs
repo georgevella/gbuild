@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -58,12 +59,16 @@ namespace GBuild.Context.Providers
 			if (branchVersioningStrategy == null)
 				throw new Exception("Could not determine branch version strategy from current branch");
 
+			var releases = _releaseHistoryProvider.GetAllReleases();
+			var latestRelease = _releaseHistoryProvider.GetLatestRelease();
+			var currentVersionNumbers = latestRelease?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
 			return new WorkspaceDescription(
 				workspaceRootDirectory,
 				sourceCodeRootDirectory,
 				projectFiles.Select(fi => new CsharpProject(Path.GetFileNameWithoutExtension(fi.Name), fi, ModuleType.CSharp)).ToList(),
-				_releaseHistoryProvider.GetAllReleases(),
-				branchVersioningStrategy
+				releases,				
+				branchVersioningStrategy,
+				currentVersionNumbers
 			);
 		}
 

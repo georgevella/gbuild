@@ -49,7 +49,8 @@ namespace gbuild.tests
 						_project2
 					},
 					Enumerable.Empty<Release>(),
-					_branchVersioningStrategyMock.Object
+					_branchVersioningStrategyMock.Object,
+					null
 				)
 			);
 		}

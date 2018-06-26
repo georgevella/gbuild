@@ -18,5 +18,10 @@ namespace GBuild.ReleaseHistory
 		{
 			return Enumerable.Empty<Release>();	
 		}
+
+		public Release GetLatestRelease()
+		{
+			return null;
+		}
 	}
 }

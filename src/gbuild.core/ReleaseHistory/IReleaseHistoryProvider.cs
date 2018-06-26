@@ -6,5 +6,6 @@ namespace GBuild.ReleaseHistory
 	public interface IReleaseHistoryProvider
 	{
 		IEnumerable<Release> GetAllReleases();
+		Release GetLatestRelease();
 	}
 }

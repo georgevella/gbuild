@@ -44,6 +44,14 @@ namespace gbuild.tests
 
 
 			// build workspace context data
+			var latestRelease = new Release(
+				_fixture.Create<DateTime>(),
+				new Dictionary<Project, SemanticVersion>()
+				{
+					{_project1, _project1ReleaseVersion},
+					{_project2, _project2ReleaseVersion}
+				}
+			);
 			_workspaceContextDataMock.SetupGet(x => x.Data).Returns(
 				new WorkspaceDescription(
 					new DirectoryInfo("rootdir"),
@@ -55,16 +63,10 @@ namespace gbuild.tests
 					},
 					new[]
 					{
-						new Release(
-							_fixture.Create<DateTime>(),
-							new Dictionary<Project, SemanticVersion>()
-							{
-								{ _project1, _project1ReleaseVersion },
-								{ _project2, _project2ReleaseVersion }
-							}
-						),
+						latestRelease
 					},
-					_branchVersioningStrategyMock.Object
+					_branchVersioningStrategyMock.Object,
+					latestRelease.VersionNumbers
 				)
 			);
 		}
