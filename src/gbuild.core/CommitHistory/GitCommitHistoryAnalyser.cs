@@ -67,22 +67,23 @@ namespace GBuild.CommitHistory
 				{
 					foreach (var rootDir in moduleRootDirectories)
 					{
-						if (file.Path.StartsWith(rootDir.Key, StringComparison.OrdinalIgnoreCase))
+						if (!file.Path.StartsWith(rootDir.Key, StringComparison.OrdinalIgnoreCase))
 						{
-							if (!changedProjects.ContainsKey(rootDir.Value))
-							{
-								changedProjects.Add(
-									rootDir.Value,
-									new List<GBuild.Models.Commit>()
-									{
-										commit
-									}
-								);
-							}
-							else
-							{
-								changedProjects[rootDir.Value].Add(commit);
-							}
+							continue;
+						}
+
+						if (!changedProjects.ContainsKey(rootDir.Value))
+						{
+							changedProjects.Add(
+								rootDir.Value,
+								new List<GBuild.Models.Commit>()
+							);
+						}
+
+						var list = changedProjects[rootDir.Value];
+						if (!list.Contains(commit))
+						{
+							list.Add(commit);
 						}
 					}
 
