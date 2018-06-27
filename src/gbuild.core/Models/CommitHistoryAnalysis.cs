@@ -8,14 +8,14 @@ namespace GBuild.Models
 	public class CommitHistoryAnalysis
 	{
 		public CommitHistoryAnalysis(
-			IDictionary<Project, List<Commit>> changedProjects,
+			IDictionary<Project, ChangedProject> changedProjects,
 			IEnumerable<Commit> commits,
 			IEnumerable<ChangedFile> changedFiles,
 			bool hasBreakingChanges,
 			bool hasNewFeatures
 			)
 		{
-			ChangedProjects = new ReadOnlyDictionary<Project, List<Commit>>(changedProjects);
+			ChangedProjects = new ReadOnlyDictionary<Project, ChangedProject>(changedProjects);
 			Commits = commits.ToList();
 			ChangedFiles = changedFiles.ToList();
 			HasBreakingChanges = hasBreakingChanges;
@@ -25,7 +25,7 @@ namespace GBuild.Models
 		/// <summary>
 		///     Projects changed in this branch.
 		/// </summary>
-		public IReadOnlyDictionary<Project, List<Commit>> ChangedProjects { get; }
+		public IReadOnlyDictionary<Project, ChangedProject> ChangedProjects { get; }
 
 		public IReadOnlyCollection<ChangedFile> ChangedFiles { get; }
 

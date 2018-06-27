@@ -2,6 +2,7 @@
 using GBuild.Configuration;
 using GBuild.Context;
 using GBuild.Models;
+using GBuild.Variables;
 
 namespace GBuild.Generator
 {
@@ -12,15 +13,19 @@ namespace GBuild.Generator
 	public class IndependentVersionNumberGenerator : IVersionNumberGenerator
 	{
 		private readonly IWorkspaceConfiguration _workspaceConfiguration;
+		private readonly IVariableRenderer _variableRenderer;
 		private readonly CommitHistoryAnalysis _commitAnalysis;
 		private readonly WorkspaceDescription _workspace;
 
 		public IndependentVersionNumberGenerator(
 			IWorkspaceConfiguration workspaceConfiguration,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
-			IContextData<WorkspaceDescription> workspace)
+			IContextData<WorkspaceDescription> workspace,
+			IVariableRenderer variableRenderer
+			)
 		{
 			_workspaceConfiguration = workspaceConfiguration;
+			_variableRenderer = variableRenderer;
 			_commitAnalysis = commitAnalysis.Data;
 			_workspace = workspace.Data;
 		}
@@ -30,29 +35,33 @@ namespace GBuild.Generator
 			var branchVersioningStrategyModel = _workspace.BranchVersioningStrategy;
 
 			var baseVersion = _workspaceConfiguration.StartingVersion;
-			int projectCommitCount = 0;
-
-			// TODO: check if we have any releases from the commit history analyser
+			
 			if (_workspace.Releases.Any())
 			{
 				var release = _workspace.Releases.First();
 
-				baseVersion = _commitAnalysis.HasBreakingChanges 
-					? release.VersionNumbers[project].IncrementMajor() 
-					: release.VersionNumbers[project].IncrementMinor();				
-			}
-
-			if (_commitAnalysis.ChangedProjects.TryGetValue(project, out var commits))
-			{
-				projectCommitCount = commits.Count;
+				if (_commitAnalysis.ChangedProjects.TryGetValue(project, out var changedProject))
+				{
+					if (changedProject.HasBreakingChanges)
+					{
+						// TODO: make this configurable from branching strategy
+						baseVersion = release.VersionNumbers[project].IncrementMajor();
+					}
+					else
+					{
+						baseVersion = release.VersionNumbers[project].IncrementMinor();
+					}
+				}
+				
+				// we don't touch the version if there are no changes for this project, we simply point to the latest release.
 			}
 
 			return SemanticVersion.Create(
 				major: baseVersion.Major,
 				minor: baseVersion.Minor,
 				patch: baseVersion.Patch,
-				prereleseTag: $"{branchVersioningStrategyModel.Tag}-{projectCommitCount}",
-				metadata: branchVersioningStrategyModel.Metadata
+				prereleseTag: _variableRenderer.Render(branchVersioningStrategyModel.Tag, project),
+				metadata: _variableRenderer.Render(branchVersioningStrategyModel.Metadata, project)
 			);
 		}
 	}

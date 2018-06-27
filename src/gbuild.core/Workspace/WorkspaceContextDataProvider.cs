@@ -8,6 +8,7 @@ using GBuild.Configuration.Models;
 using GBuild.Models;
 using GBuild.Projects.Discovery;
 using GBuild.ReleaseHistory;
+using GBuild.Variables;
 using GBuild.Workspace;
 using LibGit2Sharp;
 
@@ -20,7 +21,7 @@ namespace GBuild.Context.Providers
 		private readonly IWorkspaceSourceCodeDirectoryProvider _workspaceSourceCodeDirectoryProvider;
 		private readonly IProjectDiscoveryService _projectDiscoveryService;
 		private readonly IReleaseHistoryProvider _releaseHistoryProvider;
-		private readonly IRepository _sourceCodeRepository;
+		private readonly IRepository _repository;
 
 		public WorkspaceContextDataProvider(
 			IWorkspaceConfiguration configuration,
@@ -28,7 +29,7 @@ namespace GBuild.Context.Providers
 			IWorkspaceSourceCodeDirectoryProvider workspaceSourceCodeDirectoryProvider,
 			IProjectDiscoveryService projectDiscoveryService,
 			IReleaseHistoryProvider releaseHistoryProvider, 
-			IRepository sourceCodeRepository
+			IRepository repository
 		)
 		{
 			_configuration = configuration;
@@ -36,7 +37,7 @@ namespace GBuild.Context.Providers
 			_workspaceSourceCodeDirectoryProvider = workspaceSourceCodeDirectoryProvider;
 			_projectDiscoveryService = projectDiscoveryService;
 			_releaseHistoryProvider = releaseHistoryProvider;
-			_sourceCodeRepository = sourceCodeRepository;
+			_repository = repository;
 		}
 
 		public WorkspaceDescription LoadContextData()
@@ -50,7 +51,7 @@ namespace GBuild.Context.Providers
 			var projects = _projectDiscoveryService.GetProjects();
 
 			// determine branch version strategy
-			var currentBranch = _sourceCodeRepository.Branches.First(b => b.IsCurrentRepositoryHead);
+			var currentBranch = _repository.Branches.First(b => b.IsCurrentRepositoryHead);
 
 			var branchVersioningStrategy =
 				_configuration.BranchVersioningStrategies.FirstOrDefault(b => MatchesCurrentBranch(currentBranch, b.Name));
@@ -68,8 +69,40 @@ namespace GBuild.Context.Providers
 				projects,
 				releases,				
 				branchVersioningStrategy,
-				currentVersionNumbers
+				currentVersionNumbers,
+				BuildWorkspaceVariables(currentBranch)
 			);
+		}
+
+		private IDictionary<string, string> BuildWorkspaceVariables(Branch currentBranch)
+		{
+			return new Dictionary<string, string>()
+			{
+				{WorkspaceVariables.BranchName, currentBranch.FriendlyName},
+				{WorkspaceVariables.FeatureName, GetFeatureNameFromBranch(currentBranch)},
+				{WorkspaceVariables.IssueId, GetIssueIdFromBranch(currentBranch)}
+			};
+		}
+
+		private string GetIssueIdFromBranch(
+			Branch currentBranch
+		)
+		{
+			// TODO: add support
+			return String.Empty;
+		}
+
+		private string GetFeatureNameFromBranch(
+			Branch currentBranch
+		)
+		{
+			if (currentBranch.CanonicalName.StartsWith("refs/heads/feature"))
+			{
+				var featureName = currentBranch.CanonicalName.Substring("refs/heads/feature".Length);
+				return featureName;
+			}
+
+			return string.Empty;
 		}
 
 		private bool MatchesCurrentBranch(

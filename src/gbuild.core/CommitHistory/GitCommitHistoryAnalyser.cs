@@ -5,6 +5,7 @@ using GBuild.Context;
 using GBuild.Models;
 using GBuild.Vcs;
 using LibGit2Sharp;
+using Commit = GBuild.Models.Commit;
 
 namespace GBuild.CommitHistory
 {
@@ -59,7 +60,9 @@ namespace GBuild.CommitHistory
 				})
 				.ToDictionary(m => m.Path, m => m.Module);
 
-			var changedProjects = new Dictionary<Project, List<GBuild.Models.Commit>>();
+			var commitsPerProject = _workspace.Data.Projects.ToDictionary( project=>project, project=>new List<Commit>());
+			var breakingChangesInProject = _workspace.Data.Projects.ToDictionary( project=>project, project=>false);
+			var newFeaturesInProject = _workspace.Data.Projects.ToDictionary(project => project, project => false);
 
 			foreach (var commit in commits)
 			{
@@ -72,23 +75,30 @@ namespace GBuild.CommitHistory
 							continue;
 						}
 
-						if (!changedProjects.ContainsKey(rootDir.Value))
-						{
-							changedProjects.Add(
-								rootDir.Value,
-								new List<GBuild.Models.Commit>()
-							);
-						}
+//						if (!changedProjects.ContainsKey(rootDir.Value))
+//						{
+//							changedProjects.Add(
+//								rootDir.Value,
+//								new List<GBuild.Models.Commit>()
+//							);
+//						}
 
-						var list = changedProjects[rootDir.Value];
+						var list = commitsPerProject[rootDir.Value];
 						if (!list.Contains(commit))
 						{
 							list.Add(commit);
 						}
 					}
-
 				}
 			}
+
+			var changedProjects = _workspace.Data.Projects.ToDictionary(
+				project => project,
+				project => new ChangedProject(
+					commitsPerProject[project],
+					breakingChangesInProject[project],
+					newFeaturesInProject[project]
+				));
 
 			return new CommitHistoryAnalysis(
 				changedProjects,

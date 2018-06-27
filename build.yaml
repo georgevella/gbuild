@@ -8,9 +8,9 @@ branches:
   metadata: ''
 - name: refs/heads/develop
   parent-branch: refs/heads/master
-  tag: dev
+  tag: 'dev-{commitcount}'
   metadata: ''
 - name: refs/heads/feature/*
   parent-branch: refs/heads/develop
-  tag: dev-{featurename}
+  tag: '{featurename}-{commitcount}'
   metadata: ''

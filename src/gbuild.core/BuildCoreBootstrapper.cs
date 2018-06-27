@@ -10,6 +10,7 @@ using GBuild.Generator;
 using GBuild.Projects.Discovery;
 using GBuild.Projects.VersionWriter;
 using GBuild.ReleaseHistory;
+using GBuild.Variables;
 using GBuild.Vcs;
 using GBuild.Workspace;
 using LibGit2Sharp;
@@ -61,6 +62,7 @@ namespace GBuild
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(assemblies);
 			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
+			container.Register<IVariableRenderer, VariableRenderer>();
 			
 			container.RegisterInstance<IServiceProvider>(container);
 		}
