@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using GBuild.Configuration.Models;
@@ -14,7 +15,8 @@ namespace GBuild.Models
 			IEnumerable<Project> projects,
 			IEnumerable<Release> releases,
 			IBranchVersioningStrategyModel branchVersioningStrategy,
-			WorkspaceVersionInfo projectLatestVersion
+			WorkspaceVersionInfo projectLatestVersion,
+			IDictionary<string, string> variables = null
 		)
 		{
 			if (projects == null)
@@ -33,6 +35,7 @@ namespace GBuild.Models
 			BranchVersioningStrategy = branchVersioningStrategy ?? throw new ArgumentNullException(nameof(branchVersioningStrategy));
 			ProjectLatestVersion = projectLatestVersion ?? throw new ArgumentNullException(nameof(projectLatestVersion));
 			Releases = releases.ToList();
+			Variables = new ReadOnlyDictionary<string, string>(variables ?? new Dictionary<string, string>());
 		}
 
 		public DirectoryInfo RepositoryRootDirectory { get; }
@@ -46,5 +49,7 @@ namespace GBuild.Models
 		public IReadOnlyList<Release> Releases { get; }
 
 		public WorkspaceVersionInfo ProjectLatestVersion { get; }
+
+		public IReadOnlyDictionary<string, string> Variables { get; }
 	}
 }
