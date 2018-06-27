@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Models;
+using GBuild.Projects.Discovery;
 using GBuild.ReleaseHistory;
 using GBuild.Workspace;
 using LibGit2Sharp;
@@ -16,21 +17,24 @@ namespace GBuild.Context.Providers
 	{
 		private readonly IWorkspaceConfiguration _configuration;
 		private readonly IWorkspaceRootDirectoryProvider _workspaceRootDirectoryProvider;
-		private readonly IContextData<Process> _processInformation;
+		private readonly IWorkspaceSourceCodeDirectoryProvider _workspaceSourceCodeDirectoryProvider;
+		private readonly IProjectDiscoveryService _projectDiscoveryService;
 		private readonly IReleaseHistoryProvider _releaseHistoryProvider;
 		private readonly IRepository _sourceCodeRepository;
 
 		public WorkspaceContextDataProvider(
 			IWorkspaceConfiguration configuration,
 			IWorkspaceRootDirectoryProvider workspaceRootDirectoryProvider,
-			IContextData<Process> processInformation,
+			IWorkspaceSourceCodeDirectoryProvider workspaceSourceCodeDirectoryProvider,
+			IProjectDiscoveryService projectDiscoveryService,
 			IReleaseHistoryProvider releaseHistoryProvider, 
 			IRepository sourceCodeRepository
 		)
 		{
 			_configuration = configuration;
 			_workspaceRootDirectoryProvider = workspaceRootDirectoryProvider;
-			_processInformation = processInformation;
+			_workspaceSourceCodeDirectoryProvider = workspaceSourceCodeDirectoryProvider;
+			_projectDiscoveryService = projectDiscoveryService;
 			_releaseHistoryProvider = releaseHistoryProvider;
 			_sourceCodeRepository = sourceCodeRepository;
 		}
@@ -39,16 +43,11 @@ namespace GBuild.Context.Providers
 		{
 			var workspaceRootDirectory = _workspaceRootDirectoryProvider.GetWorkspaceRootDirectory();
 
-			var sourceCodeRootDirectory =
-				new DirectoryInfo(Path.Combine(workspaceRootDirectory.FullName, _configuration.SourceCodeRoot));
-
-			if (!sourceCodeRootDirectory.Exists)
-			{
-				throw new InvalidOperationException("Source code directory not found");
-			}
+			var sourceCodeRootDirectory = _workspaceSourceCodeDirectoryProvider.GetSourceCodeDirectory();
 
 			// determine all project files
-			var projectFiles = sourceCodeRootDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories);
+			//var projectFiles = sourceCodeRootDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories);
+			var projects = _projectDiscoveryService.GetProjects();
 
 			// determine branch version strategy
 			var currentBranch = _sourceCodeRepository.Branches.First(b => b.IsCurrentRepositoryHead);
@@ -62,10 +61,11 @@ namespace GBuild.Context.Providers
 			var releases = _releaseHistoryProvider.GetAllReleases();
 			var latestRelease = _releaseHistoryProvider.GetLatestRelease();
 			var currentVersionNumbers = latestRelease?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
+
 			return new WorkspaceDescription(
 				workspaceRootDirectory,
 				sourceCodeRootDirectory,
-				projectFiles.Select(fi => new CsharpProject(Path.GetFileNameWithoutExtension(fi.Name), fi)).ToList(),
+				projects,
 				releases,				
 				branchVersioningStrategy,
 				currentVersionNumbers
