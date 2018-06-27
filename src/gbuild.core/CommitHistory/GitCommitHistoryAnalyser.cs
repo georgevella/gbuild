@@ -153,6 +153,11 @@ namespace GBuild.CommitHistory
 
 			var commits = _gitRepository.Commits.QueryBy(filter).ToList();
 
+			if (!commits.Any())
+			{
+				return Enumerable.Empty<TreeEntryChanges>();
+			}
+
 			var newestCommit = commits.First();
 			var oldestCommit = commits.Last();
 
