@@ -113,7 +113,8 @@ namespace gbuild.tests
 			var generator = new IndependentVersionNumberGenerator(
 				_workspaceConfigurationMock.Object,
 				_commitAnalysisMock.Object,
-				_workspaceContextDataMock.Object
+				_workspaceContextDataMock.Object,
+				null
 			);
 
 			// act

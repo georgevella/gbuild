@@ -5,7 +5,7 @@ namespace GBuild.Models
 	public class ChangedProject
 	{
 		public ChangedProject(
-			List<Commit> commits,
+			IEnumerable<Commit> commits,
 			bool hasBreakingChanges,
 			bool hasNewFeatures
 		)
@@ -15,7 +15,7 @@ namespace GBuild.Models
 			HasNewFeatures = hasNewFeatures;
 		}
 
-		public List<Commit> Commits { get; }
+		public IEnumerable<Commit> Commits { get; }
 
 		public bool HasBreakingChanges { get; }
 

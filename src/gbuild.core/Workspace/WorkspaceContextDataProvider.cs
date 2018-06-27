@@ -106,7 +106,6 @@ namespace GBuild.Context.Providers
 
 			return string.Empty;
 		}
-
 		private bool MatchesCurrentBranch(
 			Branch currentBranch,
 			string filter

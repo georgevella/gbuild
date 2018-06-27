@@ -26,7 +26,7 @@ namespace GBuild.Variables
 		)
 		{
 			var variables = _workspaceInformation.Data.Variables.ToDictionary(x => x.Key, x => x.Value);
-			variables[ProjectVariables.CommitCount] = _commitHistoryAnalysis.Data.ChangedProjects[project].Commits.Count.ToString();
+			variables[ProjectVariables.CommitCount] = _commitHistoryAnalysis.Data.ChangedProjects[project].Commits.Count().ToString();
 			
 			foreach (var pair in variables)
 			{

@@ -18,8 +18,8 @@ namespace gbuild.tests.Extensions
 		)
 		{
 			var changedProjects =
-				projectChanges?.ToDictionary(x => x.Key, x => new List<Commit>(fixture.CreateMany<Commit>(x.Value))) ??
-				new Dictionary<Project, List<Commit>>();
+				projectChanges?.ToDictionary(x => x.Key, x => new ChangedProject(fixture.CreateMany<Commit>(x.Value), false, false)) ??
+				new Dictionary<Project, ChangedProject>();
 
 
 			mock.SetupGet(x => x.Data)
