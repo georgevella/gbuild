@@ -10,6 +10,7 @@ using GBuild.Projects.Discovery;
 using GBuild.ReleaseHistory;
 using GBuild.Variables;
 using GBuild.Workspace;
+using Humanizer;
 using LibGit2Sharp;
 
 namespace GBuild.Context.Providers
@@ -96,9 +97,10 @@ namespace GBuild.Context.Providers
 			Branch currentBranch
 		)
 		{
-			if (currentBranch.CanonicalName.StartsWith("refs/heads/feature"))
+			if (currentBranch.CanonicalName.StartsWith("refs/heads/feature/"))
 			{
-				var featureName = currentBranch.CanonicalName.Substring("refs/heads/feature".Length);
+				var featureName = currentBranch.CanonicalName.Substring("refs/heads/feature/".Length);
+				featureName = new String(featureName.Where(c => c != '-' && c != '_').ToArray()).Transform(To.LowerCase).Truncate(10, string.Empty);
 				return featureName;
 			}
 
