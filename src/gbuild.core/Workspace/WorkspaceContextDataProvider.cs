@@ -65,7 +65,7 @@ namespace GBuild.Context.Providers
 			return new WorkspaceDescription(
 				workspaceRootDirectory,
 				sourceCodeRootDirectory,
-				projectFiles.Select(fi => new CsharpProject(Path.GetFileNameWithoutExtension(fi.Name), fi, ModuleType.CSharp)).ToList(),
+				projectFiles.Select(fi => new CsharpProject(Path.GetFileNameWithoutExtension(fi.Name), fi)).ToList(),
 				releases,				
 				branchVersioningStrategy,
 				currentVersionNumbers

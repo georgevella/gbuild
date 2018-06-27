@@ -2,21 +2,11 @@
 
 namespace GBuild.Models
 {
-	public class CsharpProject : Project
+	public class CsharpProject : BaseCsharpProject
 	{
-		public FileInfo File { get; }
-
-		public ModuleType Type { get; }
-
-		public CsharpProject(
-			string name,
-			FileInfo file,
-			ModuleType type
-		)
-			: base(name, file.Directory)
+		/// <inheritdoc />
+		public CsharpProject(string name, FileInfo file) : base(name, file)
 		{
-			File = file;
-			Type = type;
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace GBuild.CommitHistory
 			// determine changed modules
 			var rootDirectory = new Uri(_workspace.Data.RepositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
 
-			var moduleRootDirectories = _workspace.Data.Projects.OfType<CsharpProject>()
+			var moduleRootDirectories = _workspace.Data.Projects.OfType<BaseCsharpProject>()
 				.Select(m => new
 					{
 						Module = m,

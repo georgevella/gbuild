@@ -7,6 +7,7 @@ using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Generator;
+using GBuild.Projects.VersionWriter;
 using GBuild.ReleaseHistory;
 using GBuild.Vcs;
 using GBuild.Workspace;
@@ -38,6 +39,8 @@ namespace GBuild
 			container.RegisterSingleton(typeof(IContextDataProvider<>), assemblies);
 			container.RegisterSingleton(typeof(IContextData<>), typeof(ContextData<>));
 
+			container.RegisterCollection<IProjectVersionWriter>(assemblies);
+
 			// vcs support
 			container.RegisterSingleton<IRepository, RepositoryWrapper>();
 			container.RegisterSingleton<IReleaseHistoryProvider, GitReleaseHistoryProvider>();
@@ -53,7 +56,9 @@ namespace GBuild
 
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(assemblies);
-			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();			
+			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
+			
+			container.RegisterInstance<IServiceProvider>(container);
 		}
 	}
 }
