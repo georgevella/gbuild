@@ -5,6 +5,7 @@ using GBuild.Context;
 using GBuild.Models;
 using GBuild.Vcs;
 using LibGit2Sharp;
+using Serilog;
 using Commit = GBuild.Models.Commit;
 
 namespace GBuild.CommitHistory
@@ -32,6 +33,12 @@ namespace GBuild.CommitHistory
 			// TODO: how to handle branches that are not development / slaves of other branches
 			var parentBranch = _gitRepository.Branches.First(b => b.CanonicalName == _workspace.Data.BranchVersioningStrategy.ParentBranch);
 
+			Log.Debug("Commit analysis running between current branch [{currentbranch}] and [{parentbranch}:{parentcommit}]",
+				currentBranch.Tip.Sha,
+				_workspace.Data.BranchVersioningStrategy.ParentBranch,
+				parentBranch.Tip.Sha);
+
+			// TODO: we may need to determine where parent and this branch interesect, AND determine commit counts from intersection
 			var commits = GetNewCommits(
 				parentBranch,
 				currentBranch
@@ -74,15 +81,7 @@ namespace GBuild.CommitHistory
 						{
 							continue;
 						}
-
-//						if (!changedProjects.ContainsKey(rootDir.Value))
-//						{
-//							changedProjects.Add(
-//								rootDir.Value,
-//								new List<GBuild.Models.Commit>()
-//							);
-//						}
-
+						
 						var list = commitsPerProject[rootDir.Value];
 						if (!list.Contains(commit))
 						{
