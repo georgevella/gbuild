@@ -35,6 +35,8 @@ namespace GBuild.Generator
 			var branchVersioningStrategyModel = _workspace.BranchVersioningStrategy;
 
 			var baseVersion = _workspaceConfiguration.StartingVersion;
+
+			// TODO: check for any release branches, that are in progress, and run a commit analysis on latest release branch and version generation logic
 			
 			if (_workspace.Releases.Any())
 			{

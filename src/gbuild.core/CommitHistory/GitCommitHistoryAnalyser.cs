@@ -10,18 +10,17 @@ using Commit = GBuild.Models.Commit;
 
 namespace GBuild.CommitHistory
 {
+	// TODO: remove dependency on WorkspaceDescription, all workspace details should be passed to the analyser by the invoker
+	// (current branch analysis context data provider, and soon the workspace context data provider)
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
 		private readonly IContextData<WorkspaceDescription> _workspace;
-		private readonly IGitRepositoryHelpers _gitRepositoryHelpersHelpers;
 		private readonly IRepository _gitRepository;
 
 		public GitCommitHistoryAnalyser(
-			IGitRepositoryHelpers gitRepositoryHelpersHelpers,
 			IRepository gitRepository,
 			IContextData<WorkspaceDescription> workspace)
 		{
-			_gitRepositoryHelpersHelpers = gitRepositoryHelpersHelpers;
 			_gitRepository = gitRepository;
 			_workspace = workspace;
 		}

@@ -64,6 +64,8 @@ namespace GBuild.Context.Providers
 			var latestRelease = _releaseHistoryProvider.GetLatestRelease();
 			var currentVersionNumbers = latestRelease?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
 
+			// TODO: determine versions of any pending release branches, when in gitflow
+
 			return new WorkspaceDescription(
 				workspaceRootDirectory,
 				sourceCodeRootDirectory,
