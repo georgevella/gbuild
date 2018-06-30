@@ -24,7 +24,7 @@ Task("Build")
         Configuration = "Release",
         OutputDirectory = "./artifacts/win-x64",
         SelfContained = false,
-        Runtime = "win-x64"
+        Runtime = "win7-x64"
     };
 
     DotNetCorePublish("./src/gbuild.console/", settings);
