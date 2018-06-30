@@ -38,7 +38,7 @@ namespace GBuild.CommitHistory
 				_workspace.Data.BranchVersioningStrategy.ParentBranch,
 				parentBranch.Tip.Sha);
 
-			// TODO: we may need to determine where parent and this branch interesect, AND determine commit counts from intersection
+			// libgit2sharp library takes care of comparing git trees together to evaluate changes.
 			var commits = GetNewCommits(
 				parentBranch,
 				currentBranch
@@ -108,9 +108,9 @@ namespace GBuild.CommitHistory
 			);
 		}
 
-		public IList<GBuild.Models.Commit> GetNewCommits(
-			LibGit2Sharp.Branch sourceBranch,
-			LibGit2Sharp.Branch branch
+		public IList<Commit> GetNewCommits(
+			Branch sourceBranch,
+			Branch branch
 		)
 		{
 			var filter = new CommitFilter
@@ -123,44 +123,29 @@ namespace GBuild.CommitHistory
 			return _gitRepository.Commits.QueryBy(filter).Select(BuildCommitEntry).ToList();
 		}
 
-		private GBuild.Models.Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
+		private Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
 		{
 			// TODO: store merge commit parental history
 			var treeChanges = new List<TreeEntryChanges>();
 
 			foreach (var parent in arg.Parents)
 			{
-				treeChanges.AddRange(_gitRepositoryHelpersHelpers.CompareTrees(parent.Tree, arg.Tree));
+				treeChanges.AddRange(
+					_gitRepository.Diff.Compare<TreeChanges>(parent.Tree, arg.Tree)
+				);
 			}
 
 			var changedFiles = treeChanges.Select(e => new ChangedFile(e.Path)).ToList();
 
-			return new GBuild.Models.Commit(arg.Id.Sha, arg.Committer.Name, arg.Message, changedFiles);
+			return new Commit(arg.Id.Sha, arg.Committer.Name, arg.Message, changedFiles);
 		}
 
 		public IEnumerable<TreeEntryChanges> GetChangedFiles(
-			LibGit2Sharp.Branch parentBranch,
-			LibGit2Sharp.Branch branch
+			Branch parentBranch,
+			Branch branch
 		)
 		{
-			var filter = new CommitFilter
-			{
-				ExcludeReachableFrom = parentBranch,
-				IncludeReachableFrom = branch,
-				SortBy = CommitSortStrategies.Time
-			};
-
-			var commits = _gitRepository.Commits.QueryBy(filter).ToList();
-
-			if (!commits.Any())
-			{
-				return Enumerable.Empty<TreeEntryChanges>();
-			}
-
-			var newestCommit = commits.First();
-			var oldestCommit = commits.Last();
-
-			var treeChanges = _gitRepositoryHelpersHelpers.CompareTrees(oldestCommit.Tree, newestCommit.Tree);
+			var treeChanges = _gitRepository.Diff.Compare<TreeChanges>(parentBranch.Tip.Tree, branch.Tip.Tree);
 
 			return treeChanges;
 		}
