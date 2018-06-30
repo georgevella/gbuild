@@ -24,9 +24,10 @@ namespace GBuild.Console
 		{
 			// setup logging
 			var configuration = new LoggerConfiguration()
+				.MinimumLevel.Verbose()
 				.WriteTo.Console(
 					theme: AnsiConsoleTheme.Code,
-					restrictedToMinimumLevel: LogEventLevel.Information
+					restrictedToMinimumLevel: LogEventLevel.Verbose
 				);
 
 			Log.Logger = configuration.CreateLogger();			
