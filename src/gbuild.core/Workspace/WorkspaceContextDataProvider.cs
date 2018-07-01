@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GBuild.Configuration;
-using GBuild.Configuration.Models;
+using GBuild.Context;
 using GBuild.Models;
 using GBuild.Projects.Discovery;
 using GBuild.ReleaseHistory;
 using GBuild.Variables;
-using GBuild.Workspace;
 using Humanizer;
 using LibGit2Sharp;
 
-namespace GBuild.Context.Providers
+namespace GBuild.Workspace
 {
 	public class WorkspaceContextDataProvider : IContextDataProvider<WorkspaceDescription>
 	{
