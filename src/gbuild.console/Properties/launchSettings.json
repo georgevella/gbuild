@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "gbuild.console": {
-      "commandName": "Project",
-      "commandLineArgs": "describe",
-      "workingDirectory": "C:\\GIT\\tools\\gbuild-test\\"
-    }
-  }
-}
