@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
 using GBuild.Vcs;
@@ -14,27 +16,25 @@ namespace GBuild.CommitHistory
 	// (current branch analysis context data provider, and soon the workspace context data provider)
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
-		private readonly IContextData<WorkspaceDescription> _workspace;
 		private readonly IRepository _gitRepository;
 
 		public GitCommitHistoryAnalyser(
-			IRepository gitRepository,
-			IContextData<WorkspaceDescription> workspace)
+			IRepository gitRepository
+			)
 		{
 			_gitRepository = gitRepository;
-			_workspace = workspace;
 		}
 
-		public CommitHistoryAnalysis Run()
+		public CommitHistoryAnalysis AnalyseCommitLog(IBranchVersioningStrategyModel branchVersioningStrategy, DirectoryInfo repositoryRootDirectory, IEnumerable<Project> projects)
 		{
 			var currentBranch = _gitRepository.Branches.First(b => b.IsCurrentRepositoryHead);
 
 			// TODO: how to handle branches that are not development / slaves of other branches
-			var parentBranch = _gitRepository.Branches.First(b => b.CanonicalName == _workspace.Data.BranchVersioningStrategy.ParentBranch);
+			var parentBranch = _gitRepository.Branches.First(b => b.CanonicalName == branchVersioningStrategy.ParentBranch);
 
 			Log.Debug("Commit analysis running between current branch [{currentbranch}] and [{parentbranch}:{parentcommit}]",
 				currentBranch.Tip.Sha,
-				_workspace.Data.BranchVersioningStrategy.ParentBranch,
+				branchVersioningStrategy.ParentBranch,
 				parentBranch.Tip.Sha);
 
 			// libgit2sharp library takes care of comparing git trees together to evaluate changes.
@@ -50,9 +50,9 @@ namespace GBuild.CommitHistory
 			);
 
 			// determine changed modules
-			var rootDirectory = new Uri(_workspace.Data.RepositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
+			var rootDirectory = new Uri(repositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
 
-			var moduleRootDirectories = _workspace.Data.Projects.OfType<BaseCsharpProject>()
+			var moduleRootDirectories = projects.OfType<BaseCsharpProject>()
 				.Select(m => new
 					{
 						Module = m,
@@ -66,9 +66,9 @@ namespace GBuild.CommitHistory
 				})
 				.ToDictionary(m => m.Path, m => m.Module);
 
-			var commitsPerProject = _workspace.Data.Projects.ToDictionary( project=>project, project=>new List<Commit>());
-			var breakingChangesInProject = _workspace.Data.Projects.ToDictionary( project=>project, project=>false);
-			var newFeaturesInProject = _workspace.Data.Projects.ToDictionary(project => project, project => false);
+			var commitsPerProject = projects.ToDictionary( project=>project, project=>new List<Commit>());
+			var breakingChangesInProject = projects.ToDictionary( project=>project, project=>false);
+			var newFeaturesInProject = projects.ToDictionary(project => project, project => false);
 
 			foreach (var commit in commits)
 			{
@@ -90,7 +90,7 @@ namespace GBuild.CommitHistory
 				}
 			}
 
-			var changedProjects = _workspace.Data.Projects.ToDictionary(
+			var changedProjects = projects.ToDictionary(
 				project => project,
 				project => new ChangedProject(
 					commitsPerProject[project],

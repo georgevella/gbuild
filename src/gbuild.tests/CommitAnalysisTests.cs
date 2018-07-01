@@ -59,7 +59,7 @@ namespace gbuild.tests
 //			);
 //
 //			// test
-//			var commitAnalysis = sut.Run();
+//			var commitAnalysis = sut.AnalyseCommitLog();
 //		}
 	}
 }
