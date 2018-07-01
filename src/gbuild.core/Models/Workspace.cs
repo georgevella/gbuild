@@ -7,9 +7,9 @@ using GBuild.Configuration.Models;
 
 namespace GBuild.Models
 {
-	public class WorkspaceDescription
+	public class Workspace
 	{
-		public WorkspaceDescription(
+		public Workspace(
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
 			IEnumerable<Project> projects,

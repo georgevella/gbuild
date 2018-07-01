@@ -10,11 +10,11 @@ namespace GBuild.Console.Verbs
 	public class DescribeVerb : IVerb<DescribeOptions>
 	{
 		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
-		private readonly IContextData<WorkspaceDescription> _workspaceInformation;
+		private readonly IContextData<Workspace> _workspaceInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DescribeVerb(
-			IContextData<WorkspaceDescription> workspaceInformation,
+			IContextData<Workspace> workspaceInformation,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
@@ -40,7 +40,7 @@ namespace GBuild.Console.Verbs
 			var currentVersions = _workspaceInformation.Data.ProjectLatestVersion;
 			var nextVersions = _versionNumberGeneratorProvider.GetVersion();
 			var longestProjectName = nextVersions.Keys.Select(x => x.Name.Length).Max();
-			Log.Information("WorkspaceDescription Version Numbers:");
+			Log.Information("Workspace Version Numbers:");
 
 			foreach (var wvi in nextVersions)
 			{

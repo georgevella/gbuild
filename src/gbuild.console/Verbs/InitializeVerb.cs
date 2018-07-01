@@ -13,11 +13,11 @@ namespace GBuild.Console.Verbs
 		private readonly ConfigurationFile _configurationFile;
 		private readonly ILogger _log;
 		private readonly IContextData<Process> _processInformation;
-		private readonly IContextData<WorkspaceDescription> _sourceCodeInformation;
+		private readonly IContextData<Workspace> _sourceCodeInformation;
 
 		public InitializeVerb(
 			IContextData<Process> processInformation,
-			IContextData<WorkspaceDescription> sourceCodeInformation,
+			IContextData<Workspace> sourceCodeInformation,
 			ConfigurationFile configurationFile
 		)
 		{

@@ -21,7 +21,7 @@ namespace gbuild.tests
 	{
 		private readonly Fixture _fixture = new Fixture();
 		private readonly Mock<IContextData<CommitHistoryAnalysis>> _commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
-		private readonly Mock<IContextData<WorkspaceDescription>> _workspaceContextDataMock = new Mock<IContextData<WorkspaceDescription>>();
+		private readonly Mock<IContextData<Workspace>> _workspaceContextDataMock = new Mock<IContextData<Workspace>>();
 		private readonly Mock<IBranchVersioningStrategyModel> _branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
 		private readonly Mock<IWorkspaceConfiguration> _workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>();
 		private readonly Project _project1 = new Project("Project 1", new DirectoryInfo("src/project1/"));
@@ -40,7 +40,7 @@ namespace gbuild.tests
 
 			// build workspace context data
 			_workspaceContextDataMock.SetupGet(x => x.Data).Returns(
-				new WorkspaceDescription(
+				new Workspace(
 					new DirectoryInfo("rootdir"),
 					new DirectoryInfo("src"),
 					new[]

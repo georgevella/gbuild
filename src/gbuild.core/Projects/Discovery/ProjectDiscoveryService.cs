@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GBuild.Models;
-using GBuild.Workspace;
+using GBuild.Workspaces;
 
 namespace GBuild.Projects.Discovery
 {

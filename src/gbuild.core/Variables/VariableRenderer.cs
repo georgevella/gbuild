@@ -8,11 +8,11 @@ namespace GBuild.Variables
 {
 	public class VariableRenderer : IVariableRenderer
 	{
-		private readonly IContextData<WorkspaceDescription> _workspaceInformation;
+		private readonly IContextData<Workspace> _workspaceInformation;
 		private readonly IContextData<CommitHistoryAnalysis> _commitHistoryAnalysis;
 
 		public VariableRenderer(
-			IContextData<WorkspaceDescription> workspaceInformation,
+			IContextData<Workspace> workspaceInformation,
 			IContextData<CommitHistoryAnalysis> commitHistoryAnalysis
 		)
 		{

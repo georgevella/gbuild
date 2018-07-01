@@ -12,7 +12,7 @@ using GBuild.Projects.VersionWriter;
 using GBuild.ReleaseHistory;
 using GBuild.Variables;
 using GBuild.Vcs;
-using GBuild.Workspace;
+using GBuild.Workspaces;
 using LibGit2Sharp;
 using SimpleInjector;
 

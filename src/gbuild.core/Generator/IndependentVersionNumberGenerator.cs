@@ -15,12 +15,12 @@ namespace GBuild.Generator
 		private readonly IWorkspaceConfiguration _workspaceConfiguration;
 		private readonly IVariableRenderer _variableRenderer;
 		private readonly CommitHistoryAnalysis _commitAnalysis;
-		private readonly WorkspaceDescription _workspace;
+		private readonly Workspace _workspace;
 
 		public IndependentVersionNumberGenerator(
 			IWorkspaceConfiguration workspaceConfiguration,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
-			IContextData<WorkspaceDescription> workspace,
+			IContextData<Workspace> workspace,
 			IVariableRenderer variableRenderer
 			)
 		{

@@ -6,12 +6,12 @@ namespace GBuild.Context.Providers
 	public class CommitAnalysisContextDataProvider : IContextDataProvider<CommitHistoryAnalysis>
 	{
 		private readonly ICommitHistoryAnalyser _commitHistoryAnalyser;
-		private readonly IContextData<WorkspaceDescription> _workspaceContextData;
+		private readonly IContextData<Workspace> _workspaceContextData;
 
 
 		public CommitAnalysisContextDataProvider(
 			ICommitHistoryAnalyser commitHistoryAnalyser,
-			IContextData<WorkspaceDescription> workspaceContextData
+			IContextData<Workspace> workspaceContextData
 		)
 		{
 			_commitHistoryAnalyser = commitHistoryAnalyser;

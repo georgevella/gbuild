@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using GBuild.Configuration.IO;
 using GBuild.Configuration.Models;
-using GBuild.Workspace;
+using GBuild.Workspaces;
 using Serilog;
 
 namespace GBuild.Configuration

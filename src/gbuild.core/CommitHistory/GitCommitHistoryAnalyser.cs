@@ -12,7 +12,7 @@ using Commit = GBuild.Models.Commit;
 
 namespace GBuild.CommitHistory
 {
-	// TODO: remove dependency on WorkspaceDescription, all workspace details should be passed to the analyser by the invoker
+	// TODO: remove dependency on Workspace, all workspace details should be passed to the analyser by the invoker
 	// (current branch analysis context data provider, and soon the workspace context data provider)
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{

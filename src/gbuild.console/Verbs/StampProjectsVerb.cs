@@ -10,13 +10,13 @@ namespace GBuild.Console.Verbs
 {
 	public class StampProjectsVerb : IVerb<StampProjectsOptions>
 	{
-		private readonly IContextData<WorkspaceDescription> _workspaceInformation;
+		private readonly IContextData<Workspace> _workspaceInformation;
 		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 		private readonly List<IProjectVersionWriter> _projectVersionWriters;
 
 		public StampProjectsVerb(
-			IContextData<WorkspaceDescription> workspaceInformation,
+			IContextData<Workspace> workspaceInformation,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider,
 			IEnumerable<IProjectVersionWriter> projectVersionWriters

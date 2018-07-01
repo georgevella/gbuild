@@ -24,7 +24,7 @@ namespace gbuild.tests
 //
 //			var fixture = new Fixture();
 //			var repoMock = new Mock<IGitRepository>(MockBehavior.Strict);
-//			var workspaceMock = new Mock<IContextData<WorkspaceDescription>>(MockBehavior.Strict);
+//			var workspaceMock = new Mock<IContextData<Workspace>>(MockBehavior.Strict);
 //			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>(MockBehavior.Strict);
 //			var workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>(MockBehavior.Strict);
 //
@@ -40,7 +40,7 @@ namespace gbuild.tests
 //			branchVersioningStrategyMock.SetupGet(x => x.Increment).Returns(VersionIncrementStrategy.Minor);
 //
 //			workspaceMock.SetupGet(x => x.Data).Returns(
-//				new WorkspaceDescription(
+//				new Workspace(
 //					new DirectoryInfo(Environment.CurrentDirectory),
 //					new DirectoryInfo("./src"),
 //					new Project[]

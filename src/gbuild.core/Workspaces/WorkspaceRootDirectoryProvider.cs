@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace GBuild.Workspace
+namespace GBuild.Workspaces
 {
 	class WorkspaceRootDirectoryProvider : IWorkspaceRootDirectoryProvider
 	{

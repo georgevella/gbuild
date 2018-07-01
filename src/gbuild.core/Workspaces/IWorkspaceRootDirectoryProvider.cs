@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace GBuild.Workspace
+namespace GBuild.Workspaces
 {
 	public interface IWorkspaceRootDirectoryProvider
 	{

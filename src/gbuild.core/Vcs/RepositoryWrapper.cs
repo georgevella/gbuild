@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using GBuild.Workspace;
+using GBuild.Workspaces;
 using LibGit2Sharp;
 using Commit = LibGit2Sharp.Commit;
 

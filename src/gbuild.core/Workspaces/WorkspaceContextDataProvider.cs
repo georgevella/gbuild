@@ -11,9 +11,9 @@ using GBuild.Variables;
 using Humanizer;
 using LibGit2Sharp;
 
-namespace GBuild.Workspace
+namespace GBuild.Workspaces
 {
-	public class WorkspaceContextDataProvider : IContextDataProvider<WorkspaceDescription>
+	public class WorkspaceContextDataProvider : IContextDataProvider<Workspace>
 	{
 		private readonly IWorkspaceConfiguration _configuration;
 		private readonly IWorkspaceRootDirectoryProvider _workspaceRootDirectoryProvider;
@@ -39,7 +39,7 @@ namespace GBuild.Workspace
 			_repository = repository;
 		}
 
-		public WorkspaceDescription LoadContextData()
+		public Workspace LoadContextData()
 		{
 			var workspaceRootDirectory = _workspaceRootDirectoryProvider.GetWorkspaceRootDirectory();
 
@@ -64,7 +64,7 @@ namespace GBuild.Workspace
 
 			// TODO: determine versions of any pending release branches, when in gitflow
 
-			return new WorkspaceDescription(
+			return new Workspace(
 				workspaceRootDirectory,
 				sourceCodeRootDirectory,
 				projects,

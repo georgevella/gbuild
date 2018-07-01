@@ -2,7 +2,7 @@
 using System.IO;
 using GBuild.Configuration;
 
-namespace GBuild.Workspace
+namespace GBuild.Workspaces
 {
 	public interface IWorkspaceSourceCodeDirectoryProvider
 	{
