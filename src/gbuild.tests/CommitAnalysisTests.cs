@@ -25,11 +25,11 @@ namespace gbuild.tests
 //			var fixture = new Fixture();
 //			var repoMock = new Mock<IGitRepository>(MockBehavior.Strict);
 //			var workspaceMock = new Mock<IContextData<Workspace>>(MockBehavior.Strict);
-//			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>(MockBehavior.Strict);
+//			var branchVersioningStrategyMock = new Mock<IBranchVersioningStrategy>(MockBehavior.Strict);
 //			var workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>(MockBehavior.Strict);
 //
 //			workspaceConfigurationMock.SetupGet(x => x.BranchVersioningStrategies).Returns(
-//				() => new List<IBranchVersioningStrategyModel>()
+//				() => new List<IBranchVersioningStrategy>()
 //				{
 //					branchVersioningStrategyMock.Object
 //				});

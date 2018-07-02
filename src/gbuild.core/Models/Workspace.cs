@@ -13,7 +13,7 @@ namespace GBuild.Models
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
 			IEnumerable<Project> projects,
-			IBranchVersioningStrategyModel branchVersioningStrategy,
+			IBranchVersioningStrategy branchVersioningStrategy,
 			IDictionary<string, string> variables = null
 		)
 		{
@@ -33,7 +33,7 @@ namespace GBuild.Models
 
 		public DirectoryInfo SourceCodeRootDirectory { get; }
 
-		public IBranchVersioningStrategyModel BranchVersioningStrategy { get; }
+		public IBranchVersioningStrategy BranchVersioningStrategy { get; }
 
 		public IReadOnlyList<Project> Projects { get; }		
 

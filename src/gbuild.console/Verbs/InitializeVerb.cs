@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using GBuild.Configuration.Entities;
 using GBuild.Configuration.IO;
 using GBuild.Configuration.Models;
 using GBuild.Console.VerbOptions;
@@ -10,20 +11,17 @@ namespace GBuild.Console.Verbs
 {
 	public class InitializeVerb : IVerb<InitOptions>
 	{
-		private readonly ConfigurationFile _configurationFile;
 		private readonly ILogger _log;
 		private readonly IContextData<Process> _processInformation;
 		private readonly IContextData<Workspace> _sourceCodeInformation;
 
 		public InitializeVerb(
 			IContextData<Process> processInformation,
-			IContextData<Workspace> sourceCodeInformation,
-			ConfigurationFile configurationFile
+			IContextData<Workspace> sourceCodeInformation		
 		)
 		{
 			_processInformation = processInformation;
 			_sourceCodeInformation = sourceCodeInformation;
-			_configurationFile = configurationFile;
 
 			_log = Log.ForContext<InitializeVerb>();
 		}
@@ -57,7 +55,7 @@ namespace GBuild.Console.Verbs
 
 			using (var file = File.OpenWrite(buildFilePath))
 			{
-				ConfigurationFileWriter.Write(_configurationFile, file, true);
+				ConfigurationFileWriter.Write(ConfigurationFile.Defaults, file, true);
 				file.Flush();
 			}
 		}

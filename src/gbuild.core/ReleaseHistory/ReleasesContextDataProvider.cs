@@ -1,15 +1,14 @@
 ﻿using GBuild.Context;
 using GBuild.Models;
-using GBuild.ReleaseHistory;
 
-namespace GBuild.Workspaces
+namespace GBuild.ReleaseHistory
 {
-	public class WorkspaceReleaseInformationContextDataProvider : IContextDataProvider<Releases>
+	public class ReleasesContextDataProvider : IContextDataProvider<Releases>
 	{
 		private readonly IReleaseHistoryProvider _releaseHistoryProvider;
 		private readonly IActiveReleasesProvider _activeReleasesProvider;
 
-		public WorkspaceReleaseInformationContextDataProvider(
+		public ReleasesContextDataProvider(
 			IReleaseHistoryProvider releaseHistoryProvider,
 			IActiveReleasesProvider activeReleasesProvider
 			)

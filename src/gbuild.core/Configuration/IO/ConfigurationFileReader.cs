@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using GBuild.Configuration.Entities;
 using GBuild.Configuration.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -23,7 +24,7 @@ namespace GBuild.Configuration.IO
 		)
 		{
 			var deserializer = new DeserializerBuilder()
-				.WithNamingConvention(new HyphenatedNamingConvention())
+				.WithNamingConvention(new CamelCaseNamingConvention())
 				.Build();
 
 			return deserializer.Deserialize<ConfigurationFile>(reader);

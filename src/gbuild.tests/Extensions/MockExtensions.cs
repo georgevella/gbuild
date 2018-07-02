@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
+using GBuild.Configuration.Entities;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
@@ -11,7 +12,7 @@ namespace gbuild.tests.Extensions
 	public static class MockExtensions
 	{
 		public static void Setup(
-			this Mock<IBranchVersioningStrategyModel> branchVersioningStrategyMock,
+			this Mock<IBranchVersioningStrategy> branchVersioningStrategyMock,
 			string versionTag = null,
 			string versionMetadata = null,
 			string parentBranch = null,		

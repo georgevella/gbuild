@@ -49,11 +49,11 @@ namespace GBuild.Workspaces
 			// determine branch version strategy
 			var currentBranch = _repository.Branches.First(b => b.IsCurrentRepositoryHead);
 
-			var branchVersioningStrategy =
-				_configuration.BranchVersioningStrategies.FirstOrDefault(b => MatchesCurrentBranch(currentBranch, b.Name));
-
-			if (branchVersioningStrategy == null)
+			var branch = _configuration.KnownBranches.FirstOrDefault(b => b.IsMatch(currentBranch.CanonicalName));
+			if (branch == null)
 				throw new Exception("Could not determine branch version strategy from current branch");
+
+			var branchVersioningStrategy = branch.VersioningStrategy;			
 
 			return new Workspace(
 				workspaceRootDirectory,
@@ -63,7 +63,6 @@ namespace GBuild.Workspaces
 				BuildWorkspaceVariables(currentBranch)
 			);
 		}
-
 		private IDictionary<string, string> BuildWorkspaceVariables(Branch currentBranch)
 		{
 			return new Dictionary<string, string>()
@@ -89,34 +88,12 @@ namespace GBuild.Workspaces
 			if (currentBranch.CanonicalName.StartsWith("refs/heads/feature/"))
 			{
 				var featureName = currentBranch.CanonicalName.Substring("refs/heads/feature/".Length);
-				featureName = new String(featureName.Where(c => c != '-' && c != '_').ToArray()).Transform(To.LowerCase).Truncate(10, string.Empty);
+				featureName = new String(featureName.Where(c => c != '-' && c != '_').ToArray()).Transform(To.LowerCase)
+					.Truncate(10, string.Empty);
 				return featureName;
 			}
 
 			return string.Empty;
-		}
-		private bool MatchesCurrentBranch(
-			Branch currentBranch,
-			string filter
-		)
-		{
-			if (currentBranch.CanonicalName == filter)
-			{
-				return true;
-			}
-
-			try
-			{
-				if (Regex.IsMatch(currentBranch.CanonicalName, filter))
-				{
-					return true;
-				}
-			}
-			catch {  }
-			
-
-			// TODO: pattern matching branch name
-			return false;
 		}
 	}
 }

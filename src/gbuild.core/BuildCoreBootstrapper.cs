@@ -53,7 +53,7 @@ namespace GBuild
 			container.RegisterSingleton<IActiveReleasesProvider, GitActiveReleasesProvider>();
 
 			// configuration
-			container.RegisterSingleton<IConfigurationFile, ConfigurationFileLoaderService>();
+			container.RegisterSingleton<IConfigurationFileLoader, ConfigurationFileLoader>();
 			container.RegisterSingleton<IWorkspaceConfiguration, WorkspaceConfiguration>();
 
 			// workspace

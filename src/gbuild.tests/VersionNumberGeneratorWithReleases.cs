@@ -7,6 +7,7 @@ using FluentAssertions;
 using gbuild.tests.Extensions;
 using GBuild;
 using GBuild.Configuration;
+using GBuild.Configuration.Entities;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Generator;
@@ -22,7 +23,7 @@ namespace gbuild.tests
 		private readonly Mock<IContextData<CommitHistoryAnalysis>> _commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
 		private readonly Mock<IContextData<Workspace>> _workspaceContextDataMock = new Mock<IContextData<Workspace>>();
 		private readonly Mock<IContextData<Releases>> _releasesContextDataMock = new Mock<IContextData<Releases>>();
-		private readonly Mock<IBranchVersioningStrategyModel> _branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
+		private readonly Mock<IBranchVersioningStrategy> _branchVersioningStrategyMock = new Mock<IBranchVersioningStrategy>();
 		private readonly Mock<IWorkspaceConfiguration> _workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>();
 
 		private readonly Project _project1 = new Project("Project 1", new DirectoryInfo("src/project1/"));

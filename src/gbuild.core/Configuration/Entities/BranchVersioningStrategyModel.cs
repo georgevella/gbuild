@@ -1,6 +1,6 @@
-﻿namespace GBuild.Configuration.Models
+﻿namespace GBuild.Configuration.Entities
 {
-	public class BranchVersioningStrategyModel : IBranchVersioningStrategyModel
+	public class BranchVersioningStrategyModel
 	{
 		public BranchVersioningStrategyModel()
 		{

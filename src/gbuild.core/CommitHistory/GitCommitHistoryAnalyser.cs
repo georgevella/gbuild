@@ -25,7 +25,7 @@ namespace GBuild.CommitHistory
 			_gitRepository = gitRepository;
 		}
 
-		public CommitHistoryAnalysis AnalyseCommitLog(IBranchVersioningStrategyModel branchVersioningStrategy, DirectoryInfo repositoryRootDirectory, IEnumerable<Project> projects)
+		public CommitHistoryAnalysis AnalyseCommitLog(IBranchVersioningStrategy branchVersioningStrategy, DirectoryInfo repositoryRootDirectory, IEnumerable<Project> projects)
 		{
 			var currentBranch = _gitRepository.Branches.First(b => b.IsCurrentRepositoryHead);
 

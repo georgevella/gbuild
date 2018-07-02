@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using GBuild.Configuration.Entities;
 using GBuild.Configuration.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -19,7 +20,6 @@ namespace GBuild.Configuration.IO
 				Write(configurationFile, streamWriter, writeDefaults);
 			}
 		}
-
 		public static void Write(
 			ConfigurationFile configurationFile,
 			TextWriter writer,
@@ -27,7 +27,7 @@ namespace GBuild.Configuration.IO
 		)
 		{
 			var serializerBuilder = new SerializerBuilder()
-				.WithNamingConvention(new HyphenatedNamingConvention());
+				.WithNamingConvention(new CamelCaseNamingConvention());
 
 			if (writeDefaults)
 			{

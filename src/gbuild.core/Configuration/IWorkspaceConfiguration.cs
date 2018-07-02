@@ -4,14 +4,14 @@ using GBuild.Configuration.Models;
 namespace GBuild.Configuration
 {
 	/// <summary>
-	///		Processed data from configuration file.
+	///     Processed data from configuration file.
 	/// </summary>
 	public interface IWorkspaceConfiguration
 	{
-		IEnumerable<IBranchVersioningStrategyModel> BranchVersioningStrategies { get; }
+		IEnumerable<IBranchVersioningStrategy> BranchVersioningStrategies { get; }
+
+		IEnumerable<IKnownBranch> KnownBranches { get; }
 		SemanticVersion StartingVersion { get; }
 		string SourceCodeRoot { get; }
-
-
 	}
 }
