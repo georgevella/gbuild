@@ -1,16 +1,28 @@
-﻿issue-id-regex: ''
-source-code-root: src
-branching-model: GitFlow
+﻿sources: src
 branches:
-- name: refs/heads/master
-  parent-branch: 
-  tag: ''
-  metadata: ''
-- name: refs/heads/develop
-  parent-branch: refs/heads/master
-  tag: 'dev-{commitcount}'
-  metadata: ''
-- name: refs/heads/feature/*
-  parent-branch: refs/heads/develop
-  tag: '{featurename}-{commitcount}'
-  metadata: ''
+  branchingModel: GitFlow
+  knownBranches:
+  - name: refs/heads/master
+    type: Main
+    versioning:
+      parentBranch: 
+      tag: ''
+      metadata: ''
+  - name: refs/heads/develop
+    type: Development
+    versioning:
+      parentBranch: refs/heads/master
+      tag: 'dev-{commitcount}'
+      metadata: ''
+  - name: refs/heads/feature/*
+    type: Feature
+    versioning:
+      parentBranch: refs/heads/develop
+      tag: '{featurename}-{commitcount}'
+      metadata: ''
+  - name: refs/heads/release/*
+    type: Release
+    versioning:
+      parentBranch: refs/heads/develop
+      tag: 'rc-{commitcount}'
+      metadata: ''
