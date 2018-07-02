@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using GBuild.CommitHistory;
 using GBuild.Configuration.Models;
 
 namespace GBuild.Models
@@ -14,6 +15,7 @@ namespace GBuild.Models
 			DirectoryInfo sourceCodeRootDirectory,
 			IEnumerable<Project> projects,
 			IBranchVersioningStrategy branchVersioningStrategy,
+			IBranchHistoryAnalyser branchHistoryAnalyser,
 			IDictionary<string, string> variables = null
 		)
 		{
@@ -25,7 +27,8 @@ namespace GBuild.Models
 			RepositoryRootDirectory = repositoryRootDirectory ?? throw new ArgumentNullException(nameof(repositoryRootDirectory));
 			Projects = projects.ToList();
 			SourceCodeRootDirectory = sourceCodeRootDirectory ?? throw new ArgumentNullException(nameof(sourceCodeRootDirectory));
-			BranchVersioningStrategy = branchVersioningStrategy ?? throw new ArgumentNullException(nameof(branchVersioningStrategy));			
+			BranchVersioningStrategy = branchVersioningStrategy ?? throw new ArgumentNullException(nameof(branchVersioningStrategy));
+			BranchHistoryAnalyser = branchHistoryAnalyser;
 			Variables = new ReadOnlyDictionary<string, string>(variables ?? new Dictionary<string, string>());
 		}
 
@@ -34,6 +37,7 @@ namespace GBuild.Models
 		public DirectoryInfo SourceCodeRootDirectory { get; }
 
 		public IBranchVersioningStrategy BranchVersioningStrategy { get; }
+		public IBranchHistoryAnalyser BranchHistoryAnalyser { get; }
 
 		public IReadOnlyList<Project> Projects { get; }		
 

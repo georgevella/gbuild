@@ -25,29 +25,12 @@ namespace GBuild.CommitHistory
 			_gitRepository = gitRepository;
 		}
 
-		public CommitHistoryAnalysis AnalyseCommitLog(IBranchVersioningStrategy branchVersioningStrategy, DirectoryInfo repositoryRootDirectory, IEnumerable<Project> projects)
+		public CommitHistoryAnalysis AnalyseCommitLog(IBranchHistoryAnalyser branchVersioningStrategy, DirectoryInfo repositoryRootDirectory, IEnumerable<Project> projects)
 		{
-			var currentBranch = _gitRepository.Branches.First(b => b.IsCurrentRepositoryHead);
 
-			// TODO: how to handle branches that are not development / slaves of other branches
-			var parentBranch = _gitRepository.Branches.First(b => b.CanonicalName == branchVersioningStrategy.ParentBranch);
-
-			Log.Debug("Commit analysis running between current branch [{currentbranch}] and [{parentbranch}:{parentcommit}]",
-				currentBranch.Tip.Sha,
-				branchVersioningStrategy.ParentBranch,
-				parentBranch.Tip.Sha);
 
 			// libgit2sharp library takes care of comparing git trees together to evaluate changes.
-			var commits = GetNewCommits(
-				parentBranch,
-				currentBranch
-			);
-
-			// determine changed files
-			var files = GetChangedFiles(
-				parentBranch,
-				currentBranch
-			);
+			var commits = branchVersioningStrategy.GetNewCommits();
 
 			// determine changed modules
 			var rootDirectory = new Uri(repositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
@@ -98,45 +81,15 @@ namespace GBuild.CommitHistory
 					newFeaturesInProject[project]
 				));
 
+			var files = commits.SelectMany(x => x.ChangedFiles).Distinct();
+
 			return new CommitHistoryAnalysis(
 				changedProjects,
 				commits,
-				files.Select( f => new ChangedFile( f.Path )),
+				files,
 				false,
 				false
 			);
-		}
-
-		public IList<Commit> GetNewCommits(
-			Branch sourceBranch,
-			Branch branch
-		)
-		{
-			var filter = new CommitFilter
-			{
-				ExcludeReachableFrom = sourceBranch,
-				IncludeReachableFrom = branch,
-				SortBy = CommitSortStrategies.Time
-			};
-
-			return _gitRepository.Commits.QueryBy(filter).Select(BuildCommitEntry).ToList();
-		}
-
-		private Commit BuildCommitEntry(LibGit2Sharp.Commit arg)
-		{
-			// TODO: store merge commit parental history
-			var treeChanges = new List<TreeEntryChanges>();
-
-			foreach (var parent in arg.Parents)
-			{
-				treeChanges.AddRange(
-					_gitRepository.Diff.Compare<TreeChanges>(parent.Tree, arg.Tree)
-				);
-			}
-
-			var changedFiles = treeChanges.Select(e => new ChangedFile(e.Path)).ToList();
-
-			return new Commit(arg.Id.Sha, arg.Committer.Name, arg.Message, changedFiles);
 		}
 
 		public IEnumerable<TreeEntryChanges> GetChangedFiles(

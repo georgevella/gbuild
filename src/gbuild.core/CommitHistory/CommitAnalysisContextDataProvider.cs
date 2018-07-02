@@ -1,7 +1,7 @@
-﻿using GBuild.CommitHistory;
+﻿using GBuild.Context;
 using GBuild.Models;
 
-namespace GBuild.Context.Providers
+namespace GBuild.CommitHistory
 {
 	public class CommitAnalysisContextDataProvider : IContextDataProvider<CommitHistoryAnalysis>
 	{
@@ -17,11 +17,10 @@ namespace GBuild.Context.Providers
 			_commitHistoryAnalyser = commitHistoryAnalyser;
 			_workspaceContextData = workspaceContextData;
 		}
-
 		public CommitHistoryAnalysis LoadContextData()
 		{
 			return _commitHistoryAnalyser.AnalyseCommitLog(
-				_workspaceContextData.Data.BranchVersioningStrategy,										   
+				_workspaceContextData.Data.BranchHistoryAnalyser,										   
 				_workspaceContextData.Data.RepositoryRootDirectory, 
 				_workspaceContextData.Data.Projects);
 		}

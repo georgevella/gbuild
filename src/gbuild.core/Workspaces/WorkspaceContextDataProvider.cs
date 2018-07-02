@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GBuild.CommitHistory;
 using GBuild.Configuration;
+using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
 using GBuild.Projects.Discovery;
@@ -53,13 +55,27 @@ namespace GBuild.Workspaces
 			if (branch == null)
 				throw new Exception("Could not determine branch version strategy from current branch");
 
-			var branchVersioningStrategy = branch.VersioningStrategy;			
+			var branchVersioningStrategy = branch.VersioningStrategy;
+			IBranchHistoryAnalyser branchHistoryAnalyser = null;
+			switch (branch.Type)
+			{
+				case BranchType.Development:
+					branchHistoryAnalyser = new DevelopmentBranchHistoryAnalyser(_repository)
+					{
+						ParentBranch = branchVersioningStrategy.ParentBranch
+					};
+					break;
+				case BranchType.Release:
+					branchHistoryAnalyser = new ReleaseBranchHistoryAnalyser(_repository);
+					break;
+			}
 
 			return new Workspace(
 				workspaceRootDirectory,
 				sourceCodeRootDirectory,
 				projects,
 				branchVersioningStrategy,
+				branchHistoryAnalyser,
 				BuildWorkspaceVariables(currentBranch)
 			);
 		}
