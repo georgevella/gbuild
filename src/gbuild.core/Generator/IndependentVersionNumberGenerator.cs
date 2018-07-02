@@ -13,6 +13,7 @@ namespace GBuild.Generator
 	public class IndependentVersionNumberGenerator : IVersionNumberGenerator
 	{
 		private readonly IWorkspaceConfiguration _workspaceConfiguration;
+		private readonly Releases _releases;
 		private readonly IVariableRenderer _variableRenderer;
 		private readonly CommitHistoryAnalysis _commitAnalysis;
 		private readonly Workspace _workspace;
@@ -21,10 +22,12 @@ namespace GBuild.Generator
 			IWorkspaceConfiguration workspaceConfiguration,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			IContextData<Workspace> workspace,
+			IContextData<Releases> workspaceReleaseInformation,
 			IVariableRenderer variableRenderer
 			)
 		{
 			_workspaceConfiguration = workspaceConfiguration;
+			_releases = workspaceReleaseInformation.Data;
 			_variableRenderer = variableRenderer;
 			_commitAnalysis = commitAnalysis.Data;
 			_workspace = workspace.Data;
@@ -38,9 +41,9 @@ namespace GBuild.Generator
 
 			// TODO: check for any release branches, that are in progress, and run a commit analysis on latest release branch and version generation logic
 			
-			if (_workspace.Releases.Any())
+			if (_releases.PastReleases.Any())
 			{
-				var release = _workspace.Releases.First();
+				var release = _releases.PastReleases.First();
 
 				if (_commitAnalysis.ChangedProjects.TryGetValue(project, out var changedProject))
 				{

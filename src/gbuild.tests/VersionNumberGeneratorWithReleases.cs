@@ -21,6 +21,7 @@ namespace gbuild.tests
 		private readonly Fixture _fixture = new Fixture();
 		private readonly Mock<IContextData<CommitHistoryAnalysis>> _commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
 		private readonly Mock<IContextData<Workspace>> _workspaceContextDataMock = new Mock<IContextData<Workspace>>();
+		private readonly Mock<IContextData<Releases>> _releasesContextDataMock = new Mock<IContextData<Releases>>();
 		private readonly Mock<IBranchVersioningStrategyModel> _branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
 		private readonly Mock<IWorkspaceConfiguration> _workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>();
 
@@ -52,6 +53,9 @@ namespace gbuild.tests
 					{_project2, _project2ReleaseVersion}
 				}
 			);
+
+			_releasesContextDataMock.Setup(pastReleases: new[] {latestRelease});
+
 			_workspaceContextDataMock.SetupGet(x => x.Data).Returns(
 				new Workspace(
 					new DirectoryInfo("rootdir"),
@@ -61,12 +65,8 @@ namespace gbuild.tests
 						_project1,
 						_project2
 					},
-					new[]
-					{
-						latestRelease
-					},
 					_branchVersioningStrategyMock.Object,
-					latestRelease.VersionNumbers
+					null // TODO
 				)
 			);
 		}
@@ -113,7 +113,7 @@ namespace gbuild.tests
 			var generator = new IndependentVersionNumberGenerator(
 				_workspaceConfigurationMock.Object,
 				_commitAnalysisMock.Object,
-				_workspaceContextDataMock.Object,
+				_workspaceContextDataMock.Object, _releasesContextDataMock.Object,
 				null
 			);
 

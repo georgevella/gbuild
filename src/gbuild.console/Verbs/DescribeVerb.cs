@@ -11,15 +11,18 @@ namespace GBuild.Console.Verbs
 	{
 		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
 		private readonly IContextData<Workspace> _workspaceInformation;
+		private readonly IContextData<Releases> _workspaceReleaseInformation;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DescribeVerb(
 			IContextData<Workspace> workspaceInformation,
+			IContextData<Releases> workspaceReleaseInformation,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
 		{
 			_workspaceInformation = workspaceInformation;
+			_workspaceReleaseInformation = workspaceReleaseInformation;
 			_commitAnalysis = commitAnalysis;
 			_versionNumberGeneratorProvider = versionNumberGeneratorProvider;
 		}
@@ -37,7 +40,7 @@ namespace GBuild.Console.Verbs
 			Log.Information($"Projects found: {string.Join(",", _workspaceInformation.Data.Projects.Select( _ => _.Name))}");			
 			Log.Information($"Changed Projects: {string.Join(",", _commitAnalysis.Data.ChangedProjects.Keys.Select(_ => _.Name))}");
 			
-			var currentVersions = _workspaceInformation.Data.ProjectLatestVersion;
+			var currentVersions = _workspaceReleaseInformation.Data.PastReleases.FirstOrDefault()?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
 			var nextVersions = _versionNumberGeneratorProvider.GetVersion();
 			var longestProjectName = nextVersions.Keys.Select(x => x.Name.Length).Max();
 			Log.Information("Workspace Version Numbers:");

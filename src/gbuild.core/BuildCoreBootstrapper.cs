@@ -50,6 +50,7 @@ namespace GBuild
 			container.RegisterSingleton<IReleaseHistoryProvider, GitReleaseHistoryProvider>();
 			container.RegisterSingleton<ICommitHistoryAnalyser, GitCommitHistoryAnalyser>();
 			container.RegisterSingleton<IGitRepositoryHelpers, GitRepositoryHelpers>();
+			container.RegisterSingleton<IActiveReleasesProvider, GitActiveReleasesProvider>();
 
 			// configuration
 			container.RegisterSingleton<IConfigurationFile, ConfigurationFileLoaderService>();

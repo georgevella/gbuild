@@ -22,8 +22,9 @@ namespace gbuild.tests
 		private readonly Fixture _fixture = new Fixture();
 		private readonly Mock<IContextData<CommitHistoryAnalysis>> _commitAnalysisMock = new Mock<IContextData<CommitHistoryAnalysis>>();
 		private readonly Mock<IContextData<Workspace>> _workspaceContextDataMock = new Mock<IContextData<Workspace>>();
+		private readonly Mock<IContextData<Releases>> _releasesContextDataMock = new Mock<IContextData<Releases>>();
 		private readonly Mock<IBranchVersioningStrategyModel> _branchVersioningStrategyMock = new Mock<IBranchVersioningStrategyModel>();
-		private readonly Mock<IWorkspaceConfiguration> _workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>();
+		private readonly Mock<IWorkspaceConfiguration> _workspaceConfigurationMock = new Mock<IWorkspaceConfiguration>();		
 		private readonly Project _project1 = new Project("Project 1", new DirectoryInfo("src/project1/"));
 		private readonly Project _project2 = new Project("Project 2", new DirectoryInfo("src/project2/"));
 
@@ -47,10 +48,9 @@ namespace gbuild.tests
 					{
 						_project1,
 						_project2
-					},
-					Enumerable.Empty<Release>(),
+					},					
 					_branchVersioningStrategyMock.Object,
-					null
+					null // TODO
 				)
 			);
 		}
@@ -98,6 +98,7 @@ namespace gbuild.tests
 				_workspaceConfigurationMock.Object,
 				_commitAnalysisMock.Object,
 				_workspaceContextDataMock.Object,
+				_releasesContextDataMock.Object,
 				null // TODO
 			);
 

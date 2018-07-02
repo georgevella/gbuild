@@ -13,9 +13,7 @@ namespace GBuild.Models
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
 			IEnumerable<Project> projects,
-			IEnumerable<Release> releases,
 			IBranchVersioningStrategyModel branchVersioningStrategy,
-			WorkspaceVersionInfo projectLatestVersion,
 			IDictionary<string, string> variables = null
 		)
 		{
@@ -24,17 +22,10 @@ namespace GBuild.Models
 				throw new ArgumentNullException(nameof(projects));
 			}
 
-			if (releases == null)
-			{
-				throw new ArgumentNullException(nameof(releases));
-			}
-
 			RepositoryRootDirectory = repositoryRootDirectory ?? throw new ArgumentNullException(nameof(repositoryRootDirectory));
 			Projects = projects.ToList();
 			SourceCodeRootDirectory = sourceCodeRootDirectory ?? throw new ArgumentNullException(nameof(sourceCodeRootDirectory));
-			BranchVersioningStrategy = branchVersioningStrategy ?? throw new ArgumentNullException(nameof(branchVersioningStrategy));
-			ProjectLatestVersion = projectLatestVersion ?? throw new ArgumentNullException(nameof(projectLatestVersion));
-			Releases = releases.ToList();
+			BranchVersioningStrategy = branchVersioningStrategy ?? throw new ArgumentNullException(nameof(branchVersioningStrategy));			
 			Variables = new ReadOnlyDictionary<string, string>(variables ?? new Dictionary<string, string>());
 		}
 
@@ -44,11 +35,7 @@ namespace GBuild.Models
 
 		public IBranchVersioningStrategyModel BranchVersioningStrategy { get; }
 
-		public IReadOnlyList<Project> Projects { get; }
-
-		public IReadOnlyList<Release> Releases { get; }
-
-		public WorkspaceVersionInfo ProjectLatestVersion { get; }
+		public IReadOnlyList<Project> Projects { get; }		
 
 		public IReadOnlyDictionary<string, string> Variables { get; }
 	}
