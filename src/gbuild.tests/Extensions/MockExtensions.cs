@@ -4,6 +4,7 @@ using AutoFixture;
 using GBuild.Configuration.Entities;
 using GBuild.Configuration.Models;
 using GBuild.Context;
+using GBuild.Generator;
 using GBuild.Models;
 using Moq;
 

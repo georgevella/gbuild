@@ -5,17 +5,24 @@ namespace GBuild.Models
 	public class ChangedProject
 	{
 		public ChangedProject(
-			IEnumerable<Commit> commits,
+			IEnumerable<Commit> commitsTowardsMerge,
+			IEnumerable<Commit> commitsAheadOfParent,
 			bool hasBreakingChanges,
 			bool hasNewFeatures
 		)
 		{
-			Commits = commits;
+			CommitsTowardsMerge = commitsTowardsMerge;
+			CommitsAheadOfParent = commitsAheadOfParent;
 			HasBreakingChanges = hasBreakingChanges;
 			HasNewFeatures = hasNewFeatures;
 		}
 
-		public IEnumerable<Commit> Commits { get; }
+		/// <summary>
+		///		All the commits that are associated with the project.
+		/// </summary>
+		public IEnumerable<Commit> CommitsTowardsMerge { get; }
+
+		public IEnumerable<Commit> CommitsAheadOfParent { get; }
 
 		public bool HasBreakingChanges { get; }
 

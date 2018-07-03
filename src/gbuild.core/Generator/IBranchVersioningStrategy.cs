@@ -1,12 +1,14 @@
 ﻿using GBuild.Configuration.Entities;
+using GBuild.Configuration.Models;
 using GBuild.Models;
 using GBuild.Variables;
 
-namespace GBuild.Configuration.Models
+namespace GBuild.Generator
 {
 	public interface IBranchVersioningStrategy
 	{
 		SemanticVersion Generate(
+			IBranchVersioningSettings branchVersioningSettings,
 			SemanticVersion baseVersion,
 			Project project
 			);
@@ -16,18 +18,15 @@ namespace GBuild.Configuration.Models
 	{
 		private readonly IVariableRenderer _variableRenderer;
 
-		public BranchVersioningStrategy(IVariableRenderer variableRenderer)
+		public BranchVersioningStrategy(
+			IVariableRenderer variableRenderer
+		)
 		{
 			_variableRenderer = variableRenderer;
 		}
 
-		public string Tag { get; set; }
-
-		public string Metadata { get; set; }
-
-		public VersionIncrementStrategy Increment { get; set; }
-
 		public SemanticVersion Generate(
+			IBranchVersioningSettings branchVersioningSettings,
 			SemanticVersion baseVersion,
 			Project project
 		)
@@ -36,8 +35,8 @@ namespace GBuild.Configuration.Models
 				major: baseVersion.Major,
 				minor: baseVersion.Minor,
 				patch: baseVersion.Patch,
-				prereleseTag: _variableRenderer.Render(Tag, project),
-				metadata: _variableRenderer.Render(Metadata, project)
+				prereleseTag: _variableRenderer.Render(branchVersioningSettings.Tag, project),
+				metadata: _variableRenderer.Render(branchVersioningSettings.Metadata, project)
 			);
 		}
 	}

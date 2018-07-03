@@ -5,7 +5,9 @@ using System.Linq;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
+using GBuild.Variables;
 using GBuild.Vcs;
+using Humanizer;
 using LibGit2Sharp;
 using Serilog;
 using Commit = GBuild.Models.Commit;
@@ -16,26 +18,36 @@ namespace GBuild.CommitHistory
 	// (current branch analysis context data provider, and soon the workspace context data provider)
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
-		private readonly IRepository _gitRepository;
+		private readonly IRepository _repository;
+		private readonly IVariableStore _variablestore;
 
 		public GitCommitHistoryAnalyser(
-			IRepository gitRepository
+			IRepository repository, 
+			IVariableStore variablestore
 			)
 		{
-			_gitRepository = gitRepository;
+			_repository = repository;
+			_variablestore = variablestore;
 		}
 
-		public CommitHistoryAnalysis AnalyseCommitLog(IBranchHistoryAnalyser branchVersioningStrategy, DirectoryInfo repositoryRootDirectory, IEnumerable<Project> projects)
+		public CommitHistoryAnalysis AnalyseCommitLog(
+			IBranchHistoryAnalyser branchHistoryAnalyser,
+			IBranchAnalysisSettings branchAnalysisSettings,
+			string branchName,
+			DirectoryInfo repositoryRootDirectory,
+			IEnumerable<Project> projects
+		)
 		{
-
+			var projectList = projects.ToList();
 
 			// libgit2sharp library takes care of comparing git trees together to evaluate changes.
-			var commits = branchVersioningStrategy.GetNewCommits();
+			var commitsTowardsTarget = branchHistoryAnalyser.GetCommitsTowardsTarget(branchName, branchAnalysisSettings);
+			var commitsAheadOfParent = branchHistoryAnalyser.GetCommitsAheadOfParent(branchName, branchAnalysisSettings);
 
 			// determine changed modules
 			var rootDirectory = new Uri(repositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
 
-			var moduleRootDirectories = projects.OfType<BaseCsharpProject>()
+			var moduleRootDirectories = projectList.OfType<BaseCsharpProject>()
 				.Select(m => new
 					{
 						Module = m,
@@ -49,11 +61,12 @@ namespace GBuild.CommitHistory
 				})
 				.ToDictionary(m => m.Path, m => m.Module);
 
-			var commitsPerProject = projects.ToDictionary( project=>project, project=>new List<Commit>());
-			var breakingChangesInProject = projects.ToDictionary( project=>project, project=>false);
-			var newFeaturesInProject = projects.ToDictionary(project => project, project => false);
+			var commitsTowardsTargetPerProject = projectList.ToDictionary( project=>project, project=>new List<Commit>());
+			var commitsAheadOfParentPerProject = projectList.ToDictionary( project=>project, project=>new List<Commit>());
+			var breakingChangesInProject = projectList.ToDictionary( project=>project, project=>false);
+			var newFeaturesInProject = projectList.ToDictionary(project => project, project => false);
 
-			foreach (var commit in commits)
+			foreach (var commit in commitsTowardsTarget)
 			{
 				foreach (var file in commit.ChangedFiles)
 				{
@@ -64,7 +77,7 @@ namespace GBuild.CommitHistory
 							continue;
 						}
 						
-						var list = commitsPerProject[rootDir.Value];
+						var list = commitsTowardsTargetPerProject[rootDir.Value];
 						if (!list.Contains(commit))
 						{
 							list.Add(commit);
@@ -73,33 +86,44 @@ namespace GBuild.CommitHistory
 				}
 			}
 
-			var changedProjects = projects.ToDictionary(
+			foreach (var commit in commitsAheadOfParent)
+			{
+				foreach (var file in commit.ChangedFiles)
+				{
+					foreach (var rootDir in moduleRootDirectories)
+					{
+						if (!file.Path.StartsWith(rootDir.Key, StringComparison.OrdinalIgnoreCase))
+						{
+							continue;
+						}
+
+						var list = commitsAheadOfParentPerProject[rootDir.Value];
+						if (!list.Contains(commit))
+						{
+							list.Add(commit);
+						}
+					}
+				}
+			}
+
+			var changedProjects = projectList.ToDictionary(
 				project => project,
 				project => new ChangedProject(
-					commitsPerProject[project],
+					commitsTowardsTargetPerProject[project],
+					commitsAheadOfParentPerProject[project],
 					breakingChangesInProject[project],
 					newFeaturesInProject[project]
 				));
 
-			var files = commits.SelectMany(x => x.ChangedFiles).Distinct();
+			var files = commitsTowardsTarget.SelectMany(x => x.ChangedFiles).Distinct();
 
 			return new CommitHistoryAnalysis(
 				changedProjects,
-				commits,
+				commitsTowardsTarget,
 				files,
 				false,
 				false
 			);
-		}
-
-		public IEnumerable<TreeEntryChanges> GetChangedFiles(
-			Branch parentBranch,
-			Branch branch
-		)
-		{
-			var treeChanges = _gitRepository.Diff.Compare<TreeChanges>(parentBranch.Tip.Tree, branch.Tip.Tree);
-
-			return treeChanges;
 		}
 	}
 }

@@ -8,25 +8,21 @@ namespace GBuild.Variables
 {
 	public class VariableRenderer : IVariableRenderer
 	{
-		private readonly IContextData<Workspace> _workspaceInformation;
-		private readonly IContextData<CommitHistoryAnalysis> _commitHistoryAnalysis;
-
+		private readonly IVariableStore _variableStore;
 		public VariableRenderer(
-			IContextData<Workspace> workspaceInformation,
-			IContextData<CommitHistoryAnalysis> commitHistoryAnalysis
+			IVariableStore variableStore
 		)
 		{
-			_workspaceInformation = workspaceInformation;
-			_commitHistoryAnalysis = commitHistoryAnalysis;
+			_variableStore = variableStore;			
 		}
-
 		public string Render(
 			string template,
 			Project project
 		)
 		{
-			var variables = _workspaceInformation.Data.Variables.ToDictionary(x => x.Key, x => x.Value);
-			variables[ProjectVariables.CommitCount] = _commitHistoryAnalysis.Data.ChangedProjects[project].Commits.Count().ToString();
+			var globalVariables = _variableStore.Global.GetVariables();
+			var projecVariables = _variableStore.ProjectVariables[project].GetVariables();
+			var variables = globalVariables.Union(projecVariables).ToDictionary(x => x.Key, x => x.Value);
 			
 			foreach (var pair in variables)
 			{
@@ -35,13 +31,5 @@ namespace GBuild.Variables
 
 			return template;
 		}
-	}
-
-	public interface IVariableRenderer
-	{
-		string Render(
-			string template,
-			Project project
-		);
 	}
 }

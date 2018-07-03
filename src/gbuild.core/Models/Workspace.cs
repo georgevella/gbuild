@@ -5,18 +5,20 @@ using System.IO;
 using System.Linq;
 using GBuild.CommitHistory;
 using GBuild.Configuration.Models;
+using GBuild.Generator;
 
 namespace GBuild.Models
 {
+	/// <summary>
+	///		Contextual data about the current state of the workspace.
+	/// </summary>
 	public class Workspace
 	{
 		public Workspace(
 			DirectoryInfo repositoryRootDirectory,
 			DirectoryInfo sourceCodeRootDirectory,
 			IEnumerable<Project> projects,
-			IBranchVersioningStrategy branchVersioningStrategy,
-			IBranchHistoryAnalyser branchHistoryAnalyser,
-			IDictionary<string, string> variables = null
+			IKnownBranch branchModel
 		)
 		{
 			if (projects == null)
@@ -27,20 +29,14 @@ namespace GBuild.Models
 			RepositoryRootDirectory = repositoryRootDirectory ?? throw new ArgumentNullException(nameof(repositoryRootDirectory));
 			Projects = projects.ToList();
 			SourceCodeRootDirectory = sourceCodeRootDirectory ?? throw new ArgumentNullException(nameof(sourceCodeRootDirectory));
-			BranchVersioningStrategy = branchVersioningStrategy ?? throw new ArgumentNullException(nameof(branchVersioningStrategy));
-			BranchHistoryAnalyser = branchHistoryAnalyser;
-			Variables = new ReadOnlyDictionary<string, string>(variables ?? new Dictionary<string, string>());
+			BranchModel = branchModel;
 		}
 
 		public DirectoryInfo RepositoryRootDirectory { get; }
 
 		public DirectoryInfo SourceCodeRootDirectory { get; }
-
-		public IBranchVersioningStrategy BranchVersioningStrategy { get; }
-		public IBranchHistoryAnalyser BranchHistoryAnalyser { get; }
+		public IKnownBranch BranchModel { get; }
 
 		public IReadOnlyList<Project> Projects { get; }		
-
-		public IReadOnlyDictionary<string, string> Variables { get; }
 	}
 }

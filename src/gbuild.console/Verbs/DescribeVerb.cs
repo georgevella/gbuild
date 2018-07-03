@@ -3,6 +3,7 @@ using GBuild.Console.VerbOptions;
 using GBuild.Context;
 using GBuild.Generator;
 using GBuild.Models;
+using GBuild.Variables;
 using Serilog;
 
 namespace GBuild.Console.Verbs
@@ -11,20 +12,23 @@ namespace GBuild.Console.Verbs
 	{
 		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
 		private readonly IContextData<Workspace> _workspaceInformation;
-		private readonly IContextData<Releases> _workspaceReleaseInformation;
+		private readonly IContextData<PastReleases> _pastReleases;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
+		private readonly IVariableStore _variableStore;
 
 		public DescribeVerb(
 			IContextData<Workspace> workspaceInformation,
-			IContextData<Releases> workspaceReleaseInformation,
+			IContextData<PastReleases> pastReleases,
 			IContextData<CommitHistoryAnalysis> commitAnalysis,
-			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
+			IVersionNumberGeneratorProvider versionNumberGeneratorProvider,
+			IVariableStore variableStore
 		)
 		{
 			_workspaceInformation = workspaceInformation;
-			_workspaceReleaseInformation = workspaceReleaseInformation;
+			_pastReleases = pastReleases;
 			_commitAnalysis = commitAnalysis;
 			_versionNumberGeneratorProvider = versionNumberGeneratorProvider;
+			_variableStore = variableStore;
 		}
 
 		public void Run(
@@ -40,8 +44,8 @@ namespace GBuild.Console.Verbs
 			Log.Information($"Projects found: {string.Join(",", _workspaceInformation.Data.Projects.Select( _ => _.Name))}");			
 			Log.Information($"Changed Projects: {string.Join(",", _commitAnalysis.Data.ChangedProjects.Keys.Select(_ => _.Name))}");
 			
-			var currentVersions = _workspaceReleaseInformation.Data.PastReleases.FirstOrDefault()?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
-			var nextVersions = _versionNumberGeneratorProvider.GetVersion();
+			var currentVersions = _pastReleases.Data.FirstOrDefault()?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
+			var nextVersions = _versionNumberGeneratorProvider.GetVersion(_commitAnalysis.Data);
 			var longestProjectName = nextVersions.Keys.Select(x => x.Name.Length).Max();
 			Log.Information("Workspace Version Numbers:");
 
@@ -52,7 +56,7 @@ namespace GBuild.Console.Verbs
 			}			
 
 			Log.Information("Variables:");
-			foreach (var pair in _workspaceInformation.Data.Variables)
+			foreach (var pair in _variableStore.Global.GetVariables())
 			{
 				Log.Information($"{pair.Key}: [{pair.Value}] (workspace)");
 			}

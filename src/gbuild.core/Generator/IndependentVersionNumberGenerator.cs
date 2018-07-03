@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using GBuild.Configuration;
+using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
 using GBuild.Variables;
@@ -13,39 +14,34 @@ namespace GBuild.Generator
 	public class IndependentVersionNumberGenerator : IVersionNumberGenerator
 	{
 		private readonly IWorkspaceConfiguration _workspaceConfiguration;
-		private readonly Releases _releases;
-		private readonly IVariableRenderer _variableRenderer;
-		private readonly CommitHistoryAnalysis _commitAnalysis;
-		private readonly Workspace _workspace;
+		private readonly PastReleases _pastReleases;
 
 		public IndependentVersionNumberGenerator(
 			IWorkspaceConfiguration workspaceConfiguration,
-			IContextData<CommitHistoryAnalysis> commitAnalysis,
-			IContextData<Workspace> workspace,
-			IContextData<Releases> workspaceReleaseInformation,
-			IVariableRenderer variableRenderer
+			IContextData<PastReleases> pastReleases
 			)
 		{
 			_workspaceConfiguration = workspaceConfiguration;
-			_releases = workspaceReleaseInformation.Data;
-			_variableRenderer = variableRenderer;
-			_commitAnalysis = commitAnalysis.Data;
-			_workspace = workspace.Data;
+			_pastReleases = pastReleases.Data;
 		}
 
-		public SemanticVersion GetVersion(Project project)
-		{
-			var branchVersioningStrategyModel = _workspace.BranchVersioningStrategy;
+		public SemanticVersion GetVersion(
+			CommitHistoryAnalysis commitHistoryAnalysis,
+			IBranchVersioningStrategy branchVersioningStrategy,
+			IBranchVersioningSettings branchVersioningSettings, 
+			Project project)
+		{ 	
 
 			var baseVersion = _workspaceConfiguration.StartingVersion;
 
 			// TODO: check for any release branches, that are in progress, and run a commit analysis on latest release branch and version generation logic
+			// TODO: implement base version number retireval in branch versioning strategy!!!!
 			
-			if (_releases.PastReleases.Any())
+			if (_pastReleases.Any())
 			{
-				var release = _releases.PastReleases.First();
+				var release = _pastReleases.First();
 
-				if (_commitAnalysis.ChangedProjects.TryGetValue(project, out var changedProject))
+				if (commitHistoryAnalysis.ChangedProjects.TryGetValue(project, out var changedProject))
 				{
 					if (changedProject.HasBreakingChanges)
 					{
@@ -61,7 +57,7 @@ namespace GBuild.Generator
 				// we don't touch the version if there are no changes for this project, we simply point to the latest release.
 			}
 
-			return branchVersioningStrategyModel.Generate(baseVersion, project);
+			return branchVersioningStrategy.Generate(branchVersioningSettings, baseVersion, project);
 		}
 	}
 }

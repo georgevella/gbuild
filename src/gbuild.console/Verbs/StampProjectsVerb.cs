@@ -33,7 +33,7 @@ namespace GBuild.Console.Verbs
 		{
 			var changedProjects = _commitAnalysis.Data.ChangedProjects.Keys.ToList();
 			var projectVersionWriter = _projectVersionWriters.First();
-			var versionNumbers = _versionNumberGeneratorProvider.GetVersion();
+			var versionNumbers = _versionNumberGeneratorProvider.GetVersion(_commitAnalysis.Data);
 
 			changedProjects.ForEach(project => projectVersionWriter.UpdateVersionInformation(project, versionNumbers[project]));
 		}

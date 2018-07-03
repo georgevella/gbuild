@@ -51,6 +51,8 @@ namespace GBuild.Console
 
 			container.Register(typeof(IVerb<>), assemblyList);
 
+			container.Verify(VerificationOption.VerifyAndDiagnose);
+
 			// setup command line parser
 			var verbTypes = Assembly.GetExecutingAssembly().DefinedTypes
 				.Select(t => new

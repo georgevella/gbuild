@@ -7,6 +7,12 @@ namespace GBuild.CommitHistory
 {
 	public interface ICommitHistoryAnalyser
 	{
-		CommitHistoryAnalysis AnalyseCommitLog(IBranchHistoryAnalyser branchVersioningStrategy, DirectoryInfo repositoryRootDirectory, IEnumerable<Project> projects);
+		CommitHistoryAnalysis AnalyseCommitLog(
+			IBranchHistoryAnalyser branchHistoryAnalyser,
+			IBranchAnalysisSettings branchAnalysisSettings,
+			string branchName,
+			DirectoryInfo repositoryRootDirectory,
+			IEnumerable<Project> projects
+		);
 	}
 }

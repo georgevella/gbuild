@@ -6,6 +6,7 @@ using GBuild.CommitHistory;
 using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Context;
+using GBuild.Generator;
 using GBuild.Models;
 using GBuild.Projects.Discovery;
 using GBuild.ReleaseHistory;
@@ -23,6 +24,7 @@ namespace GBuild.Workspaces
 		private readonly IProjectDiscoveryService _projectDiscoveryService;		
 		private readonly IRepository _repository;
 		private readonly IServiceProvider _serviceProvider;
+		private readonly IVariableStore _variableStore;
 
 		public WorkspaceContextDataProvider(
 			IWorkspaceConfiguration configuration,
@@ -30,7 +32,8 @@ namespace GBuild.Workspaces
 			IWorkspaceSourceCodeDirectoryProvider workspaceSourceCodeDirectoryProvider,
 			IProjectDiscoveryService projectDiscoveryService,			 
 			IRepository repository,
-			IServiceProvider serviceProvider
+			IServiceProvider serviceProvider,
+			IVariableStore variableStore
 		)
 		{
 			_configuration = configuration;
@@ -39,6 +42,7 @@ namespace GBuild.Workspaces
 			_projectDiscoveryService = projectDiscoveryService;
 			_repository = repository;
 			_serviceProvider = serviceProvider;
+			_variableStore = variableStore;
 		}
 
 		public Workspace LoadContextData()
@@ -49,42 +53,41 @@ namespace GBuild.Workspaces
 
 			// determine all project files
 			//var projectFiles = sourceCodeRootDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories);
-			var projects = _projectDiscoveryService.GetProjects();
+			var projects = _projectDiscoveryService.GetProjects().ToList();
 
 			// determine branch version strategy
-			var currentBranch = _repository.Branches.First(b => b.IsCurrentRepositoryHead);
+			var currentBranch = _repository.GetCurrentBranch();
 
 			var branch = _configuration.KnownBranches.FirstOrDefault(b => b.IsMatch(currentBranch.CanonicalName));
 			if (branch == null)
 				throw new Exception("Could not determine branch version strategy from current branch");
 
-			var branchVersioningStrategy = (BranchVersioningStrategy)_serviceProvider.GetService(typeof(BranchVersioningStrategy));
-			branchVersioningStrategy.Metadata = branch.VersioningSettings.Metadata;
-			branchVersioningStrategy.Tag = branch.VersioningSettings.Tag;			
+//			IBranchHistoryAnalyser branchHistoryAnalyser = null;
+//			switch (branch.Type)
+//			{
+//				case BranchType.Development:
+//					branchHistoryAnalyser = (IBranchHistoryAnalyser)_serviceProvider.GetService(typeof(DevelopmentBranchHistoryAnalyser));
+//					break;
+//				case BranchType.Release:
+//					branchHistoryAnalyser = (IBranchHistoryAnalyser)_serviceProvider.GetService(typeof(ReleaseBranchHistoryAnalyser));
+//					break;
+//			}
 
-			IBranchHistoryAnalyser branchHistoryAnalyser = null;
-			switch (branch.Type)
+			projects.ForEach( p => _variableStore.AddProject(p));
+
+			foreach (var pair in BuildWorkspaceVariables(currentBranch))
 			{
-				case BranchType.Development:
-					branchHistoryAnalyser = new DevelopmentBranchHistoryAnalyser(_repository)
-					{
-						ParentBranch = branch.AnalysisSettings.ParentBranch
-					};
-					break;
-				case BranchType.Release:
-					branchHistoryAnalyser = new ReleaseBranchHistoryAnalyser(_repository);
-					break;
+				_variableStore.Global[pair.Key] = pair.Value;
 			}
 
 			return new Workspace(
 				workspaceRootDirectory,
 				sourceCodeRootDirectory,
 				projects,
-				branchVersioningStrategy,
-				branchHistoryAnalyser,
-				BuildWorkspaceVariables(currentBranch)
+				branch
 			);
 		}
+
 		private IDictionary<string, string> BuildWorkspaceVariables(Branch currentBranch)
 		{
 			return new Dictionary<string, string>()
@@ -117,5 +120,6 @@ namespace GBuild.Workspaces
 
 			return string.Empty;
 		}
+
 	}
 }

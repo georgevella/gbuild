@@ -61,9 +61,22 @@ namespace GBuild
 			container.RegisterSingleton<IWorkspaceSourceCodeDirectoryProvider, WorkspaceSourceCodeDirectoryProvider>();
 
 			// version number generators
-			container.RegisterCollection<IVersionNumberGenerator>(assemblies);
-			container.Register<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
-			container.Register<IVariableRenderer, VariableRenderer>();
+			container.RegisterCollection<IVersionNumberGenerator>(new []
+			{
+				Lifestyle.Singleton.CreateRegistration<IndependentVersionNumberGenerator>(container)
+			});
+			container.RegisterSingleton<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
+			container.RegisterSingleton<IVariableRenderer, VariableRenderer>();
+			container.RegisterSingleton<IVariableStore, VariableStore>();
+			container.RegisterSingleton<IBranchVersioningStrategy, BranchVersioningStrategy>();
+			container.RegisterSingleton<IBranchHistoryAnalyser, BranchHistoryAnalyserProvider>();
+			container.RegisterSingleton<ReleaseBranchHistoryAnalyser>();
+			container.RegisterCollection<IBranchHistoryAnalyser>(
+				new []
+				{
+					Lifestyle.Singleton.CreateRegistration<DevelopmentBranchHistoryAnalyser>(container),
+					Lifestyle.Singleton.CreateRegistration<ReleaseBranchHistoryAnalyser>(container)
+				});
 			
 			container.RegisterInstance<IServiceProvider>(container);
 		}
