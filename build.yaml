@@ -4,25 +4,29 @@ branches:
   knownBranches:
   - name: refs/heads/master
     type: Main
-    versioning:
+    analysis:
       parentBranch: 
+    versioning:      
       tag: ''
       metadata: ''
   - name: refs/heads/develop
     type: Development
-    versioning:
+    analysis:
       parentBranch: refs/heads/master
+    versioning:      
       tag: 'dev-{commitcount}'
       metadata: ''
   - name: refs/heads/feature/*
     type: Feature
-    versioning:
+    analysis:
       parentBranch: refs/heads/develop
+    versioning:      
       tag: '{featurename}-{commitcount}'
       metadata: ''
   - name: refs/heads/release/*
     type: Release
-    versioning:
+    analysis:
       parentBranch: refs/heads/develop
+    versioning:      
       tag: 'rc-{commitcount}'
       metadata: ''
