@@ -21,9 +21,11 @@ namespace GBuild.Configuration.Entities
 					{
 						Name = "refs/heads/develop",
 						Type = BranchType.Development,
+						Analysis = {
+							ParentBranch = "refs/heads/master",
+						},
 						Versioning =
 						{
-							ParentBranch = "refs/heads/master",
 							Tag = "dev-{commitcount}"
 						}
 					},
@@ -31,9 +33,11 @@ namespace GBuild.Configuration.Entities
 					{
 						Name = "refs/heads/feature/*",
 						Type = BranchType.Feature,
+						Analysis = {
+							ParentBranch = "refs/heads/develop",
+						},
 						Versioning =
 						{
-							ParentBranch = "refs/heads/develop",
 							Tag = "dev-{featurename}-{commitcount}"
 						}
 					},
@@ -41,16 +45,18 @@ namespace GBuild.Configuration.Entities
 					{
 						Name = "refs/heads/release/*",
 						Type = BranchType.Release,
+						Analysis = {
+							ParentBranch = "refs/heads/develop",
+							MergeTarget = "refs/heads/master"
+						},
 						Versioning =
 						{
-							ParentBranch = "refs/heads/develop",
 							Tag = "rc-{commitcount}"
 						}
 					}
 				},
 				BranchingModel = BranchingModelType.GitFlow
-			}
-			,
+			},
 			Sources = "src",
 			Versioning = VersioningMode.Independent
 		};

@@ -1,16 +1,12 @@
 ﻿namespace GBuild.Configuration.Entities
 {
-	public class BranchVersioningStrategyModel
+	public class BranchVersioningModel
 	{
-		public BranchVersioningStrategyModel()
+		public BranchVersioningModel()
 		{
 			Tag = string.Empty;
 			Metadata = string.Empty;
-		}
-		
-		public string Name { get; set; }
-		
-		public string ParentBranch { get; set; }
+		}		
 
 		public string Tag { get; set; }
 

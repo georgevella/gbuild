@@ -22,13 +22,15 @@ namespace GBuild.Workspaces
 		private readonly IWorkspaceSourceCodeDirectoryProvider _workspaceSourceCodeDirectoryProvider;
 		private readonly IProjectDiscoveryService _projectDiscoveryService;		
 		private readonly IRepository _repository;
+		private readonly IServiceProvider _serviceProvider;
 
 		public WorkspaceContextDataProvider(
 			IWorkspaceConfiguration configuration,
 			IWorkspaceRootDirectoryProvider workspaceRootDirectoryProvider,
 			IWorkspaceSourceCodeDirectoryProvider workspaceSourceCodeDirectoryProvider,
 			IProjectDiscoveryService projectDiscoveryService,			 
-			IRepository repository
+			IRepository repository,
+			IServiceProvider serviceProvider
 		)
 		{
 			_configuration = configuration;
@@ -36,6 +38,7 @@ namespace GBuild.Workspaces
 			_workspaceSourceCodeDirectoryProvider = workspaceSourceCodeDirectoryProvider;
 			_projectDiscoveryService = projectDiscoveryService;
 			_repository = repository;
+			_serviceProvider = serviceProvider;
 		}
 
 		public Workspace LoadContextData()
@@ -55,14 +58,17 @@ namespace GBuild.Workspaces
 			if (branch == null)
 				throw new Exception("Could not determine branch version strategy from current branch");
 
-			var branchVersioningStrategy = branch.VersioningStrategy;
+			var branchVersioningStrategy = (BranchVersioningStrategy)_serviceProvider.GetService(typeof(BranchVersioningStrategy));
+			branchVersioningStrategy.Metadata = branch.VersioningSettings.Metadata;
+			branchVersioningStrategy.Tag = branch.VersioningSettings.Tag;			
+
 			IBranchHistoryAnalyser branchHistoryAnalyser = null;
 			switch (branch.Type)
 			{
 				case BranchType.Development:
 					branchHistoryAnalyser = new DevelopmentBranchHistoryAnalyser(_repository)
 					{
-						ParentBranch = branchVersioningStrategy.ParentBranch
+						ParentBranch = branch.AnalysisSettings.ParentBranch
 					};
 					break;
 				case BranchType.Release:

@@ -9,17 +9,20 @@ namespace GBuild.Configuration.Models
 			string name,
 			string pattern,
 			BranchType type,
-			IBranchVersioningStrategy versioningStrategy
+			IBranchVersioningSettings versioningSettings,
+			IBranchAnalysisSettings analysisSettings
 		)
 		{
 			_pattern = pattern;
 			Name = name;
 			Type = type;
-			VersioningStrategy = versioningStrategy;
+			VersioningSettings = versioningSettings;
+			AnalysisSettings = analysisSettings;
 		}
 
 		public string Name { get; }
-		public IBranchVersioningStrategy VersioningStrategy { get; }
+		public IBranchVersioningSettings VersioningSettings { get; }
+		public IBranchAnalysisSettings AnalysisSettings { get; }
 		public BranchType Type { get; }
 		public bool IsMatch(
 			string branchName

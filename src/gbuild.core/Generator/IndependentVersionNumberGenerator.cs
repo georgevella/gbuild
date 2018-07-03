@@ -61,13 +61,7 @@ namespace GBuild.Generator
 				// we don't touch the version if there are no changes for this project, we simply point to the latest release.
 			}
 
-			return SemanticVersion.Create(
-				major: baseVersion.Major,
-				minor: baseVersion.Minor,
-				patch: baseVersion.Patch,
-				prereleseTag: _variableRenderer.Render(branchVersioningStrategyModel.Tag, project),
-				metadata: _variableRenderer.Render(branchVersioningStrategyModel.Metadata, project)
-			);
+			return branchVersioningStrategyModel.Generate(baseVersion, project);
 		}
 	}
 }

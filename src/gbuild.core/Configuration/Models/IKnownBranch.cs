@@ -4,10 +4,9 @@
 	{
 		string Name { get; }
 
-		IBranchVersioningStrategy VersioningStrategy { get; }
-
 		BranchType Type { get; }
-
+		IBranchVersioningSettings VersioningSettings { get; }		
+		IBranchAnalysisSettings AnalysisSettings { get; }
 		bool IsMatch(
 			string branchName
 		);

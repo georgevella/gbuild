@@ -7,7 +7,9 @@ namespace GBuild.Configuration
 {
 	public class WorkspaceConfiguration : IWorkspaceConfiguration
 	{
-		public WorkspaceConfiguration(IConfigurationFileLoader configurationFileLoader)
+		public WorkspaceConfiguration(
+			IConfigurationFileLoader configurationFileLoader
+		)
 		{
 			var configuration = configurationFileLoader.Load();
 
@@ -16,24 +18,25 @@ namespace GBuild.Configuration
 					b.Name,
 					string.IsNullOrWhiteSpace(b.Pattern) ? b.Name : b.Pattern,
 					b.Type,
-					new BranchVersioningStrategy()
+					new BranchVersioningSettings()
 					{
 						Metadata = b.Versioning.Metadata,
-						Name = b.Name,
 						Tag = b.Versioning.Tag,
-						ParentBranch = b.Versioning.ParentBranch,
 						Increment = b.Versioning.Increment
+					},
+					new BranchAnalysisSettings()
+					{
+						ParentBranch = b.Analysis.ParentBranch,
+						MergeTarget = string.IsNullOrWhiteSpace(b.Analysis.MergeTarget) ? b.Analysis.ParentBranch : b.Analysis.MergeTarget
 					}
 				)
 			).ToList();
-
-			BranchVersioningStrategies = KnownBranches.Select(knownBranch => knownBranch.VersioningStrategy).ToList();
 
 			StartingVersion = SemanticVersion.Parse(configuration.StartingVersion);
 
 			SourceCodeRoot = configuration.Sources;
 		}
-		public IEnumerable<IBranchVersioningStrategy> BranchVersioningStrategies { get; }
+
 		public IEnumerable<IKnownBranch> KnownBranches { get; }
 		public string SourceCodeRoot { get; }
 
