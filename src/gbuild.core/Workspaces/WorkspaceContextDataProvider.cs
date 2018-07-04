@@ -24,7 +24,6 @@ namespace GBuild.Workspaces
 		private readonly IProjectDiscoveryService _projectDiscoveryService;		
 		private readonly IRepository _repository;
 		private readonly IServiceProvider _serviceProvider;
-		private readonly IVariableStore _variableStore;
 
 		public WorkspaceContextDataProvider(
 			IWorkspaceConfiguration configuration,
@@ -32,8 +31,7 @@ namespace GBuild.Workspaces
 			IWorkspaceSourceCodeDirectoryProvider workspaceSourceCodeDirectoryProvider,
 			IProjectDiscoveryService projectDiscoveryService,			 
 			IRepository repository,
-			IServiceProvider serviceProvider,
-			IVariableStore variableStore
+			IServiceProvider serviceProvider
 		)
 		{
 			_configuration = configuration;
@@ -42,7 +40,6 @@ namespace GBuild.Workspaces
 			_projectDiscoveryService = projectDiscoveryService;
 			_repository = repository;
 			_serviceProvider = serviceProvider;
-			_variableStore = variableStore;
 		}
 
 		public Workspace LoadContextData()
@@ -71,14 +68,7 @@ namespace GBuild.Workspaces
 //				case BranchType.Release:
 //					branchHistoryAnalyser = (IBranchHistoryAnalyser)_serviceProvider.GetService(typeof(ReleaseBranchHistoryAnalyser));
 //					break;
-//			}
-
-			projects.ForEach( p => _variableStore.AddProject(p));
-
-			foreach (var pair in BuildWorkspaceVariables(currentBranch))
-			{
-				_variableStore.Global[pair.Key] = pair.Value;
-			}
+//			}			
 
 			return new Workspace(
 				workspaceRootDirectory,
@@ -86,39 +76,6 @@ namespace GBuild.Workspaces
 				projects,
 				branch
 			);
-		}
-
-		private IDictionary<string, string> BuildWorkspaceVariables(Branch currentBranch)
-		{
-			return new Dictionary<string, string>()
-			{
-				{WorkspaceVariables.BranchName, currentBranch.FriendlyName},
-				{WorkspaceVariables.FeatureName, GetFeatureNameFromBranch(currentBranch)},
-				{WorkspaceVariables.IssueId, GetIssueIdFromBranch(currentBranch)}
-			};
-		}
-
-		private string GetIssueIdFromBranch(
-			Branch currentBranch
-		)
-		{
-			// TODO: add support
-			return String.Empty;
-		}
-
-		private string GetFeatureNameFromBranch(
-			Branch currentBranch
-		)
-		{
-			if (currentBranch.CanonicalName.StartsWith("refs/heads/feature/"))
-			{
-				var featureName = currentBranch.CanonicalName.Substring("refs/heads/feature/".Length);
-				featureName = new String(featureName.Where(c => c != '-' && c != '_').ToArray()).Transform(To.LowerCase)
-					.Truncate(10, string.Empty);
-				return featureName;
-			}
-
-			return string.Empty;
 		}
 
 	}

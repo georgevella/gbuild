@@ -1,5 +1,6 @@
 ﻿using GBuild.Configuration.Models;
 using GBuild.Models;
+using GBuild.Variables;
 
 namespace GBuild.Generator
 {
@@ -9,6 +10,8 @@ namespace GBuild.Generator
 			CommitHistoryAnalysis commitHistoryAnalysis, 
 			IBranchVersioningStrategy branchVersioningStrategy,
 			IBranchVersioningSettings branchVersioningSettings,
-			Project project);
+			Project project,
+			IVariableStore variableStore
+			);
 	}
 }

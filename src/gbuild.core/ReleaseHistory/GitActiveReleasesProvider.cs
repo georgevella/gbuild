@@ -59,8 +59,7 @@ namespace GBuild.ReleaseHistory
 			var releaseBranchCommitAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(
 				_branchHistoryAnalyser,
 				releaseBranchType.AnalysisSettings,
-				releaseBranches.First().CanonicalName,
-				_workspaceContextData.Data.RepositoryRootDirectory, _workspaceContextData.Data.Projects);
+				releaseBranches.First().CanonicalName);
 
 			var releaseVersionInfo = _versionNumberGenerator.GetVersion(releaseBranchCommitAnalysis, releaseBranchType.VersioningSettings);
 

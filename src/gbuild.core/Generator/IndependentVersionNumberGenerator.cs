@@ -29,7 +29,8 @@ namespace GBuild.Generator
 			CommitHistoryAnalysis commitHistoryAnalysis,
 			IBranchVersioningStrategy branchVersioningStrategy,
 			IBranchVersioningSettings branchVersioningSettings, 
-			Project project)
+			Project project,
+			IVariableStore variableStore)
 		{ 	
 
 			var baseVersion = _workspaceConfiguration.StartingVersion;
@@ -57,7 +58,7 @@ namespace GBuild.Generator
 				// we don't touch the version if there are no changes for this project, we simply point to the latest release.
 			}
 
-			return branchVersioningStrategy.Generate(branchVersioningSettings, baseVersion, project);
+			return branchVersioningStrategy.Generate(branchVersioningSettings, baseVersion, project, variableStore);
 		}
 	}
 }

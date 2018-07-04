@@ -66,8 +66,7 @@ namespace GBuild
 				Lifestyle.Singleton.CreateRegistration<IndependentVersionNumberGenerator>(container)
 			});
 			container.RegisterSingleton<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
-			container.RegisterSingleton<IVariableRenderer, VariableRenderer>();
-			container.RegisterSingleton<IVariableStore, VariableStore>();
+			container.RegisterSingleton<IVariableRenderer, VariableRenderer>();			
 			container.RegisterSingleton<IBranchVersioningStrategy, BranchVersioningStrategy>();
 			container.RegisterSingleton<IBranchHistoryAnalyser, BranchHistoryAnalyserProvider>();
 			container.RegisterSingleton<ReleaseBranchHistoryAnalyser>();

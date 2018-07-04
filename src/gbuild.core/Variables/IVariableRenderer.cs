@@ -6,7 +6,8 @@ namespace GBuild.Variables
 	{
 		string Render(
 			string template,
-			Project project
+			Project project,
+			IVariableStore variableStore
 		);
 	}
 }

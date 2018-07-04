@@ -10,9 +10,7 @@ namespace GBuild.CommitHistory
 		CommitHistoryAnalysis AnalyseCommitLog(
 			IBranchHistoryAnalyser branchHistoryAnalyser,
 			IBranchAnalysisSettings branchAnalysisSettings,
-			string branchName,
-			DirectoryInfo repositoryRootDirectory,
-			IEnumerable<Project> projects
+			string branchName
 		);
 	}
 }

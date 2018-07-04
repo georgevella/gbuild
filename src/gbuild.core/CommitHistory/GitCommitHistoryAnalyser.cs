@@ -18,34 +18,30 @@ namespace GBuild.CommitHistory
 	// (current branch analysis context data provider, and soon the workspace context data provider)
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
-		private readonly IRepository _repository;
-		private readonly IVariableStore _variablestore;
+		private readonly IContextData<Workspace> _workspaceContextData;
 
 		public GitCommitHistoryAnalyser(
-			IRepository repository, 
-			IVariableStore variablestore
+			IContextData<Workspace> workspaceContextData
 			)
 		{
-			_repository = repository;
-			_variablestore = variablestore;
+			_workspaceContextData = workspaceContextData;
 		}
 
 		public CommitHistoryAnalysis AnalyseCommitLog(
 			IBranchHistoryAnalyser branchHistoryAnalyser,
 			IBranchAnalysisSettings branchAnalysisSettings,
-			string branchName,
-			DirectoryInfo repositoryRootDirectory,
-			IEnumerable<Project> projects
+			string branchName
 		)
 		{
-			var projectList = projects.ToList();
+			var workspace = _workspaceContextData.Data;
+			var projectList = workspace.Projects.ToList();
 
 			// libgit2sharp library takes care of comparing git trees together to evaluate changes.
 			var commitsTowardsTarget = branchHistoryAnalyser.GetCommitsTowardsTarget(branchName, branchAnalysisSettings);
 			var commitsAheadOfParent = branchHistoryAnalyser.GetCommitsAheadOfParent(branchName, branchAnalysisSettings);
 
 			// determine changed modules
-			var rootDirectory = new Uri(repositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
+			var rootDirectory = new Uri(workspace.RepositoryRootDirectory.FullName.TrimEnd('\\') + "\\");
 
 			var moduleRootDirectories = projectList.OfType<BaseCsharpProject>()
 				.Select(m => new
