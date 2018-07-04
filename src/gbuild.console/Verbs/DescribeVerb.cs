@@ -1,51 +1,63 @@
 ﻿using System.Linq;
-using GBuild.Console.VerbOptions;
+using GBuild.CommitHistory;
 using GBuild.Context;
 using GBuild.Generator;
 using GBuild.Models;
 using GBuild.Variables;
+using LibGit2Sharp;
 using Serilog;
+using DescribeOptions = GBuild.Console.VerbOptions.DescribeOptions;
 
 namespace GBuild.Console.Verbs
 {
 	public class DescribeVerb : IVerb<DescribeOptions>
 	{
-		private readonly IContextData<CommitHistoryAnalysis> _commitAnalysis;
-		private readonly IContextData<Workspace> _workspaceInformation;
+		private readonly IContextData<Workspace> _workspaceContextData;
 		private readonly IContextData<PastReleases> _pastReleases;
+		private readonly IRepository _repository;
+		private readonly ICommitHistoryAnalyser _commitHistoryAnalyser;
+		private readonly IBranchHistoryAnalyser _branchHistoryAnalyser;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
-		private readonly IVariableStore _variableStore;
 
 		public DescribeVerb(
-			IContextData<Workspace> workspaceInformation,
+			IContextData<Workspace> workspaceContextData,
 			IContextData<PastReleases> pastReleases,
-			IContextData<CommitHistoryAnalysis> commitAnalysis,
-			IVersionNumberGeneratorProvider versionNumberGeneratorProvider,
-			IVariableStore variableStore
+			IRepository repository,
+			ICommitHistoryAnalyser commitHistoryAnalyser,
+			IBranchHistoryAnalyser branchHistoryAnalyser,
+			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
 		{
-			_workspaceInformation = workspaceInformation;
+			_workspaceContextData = workspaceContextData;
 			_pastReleases = pastReleases;
-			_commitAnalysis = commitAnalysis;
+			_repository = repository;
+			_commitHistoryAnalyser = commitHistoryAnalyser;
+			_branchHistoryAnalyser = branchHistoryAnalyser;
 			_versionNumberGeneratorProvider = versionNumberGeneratorProvider;
-			_variableStore = variableStore;
 		}
 
 		public void Run(
 			DescribeOptions options
 		)
 		{
+			var currentBranch = _repository.GetCurrentBranch();
+
+			var commitHistoryAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(
+				_branchHistoryAnalyser,
+				_workspaceContextData.Data.BranchModel.AnalysisSettings,
+				currentBranch.CanonicalName);
+
 			//Log.Information("Current Branch: {branch}", _commitAnalysis.Data.CurrentBranch);
 			Log.Information("Current Directory: {repoRoot}",
-							_workspaceInformation.Data.RepositoryRootDirectory.FullName);
+							_workspaceContextData.Data.RepositoryRootDirectory.FullName);
 			Log.Information("Current Directory: {srcRoot}",
-							_workspaceInformation.Data.SourceCodeRootDirectory.FullName);
+							_workspaceContextData.Data.SourceCodeRootDirectory.FullName);
 
-			Log.Information($"Projects found: {string.Join(",", _workspaceInformation.Data.Projects.Select( _ => _.Name))}");			
-			Log.Information($"Changed Projects: {string.Join(",", _commitAnalysis.Data.ChangedProjects.Keys.Select(_ => _.Name))}");
+			Log.Information($"Projects found: {string.Join(",", _workspaceContextData.Data.Projects.Select( _ => _.Name))}");			
+			Log.Information($"Changed Projects: {string.Join(",", commitHistoryAnalysis.ChangedProjects.Keys.Select(_ => _.Name))}");
 			
 			var currentVersions = _pastReleases.Data.FirstOrDefault()?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
-			var nextVersions = _versionNumberGeneratorProvider.GetVersion(_commitAnalysis.Data);
+			var nextVersions = _versionNumberGeneratorProvider.GetVersion(commitHistoryAnalysis);
 			var longestProjectName = nextVersions.Keys.Select(x => x.Name.Length).Max();
 			Log.Information("Workspace Version Numbers:");
 
@@ -55,11 +67,11 @@ namespace GBuild.Console.Verbs
 				Log.Information($"+ {wvi.Key.Name.PadLeft(longestProjectName)} : {currrentVersion} -> {wvi.Value}");
 			}			
 
-			Log.Information("Variables:");
-			foreach (var pair in _variableStore.Global.GetVariables())
-			{
-				Log.Information($"{pair.Key}: [{pair.Value}] (workspace)");
-			}
+//			Log.Information("Variables:");
+//			foreach (var pair in _variableStore.Global.GetVariables())
+//			{
+//				Log.Information($"{pair.Key}: [{pair.Value}] (workspace)");
+//			}
 		}
 	}
 }
