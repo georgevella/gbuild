@@ -69,11 +69,15 @@ namespace GBuild
 			{
 				Lifestyle.Transient.CreateRegistration<IndependentVersionNumberGenerator>(container)
 			});
+			container.RegisterCollection<IBranchVersioningStrategy>(new []
+			{
+				Lifestyle.Transient.CreateRegistration<DevelopmentBranchVersioningStrategy>(container),
+				Lifestyle.Transient.CreateRegistration<ReleaseBranchVersioningStrategy>(container)
+			});
 			container.RegisterSingleton<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
 			container.RegisterSingleton<IVariableRenderer, VariableRenderer>();			
-			container.RegisterSingleton<IBranchVersioningStrategy, BranchVersioningStrategy>();
+			container.RegisterSingleton<IBranchVersioningStrategyProvider, BranchVersioningStrategyProvider>();
 			container.RegisterSingleton<IBranchHistoryAnalyserProvider, BranchHistoryAnalyserProvider>();
-			container.RegisterSingleton<ReleaseBranchHistoryAnalyser>();
 			container.RegisterCollection<IBranchHistoryAnalyser>(
 				new []
 				{

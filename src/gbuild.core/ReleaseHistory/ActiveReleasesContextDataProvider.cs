@@ -1,34 +1,44 @@
 ﻿using System.Linq;
 using GBuild.Context;
 using GBuild.Models;
+using Microsoft.Extensions.Logging;
 
 namespace GBuild.ReleaseHistory
 {
 	public class ActiveReleasesContextDataProvider : IContextDataProvider<ActiveReleases>
 	{
+		private readonly ILogger<ActiveReleasesContextDataProvider> _logger;
 		private readonly IReleaseHistoryProvider _releaseHistoryProvider;
 		private readonly IActiveReleasesProvider _activeReleasesProvider;
 
 		public ActiveReleasesContextDataProvider(
+			ILogger<ActiveReleasesContextDataProvider> logger,
 			IReleaseHistoryProvider releaseHistoryProvider,
 			IActiveReleasesProvider activeReleasesProvider
 			)
 		{
+			_logger = logger;
 			_releaseHistoryProvider = releaseHistoryProvider;
 			_activeReleasesProvider = activeReleasesProvider;
 		}
 		public ActiveReleases LoadContextData()
 		{
-//			var releases = _releaseHistoryProvider.GetAllReleases();
-////			var latestRelease = _releaseHistoryProvider.GetLatestRelease();
-////			var latestReleaseVersionInfo = latestRelease?.VersionNumbers ?? WorkspaceVersionInfo.Empty();
+			_logger.LogInformation("Fetching active releases ...");
+			var activeReleases = _activeReleasesProvider.GetActiveReleases().ToList();
 
-			var activeReleases = _activeReleasesProvider.GetActiveReleases();
+			_logger.LogTrace("Fetching active releases ... complete");
 
-			// TODO: determine versions of any pending release branches, when in gitflow
+			for (var index = 0; index < activeReleases.Count; index++)
+			{
+				var release = activeReleases[index];
+				foreach (var p in release.VersionNumbers)
+				{
+					_logger.LogDebug("Release {index}: {project} - v{version}", index, p.Key.Name, p.Value);
+				}
+			}
 
 			return new ActiveReleases(
-				activeReleases.ToList()
+				activeReleases
 				);
 		}
 	}

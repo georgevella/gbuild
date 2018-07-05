@@ -14,20 +14,17 @@ namespace GBuild.Generator
 	internal class VersionNumberGeneratorProvider : IVersionNumberGeneratorProvider
 	{
 		private readonly IContextData<Workspace> _workspaceContextData;
-		private readonly IBranchVersioningStrategy _branchVersioningStrategy;
 		private readonly IRepository _repository;
 		private readonly IEnumerable<IVersionNumberGenerator> _versionNumberGenerators;
 
 		public VersionNumberGeneratorProvider(
 			IEnumerable<IVersionNumberGenerator> versionNumberGenerators,
-			IContextData<Workspace> workspaceContextData,
-			IBranchVersioningStrategy branchVersioningStrategy,
+			IContextData<Workspace> workspaceContextData,			
 			IRepository repository
 		)
 		{
 			_versionNumberGenerators = versionNumberGenerators;
 			_workspaceContextData = workspaceContextData;
-			_branchVersioningStrategy = branchVersioningStrategy;
 			_repository = repository;
 		}
 
@@ -44,11 +41,27 @@ namespace GBuild.Generator
 			{
 				var projectVersion = versionNumberGenerator.GetVersion(
 					commitHistoryAnalysis,
-					_branchVersioningStrategy,
-					_workspaceContextData.Data.BranchModel.VersioningSettings,
 					project,
 					variableStore
 					);
+				workspaceVersionInfo[project] = projectVersion;
+			}
+
+			return new WorkspaceVersionInfo(workspaceVersionInfo);
+		}
+		public WorkspaceVersionInfo GetVersion(
+			CommitHistoryAnalysis commitHistoryAnalysis,
+			IBranchVersioningSettings branchVersioningSettings
+		)
+		{
+			var variableStore = BuildVariableStore(commitHistoryAnalysis);
+			var versionNumberGenerator = _versionNumberGenerators.First();
+
+			var workspaceVersionInfo = new Dictionary<Project, SemanticVersion>();
+
+			foreach (var project in _workspaceContextData.Data.Projects)
+			{
+				var projectVersion = versionNumberGenerator.GetVersion(commitHistoryAnalysis, project, variableStore);
 				workspaceVersionInfo[project] = projectVersion;
 			}
 
@@ -67,31 +80,12 @@ namespace GBuild.Generator
 					pair.Value.CommitsAheadOfParent.Count().ToString();
 			}
 
-			foreach (var pair in BuildWorkspaceVariables(_repository.GetCurrentBranch()))
+			foreach (var pair in BuildWorkspaceVariables(_repository.Branches.First(x => x.CanonicalName == commitHistoryAnalysis.BranchName)))
 			{
 				variableStore.Global[pair.Key] = pair.Value;
 			}
 
 			return variableStore;
-		}
-
-		public WorkspaceVersionInfo GetVersion(
-			CommitHistoryAnalysis commitHistoryAnalysis,
-			IBranchVersioningSettings branchVersioningSettings
-		)
-		{
-			var variableStore = BuildVariableStore(commitHistoryAnalysis);
-			var versionNumberGenerator = _versionNumberGenerators.First();
-
-			var workspaceVersionInfo = new Dictionary<Project, SemanticVersion>();
-
-			foreach (var project in _workspaceContextData.Data.Projects)
-			{
-				var projectVersion = versionNumberGenerator.GetVersion(commitHistoryAnalysis, _branchVersioningStrategy, branchVersioningSettings, project, variableStore);
-				workspaceVersionInfo[project] = projectVersion;
-			}
-
-			return new WorkspaceVersionInfo(workspaceVersionInfo);
 		}
 
 		private IDictionary<string, string> BuildWorkspaceVariables(Branch currentBranch)

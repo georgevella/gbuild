@@ -42,15 +42,4 @@ namespace GBuild.CommitHistory
 			return _branchHistoryAnalyserMap[knownBranch.Type];
 		}
 	}
-
-	public interface IBranchHistoryAnalyserProvider
-	{
-		IBranchHistoryAnalyser GetBranchHistoryAnalyser(
-			string branchName
-		);
-
-		IBranchHistoryAnalyser GetBranchHistoryAnalyser(
-			IKnownBranch knownBranch
-		);
-	}
 }

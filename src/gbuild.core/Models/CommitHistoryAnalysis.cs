@@ -8,6 +8,7 @@ namespace GBuild.Models
 	public class CommitHistoryAnalysis
 	{
 		public CommitHistoryAnalysis(
+			string branchName,
 			IDictionary<Project, ChangedProject> changedProjects,
 			IEnumerable<Commit> commits,
 			IEnumerable<ChangedFile> changedFiles,
@@ -18,6 +19,7 @@ namespace GBuild.Models
 			ChangedProjects = new ReadOnlyDictionary<Project, ChangedProject>(changedProjects);
 			Commits = commits.ToList();
 			ChangedFiles = changedFiles.ToList();
+			BranchName = branchName;
 			HasBreakingChanges = hasBreakingChanges;
 			HasNewFeatures = hasNewFeatures;
 		}
@@ -31,6 +33,7 @@ namespace GBuild.Models
 
 		public IReadOnlyCollection<Commit> Commits { get; }
 
+		public string BranchName { get; }
 		public bool HasBreakingChanges { get; }
 
 		public bool HasNewFeatures { get; }

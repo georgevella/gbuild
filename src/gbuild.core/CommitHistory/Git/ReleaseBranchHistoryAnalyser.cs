@@ -3,6 +3,7 @@ using System.Linq;
 using GBuild.Configuration.Models;
 using LibGit2Sharp;
 using Serilog;
+using Microsoft.Extensions.Logging;
 using Commit = GBuild.Models.Commit;
 
 namespace GBuild.CommitHistory
@@ -10,12 +11,15 @@ namespace GBuild.CommitHistory
 	[SupportedBranchType(BranchType.Release)]
 	class ReleaseBranchHistoryAnalyser : IBranchHistoryAnalyser
 	{
+		private readonly ILogger<ReleaseBranchHistoryAnalyser> _logger;
 		private readonly IRepository _repository;
 
 		public ReleaseBranchHistoryAnalyser(
+			ILogger<ReleaseBranchHistoryAnalyser> logger,
 			IRepository repository
 		)
 		{
+			_logger = logger;
 			_repository = repository;
 		}
 
@@ -29,7 +33,7 @@ namespace GBuild.CommitHistory
 			var thisBranch = _repository.Branches.First(b => b.CanonicalName == branchName);
 			var mergeTargetBranch = _repository.Branches.First(b => b.CanonicalName == branchAnalysisSettings.MergeTarget);
 
-			Log.Debug("Commit analysis running between current branch [{currentbranch}] and [{parentbranch}:{parentcommit}]",
+			_logger.LogDebug("Commit analysis running between current branch [{currentbranch}] and [{mergeTarget}:{parentcommit}]",
 					  thisBranch.Tip.Sha,
 					  branchAnalysisSettings.MergeTarget,
 					  mergeTargetBranch.Tip.Sha);

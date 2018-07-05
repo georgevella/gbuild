@@ -14,21 +14,25 @@ namespace GBuild.Generator
 	public class IndependentVersionNumberGenerator : IVersionNumberGenerator
 	{
 		private readonly IWorkspaceConfiguration _workspaceConfiguration;
+		private readonly IBranchVersioningStrategyProvider _branchVersioningStrategyProvider;
+		private readonly IVariableRenderer _variableRenderer;
 		private readonly PastReleases _pastReleases;
 
 		public IndependentVersionNumberGenerator(
 			IWorkspaceConfiguration workspaceConfiguration,
-			IContextData<PastReleases> pastReleases
+			IContextData<PastReleases> pastReleases,
+			IBranchVersioningStrategyProvider branchVersioningStrategyProvider,
+			IVariableRenderer variableRenderer
 			)
 		{
 			_workspaceConfiguration = workspaceConfiguration;
+			_branchVersioningStrategyProvider = branchVersioningStrategyProvider;
+			_variableRenderer = variableRenderer;
 			_pastReleases = pastReleases.Data;
 		}
 
 		public SemanticVersion GetVersion(
 			CommitHistoryAnalysis commitHistoryAnalysis,
-			IBranchVersioningStrategy branchVersioningStrategy,
-			IBranchVersioningSettings branchVersioningSettings, 
 			Project project,
 			IVariableStore variableStore)
 		{ 	
@@ -42,23 +46,38 @@ namespace GBuild.Generator
 			{
 				var release = _pastReleases.First();
 
+				baseVersion = release.VersionNumbers[project];
+
 				if (commitHistoryAnalysis.ChangedProjects.TryGetValue(project, out var changedProject))
 				{
 					if (changedProject.HasBreakingChanges)
 					{
 						// TODO: make this configurable from branching strategy
-						baseVersion = release.VersionNumbers[project].IncrementMajor();
+						baseVersion = baseVersion.IncrementMajor();
 					}
 					else
 					{
-						baseVersion = release.VersionNumbers[project].IncrementMinor();
+						baseVersion = baseVersion.IncrementMinor();
 					}
 				}
 				
 				// we don't touch the version if there are no changes for this project, we simply point to the latest release.
 			}
 
-			return branchVersioningStrategy.Generate(branchVersioningSettings, baseVersion, project, variableStore);
+			var branchVersioningStrategy =
+				_branchVersioningStrategyProvider.GetVersioningStrategy(commitHistoryAnalysis.BranchName);
+
+			var knownBranch = _workspaceConfiguration.KnownBranches.First(x => x.IsMatch(commitHistoryAnalysis.BranchName));
+
+			baseVersion = branchVersioningStrategy.Generate(knownBranch.VersioningSettings, baseVersion, project, variableStore);
+
+			return SemanticVersion.Create(
+				major: baseVersion.Major,
+				minor: baseVersion.Minor,
+				patch: baseVersion.Patch,
+				prereleseTag: _variableRenderer.Render(knownBranch.VersioningSettings.Tag, project, variableStore),
+				metadata: _variableRenderer.Render(knownBranch.VersioningSettings.Metadata, project, variableStore)
+			);
 		}
 	}
 }

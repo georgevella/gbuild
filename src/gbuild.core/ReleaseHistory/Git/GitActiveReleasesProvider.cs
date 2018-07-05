@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GBuild.CommitHistory;
 using GBuild.Configuration;
@@ -7,6 +8,7 @@ using GBuild.Context;
 using GBuild.Generator;
 using GBuild.Models;
 using LibGit2Sharp;
+using Microsoft.Extensions.Logging;
 
 namespace GBuild.ReleaseHistory
 {
@@ -16,20 +18,17 @@ namespace GBuild.ReleaseHistory
 		private readonly IRepository _repository;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGenerator;
 		private readonly IWorkspaceConfiguration _workspaceConfiguration;
-		private readonly IContextData<Workspace> _workspaceContextData;
 
 		public GitActiveReleasesProvider(
 			IRepository repository,
 			IWorkspaceConfiguration workspaceConfiguration,
 			ICommitHistoryAnalyser commitHistoryAnalyser,
-			IContextData<Workspace> workspaceContextData,
 			IVersionNumberGeneratorProvider versionNumberGenerator
 		)
 		{
 			_repository = repository;
 			_workspaceConfiguration = workspaceConfiguration;
 			_commitHistoryAnalyser = commitHistoryAnalyser;
-			_workspaceContextData = workspaceContextData;
 			_versionNumberGenerator = versionNumberGenerator;
 		}
 
@@ -53,12 +52,19 @@ namespace GBuild.ReleaseHistory
 
 			// TODO: determine if a release branch was merged and left behind
 
+			// TODO: find all release branches not just first
+
 			var releaseBranchCommitAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(releaseBranches.First().CanonicalName, releaseBranchType.AnalysisSettings);
 
 			var releaseVersionInfo = _versionNumberGenerator.GetVersion(releaseBranchCommitAnalysis, releaseBranchType.VersioningSettings);
 
 
-			return Enumerable.Empty<Release>();
+
+
+			return new[]
+			{
+				new Release(DateTime.Now, releaseVersionInfo),
+			};
 		}
 	}
 }

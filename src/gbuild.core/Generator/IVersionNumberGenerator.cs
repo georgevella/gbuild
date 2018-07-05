@@ -7,9 +7,7 @@ namespace GBuild.Generator
 	public interface IVersionNumberGenerator
 	{
 		SemanticVersion GetVersion(
-			CommitHistoryAnalysis commitHistoryAnalysis, 
-			IBranchVersioningStrategy branchVersioningStrategy,
-			IBranchVersioningSettings branchVersioningSettings,
+			CommitHistoryAnalysis commitHistoryAnalysis, 			
 			Project project,
 			IVariableStore variableStore
 			);

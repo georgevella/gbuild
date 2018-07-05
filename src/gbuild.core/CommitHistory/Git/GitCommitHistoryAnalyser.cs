@@ -117,6 +117,7 @@ namespace GBuild.CommitHistory
 			var files = commitsTowardsTarget.SelectMany(x => x.ChangedFiles).Distinct();
 
 			return new CommitHistoryAnalysis(
+				branchName,
 				changedProjects,
 				commitsTowardsTarget,
 				files,
