@@ -12,7 +12,6 @@ namespace GBuild.ReleaseHistory
 {
 	internal class GitActiveReleasesProvider : IActiveReleasesProvider
 	{
-		private readonly IBranchHistoryAnalyser _branchHistoryAnalyser;
 		private readonly ICommitHistoryAnalyser _commitHistoryAnalyser;
 		private readonly IRepository _repository;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGenerator;
@@ -23,7 +22,6 @@ namespace GBuild.ReleaseHistory
 			IRepository repository,
 			IWorkspaceConfiguration workspaceConfiguration,
 			ICommitHistoryAnalyser commitHistoryAnalyser,
-			ReleaseBranchHistoryAnalyser branchHistoryAnalyser,
 			IContextData<Workspace> workspaceContextData,
 			IVersionNumberGeneratorProvider versionNumberGenerator
 		)
@@ -31,7 +29,6 @@ namespace GBuild.ReleaseHistory
 			_repository = repository;
 			_workspaceConfiguration = workspaceConfiguration;
 			_commitHistoryAnalyser = commitHistoryAnalyser;
-			_branchHistoryAnalyser = branchHistoryAnalyser;
 			_workspaceContextData = workspaceContextData;
 			_versionNumberGenerator = versionNumberGenerator;
 		}
@@ -56,10 +53,7 @@ namespace GBuild.ReleaseHistory
 
 			// TODO: determine if a release branch was merged and left behind
 
-			var releaseBranchCommitAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(
-				_branchHistoryAnalyser,
-				releaseBranchType.AnalysisSettings,
-				releaseBranches.First().CanonicalName);
+			var releaseBranchCommitAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(releaseBranches.First().CanonicalName, releaseBranchType.AnalysisSettings);
 
 			var releaseVersionInfo = _versionNumberGenerator.GetVersion(releaseBranchCommitAnalysis, releaseBranchType.VersioningSettings);
 

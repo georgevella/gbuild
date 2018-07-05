@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using GBuild.Assemblies;
 using GBuild.CommitHistory;
 using GBuild.Configuration;
 using GBuild.Configuration.Models;
@@ -40,6 +41,9 @@ namespace GBuild
 			// context information
 			container.RegisterSingleton(typeof(IContextDataProvider<>), assemblies);
 			container.RegisterSingleton(typeof(IContextData<>), typeof(ContextData<>));
+			container.RegisterSingleton<IContextDataStore, ContextDataStore>();
+			container.RegisterSingleton<IContextDataLoader, ContextDataLoader>();
+			container.RegisterInstance<ITypeLookupService>(new TypeLookupService(assemblies));
 
 			container.RegisterCollection<IProjectVersionWriter>(assemblies);
 			container.RegisterCollection<IProjectEnumerationService>(assemblies);
@@ -63,12 +67,12 @@ namespace GBuild
 			// version number generators
 			container.RegisterCollection<IVersionNumberGenerator>(new []
 			{
-				Lifestyle.Singleton.CreateRegistration<IndependentVersionNumberGenerator>(container)
+				Lifestyle.Transient.CreateRegistration<IndependentVersionNumberGenerator>(container)
 			});
 			container.RegisterSingleton<IVersionNumberGeneratorProvider, VersionNumberGeneratorProvider>();
 			container.RegisterSingleton<IVariableRenderer, VariableRenderer>();			
 			container.RegisterSingleton<IBranchVersioningStrategy, BranchVersioningStrategy>();
-			container.RegisterSingleton<IBranchHistoryAnalyser, BranchHistoryAnalyserProvider>();
+			container.RegisterSingleton<IBranchHistoryAnalyserProvider, BranchHistoryAnalyserProvider>();
 			container.RegisterSingleton<ReleaseBranchHistoryAnalyser>();
 			container.RegisterCollection<IBranchHistoryAnalyser>(
 				new []

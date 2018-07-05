@@ -19,23 +19,26 @@ namespace GBuild.CommitHistory
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
 		private readonly IContextData<Workspace> _workspaceContextData;
+		private readonly IBranchHistoryAnalyserProvider _branchHistoryAnalyserProvider;
 
 		public GitCommitHistoryAnalyser(
-			IContextData<Workspace> workspaceContextData
+			IContextData<Workspace> workspaceContextData,
+			IBranchHistoryAnalyserProvider branchHistoryAnalyserProvider
 			)
 		{
 			_workspaceContextData = workspaceContextData;
+			_branchHistoryAnalyserProvider = branchHistoryAnalyserProvider;
 		}
 
 		public CommitHistoryAnalysis AnalyseCommitLog(
-			IBranchHistoryAnalyser branchHistoryAnalyser,
-			IBranchAnalysisSettings branchAnalysisSettings,
-			string branchName
+			string branchName,
+			IBranchAnalysisSettings branchAnalysisSettings
 		)
 		{
 			var workspace = _workspaceContextData.Data;
 			var projectList = workspace.Projects.ToList();
 
+			var branchHistoryAnalyser = _branchHistoryAnalyserProvider.GetBranchHistoryAnalyser(branchName);
 			// libgit2sharp library takes care of comparing git trees together to evaluate changes.
 			var commitsTowardsTarget = branchHistoryAnalyser.GetCommitsTowardsTarget(branchName, branchAnalysisSettings);
 			var commitsAheadOfParent = branchHistoryAnalyser.GetCommitsAheadOfParent(branchName, branchAnalysisSettings);

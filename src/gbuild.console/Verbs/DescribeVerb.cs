@@ -16,7 +16,6 @@ namespace GBuild.Console.Verbs
 		private readonly IContextData<PastReleases> _pastReleases;
 		private readonly IRepository _repository;
 		private readonly ICommitHistoryAnalyser _commitHistoryAnalyser;
-		private readonly IBranchHistoryAnalyser _branchHistoryAnalyser;
 		private readonly IVersionNumberGeneratorProvider _versionNumberGeneratorProvider;
 
 		public DescribeVerb(
@@ -24,7 +23,6 @@ namespace GBuild.Console.Verbs
 			IContextData<PastReleases> pastReleases,
 			IRepository repository,
 			ICommitHistoryAnalyser commitHistoryAnalyser,
-			IBranchHistoryAnalyser branchHistoryAnalyser,
 			IVersionNumberGeneratorProvider versionNumberGeneratorProvider
 		)
 		{
@@ -32,7 +30,6 @@ namespace GBuild.Console.Verbs
 			_pastReleases = pastReleases;
 			_repository = repository;
 			_commitHistoryAnalyser = commitHistoryAnalyser;
-			_branchHistoryAnalyser = branchHistoryAnalyser;
 			_versionNumberGeneratorProvider = versionNumberGeneratorProvider;
 		}
 
@@ -43,9 +40,9 @@ namespace GBuild.Console.Verbs
 			var currentBranch = _repository.GetCurrentBranch();
 
 			var commitHistoryAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(
-				_branchHistoryAnalyser,
-				_workspaceContextData.Data.BranchModel.AnalysisSettings,
-				currentBranch.CanonicalName);
+				currentBranch.CanonicalName,
+				_workspaceContextData.Data.BranchModel.AnalysisSettings
+				);
 
 			//Log.Information("Current Branch: {branch}", _commitAnalysis.Data.CurrentBranch);
 			Log.Information("Current Directory: {repoRoot}",

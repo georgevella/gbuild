@@ -1,36 +1,56 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
 
 namespace GBuild.CommitHistory
 {
-	class BranchHistoryAnalyserProvider : IBranchHistoryAnalyser
+	class BranchHistoryAnalyserProvider : IBranchHistoryAnalyserProvider
 	{
-		private readonly DevelopmentBranchHistoryAnalyser _branchHistoryAnalyser;
+		private readonly IWorkspaceConfiguration _workspaceConfiguration;
+		private readonly Dictionary<BranchType, IBranchHistoryAnalyser> _branchHistoryAnalyserMap;
 
 		public BranchHistoryAnalyserProvider(
-			IContextData<Workspace> workspace,
-			IEnumerable<IBranchHistoryAnalyser> branchHistoryAnalysers
+			IEnumerable<IBranchHistoryAnalyser> branchHistoryAnalysers,
+			IWorkspaceConfiguration workspaceConfiguration
 		)
 		{
-			_branchHistoryAnalyser = branchHistoryAnalysers.OfType<DevelopmentBranchHistoryAnalyser>().FirstOrDefault();
+			_workspaceConfiguration = workspaceConfiguration;
+			_branchHistoryAnalyserMap = branchHistoryAnalysers.SelectMany(
+				x => x.GetType().GetCustomAttributes<SupportedBranchTypeAttribute>().Select(b => new
+				{
+					BranchType = b.BranchType,
+					Analyser = x
+				})
+			).ToDictionary(x => x.BranchType, x => x.Analyser);
 		}
-		public IEnumerable<Commit> GetCommitsTowardsTarget(
-			string branchName,
-			IBranchAnalysisSettings branchAnalysisSettings
+		public IBranchHistoryAnalyser GetBranchHistoryAnalyser(
+			string branchName
 		)
 		{
-			return _branchHistoryAnalyser.GetCommitsTowardsTarget(branchName, branchAnalysisSettings);
+			var knownBranch = _workspaceConfiguration.KnownBranches.First(k => k.IsMatch(branchName));
+			return GetBranchHistoryAnalyser(knownBranch);
 		}
 
-		public IEnumerable<Commit> GetCommitsAheadOfParent(
-			string branchName,
-			IBranchAnalysisSettings branchAnalysisSettings
+		public IBranchHistoryAnalyser GetBranchHistoryAnalyser(
+			IKnownBranch knownBranch
 		)
 		{
-			return _branchHistoryAnalyser.GetCommitsAheadOfParent(branchName, branchAnalysisSettings);
+			return _branchHistoryAnalyserMap[knownBranch.Type];
 		}
+	}
+
+	public interface IBranchHistoryAnalyserProvider
+	{
+		IBranchHistoryAnalyser GetBranchHistoryAnalyser(
+			string branchName
+		);
+
+		IBranchHistoryAnalyser GetBranchHistoryAnalyser(
+			IKnownBranch knownBranch
+		);
 	}
 }

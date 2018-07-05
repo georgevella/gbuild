@@ -7,6 +7,7 @@ using Commit = GBuild.Models.Commit;
 
 namespace GBuild.CommitHistory
 {
+	[SupportedBranchType(BranchType.Release)]
 	class ReleaseBranchHistoryAnalyser : IBranchHistoryAnalyser
 	{
 		private readonly IRepository _repository;

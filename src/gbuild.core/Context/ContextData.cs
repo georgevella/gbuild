@@ -1,17 +1,25 @@
-﻿namespace GBuild.Context
+﻿using System.IO;
+
+namespace GBuild.Context
 {
 	internal class ContextData<TContextData> : IContextData<TContextData> where TContextData : class
 	{
-		private readonly IContextDataProvider<TContextData> _contextDataProvider;
-		private TContextData _data;
+		private readonly IContextDataStore _contextDataStore;
 
 		public ContextData(
-			IContextDataProvider<TContextData> contextDataProvider
+			IContextDataStore contextDataStore
 		)
 		{
-			_contextDataProvider = contextDataProvider;
+			_contextDataStore = contextDataStore;
 		}
 
-		public TContextData Data => _data ?? (_data = _contextDataProvider.LoadContextData());
+		public TContextData Data => _contextDataStore.GetContextData<TContextData>();
+	}
+
+	public interface IContextDataStore
+	{
+		T GetContextData<T>() where T : class;
+
+		void SetContextData<T>(T contextData);
 	}
 }

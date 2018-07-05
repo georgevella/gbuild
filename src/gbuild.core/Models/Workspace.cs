@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using GBuild.CommitHistory;
 using GBuild.Configuration.Models;
+using GBuild.Context;
+using GBuild.Context.Attributes;
 using GBuild.Generator;
 
 namespace GBuild.Models
@@ -12,7 +14,8 @@ namespace GBuild.Models
 	/// <summary>
 	///		Contextual data about the current state of the workspace.
 	/// </summary>
-	public class Workspace
+	[DependsOnContextData(typeof(Process))]
+	public class Workspace : IContextEntity
 	{
 		public Workspace(
 			DirectoryInfo repositoryRootDirectory,

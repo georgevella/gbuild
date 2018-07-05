@@ -7,6 +7,7 @@ using CommandLine;
 using GBuild.CommitHistory;
 using GBuild.Configuration.IO;
 using GBuild.Configuration.Models;
+using GBuild.Context;
 using GBuild.ReleaseHistory;
 using GBuild.Vcs;
 using Serilog;
@@ -67,6 +68,9 @@ namespace GBuild.Console
 			var parserResult = Parser.Default.ParseArguments(args, verbTypes);
 			parserResult.WithParsed(o =>
 			{
+				var contextDataLoader = container.GetInstance<IContextDataLoader>();
+				contextDataLoader.PrepareContextData();
+
 				var verbRunnerType = typeof(VerbRunner<>).MakeGenericType(o.GetType());
 				var verbRunner = (IVerbRunner) container.GetInstance(verbRunnerType);
 

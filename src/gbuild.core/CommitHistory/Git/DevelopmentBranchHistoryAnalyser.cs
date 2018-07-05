@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
+using GBuild.ReleaseHistory;
 using GBuild.Variables;
 using LibGit2Sharp;
 using Serilog;
@@ -13,18 +14,20 @@ using Commit = GBuild.Models.Commit;
 
 namespace GBuild.CommitHistory
 {
+	[SupportedBranchType(BranchType.Development)]
+	[SupportedBranchType(BranchType.Feature)]
 	class DevelopmentBranchHistoryAnalyser : IBranchHistoryAnalyser
 	{
 		private readonly IRepository _repository;
-		private readonly IContextData<ActiveReleases> _releases;
+		private readonly IContextData<ActiveReleases> _activeReleasesData;
 
 		public DevelopmentBranchHistoryAnalyser(
 			IRepository repository,
-			IContextData<ActiveReleases> releases
+			IContextData<ActiveReleases> activeReleasesData
 			)
 		{
 			_repository = repository;
-			_releases = releases;
+			_activeReleasesData = activeReleasesData;
 		}
 		public IEnumerable<Commit> GetCommitsTowardsTarget(
 			string branchName,
@@ -54,8 +57,7 @@ namespace GBuild.CommitHistory
 			IBranchAnalysisSettings branchAnalysisSettings
 		)
 		{
-			// TODO: check if there is an active release branch, and use that as the parent branch
-			var activeReleases = _releases.Data;
+			var activeReleases = _activeReleasesData.Data;
 
 			var thisBranch = _repository.Branches.First(b => b.CanonicalName == branchName);
 			var parentBranch = _repository.Branches.First(b => b.CanonicalName == branchAnalysisSettings.ParentBranch);
