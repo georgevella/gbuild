@@ -40,8 +40,7 @@ namespace GBuild.Console.Verbs
 			var currentBranch = _repository.GetCurrentBranch();
 
 			var commitHistoryAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(
-				currentBranch.CanonicalName,
-				_workspaceContextData.Data.BranchModel.AnalysisSettings
+				currentBranch.CanonicalName
 				);
 
 			//Log.Information("Current Branch: {branch}", _commitAnalysis.Data.CurrentBranch);

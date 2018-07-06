@@ -38,8 +38,7 @@ namespace GBuild.Console.Verbs
 		{
 			var currentBranch = _repository.GetCurrentBranch();
 			var commitAnalysis = _commitHistoryAnalyser.AnalyseCommitLog(
-				currentBranch.CanonicalName,
-				_workspaceContextData.Data.BranchModel.AnalysisSettings
+				currentBranch.CanonicalName
 			);
 			var changedProjects = commitAnalysis.ChangedProjects.Keys.ToList();
 			var projectVersionWriter = _projectVersionWriters.First();

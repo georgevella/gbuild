@@ -8,8 +8,7 @@ namespace GBuild.CommitHistory
 	public interface ICommitHistoryAnalyser
 	{
 		CommitHistoryAnalysis AnalyseCommitLog(
-			string branchName,
-			IBranchAnalysisSettings branchAnalysisSettings
+			string branchName
 		);
 	}
 }

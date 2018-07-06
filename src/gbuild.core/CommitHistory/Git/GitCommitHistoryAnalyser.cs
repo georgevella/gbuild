@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using GBuild.Configuration;
 using GBuild.Configuration.Models;
 using GBuild.Context;
 using GBuild.Models;
@@ -18,25 +19,30 @@ namespace GBuild.CommitHistory
 	// (current branch analysis context data provider, and soon the workspace context data provider)
 	public class GitCommitHistoryAnalyser : ICommitHistoryAnalyser
 	{
+		private readonly IWorkspaceConfiguration _workspaceConfiguration;
 		private readonly IContextData<Workspace> _workspaceContextData;
 		private readonly IBranchHistoryAnalyserProvider _branchHistoryAnalyserProvider;
 
 		public GitCommitHistoryAnalyser(
+			IWorkspaceConfiguration workspaceConfiguration,
 			IContextData<Workspace> workspaceContextData,
 			IBranchHistoryAnalyserProvider branchHistoryAnalyserProvider
 			)
 		{
+			_workspaceConfiguration = workspaceConfiguration;
 			_workspaceContextData = workspaceContextData;
 			_branchHistoryAnalyserProvider = branchHistoryAnalyserProvider;
 		}
 
 		public CommitHistoryAnalysis AnalyseCommitLog(
-			string branchName,
-			IBranchAnalysisSettings branchAnalysisSettings
+			string branchName			
 		)
 		{
 			var workspace = _workspaceContextData.Data;
 			var projectList = workspace.Projects.ToList();
+
+			var knownBranch = _workspaceConfiguration.KnownBranches.First(k => k.IsMatch(branchName));
+			var branchAnalysisSettings = knownBranch.AnalysisSettings;
 
 			var branchHistoryAnalyser = _branchHistoryAnalyserProvider.GetBranchHistoryAnalyser(branchName);
 			// libgit2sharp library takes care of comparing git trees together to evaluate changes.

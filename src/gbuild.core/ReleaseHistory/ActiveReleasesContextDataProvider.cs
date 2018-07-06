@@ -8,17 +8,14 @@ namespace GBuild.ReleaseHistory
 	public class ActiveReleasesContextDataProvider : IContextDataProvider<ActiveReleases>
 	{
 		private readonly ILogger<ActiveReleasesContextDataProvider> _logger;
-		private readonly IReleaseHistoryProvider _releaseHistoryProvider;
 		private readonly IActiveReleasesProvider _activeReleasesProvider;
 
 		public ActiveReleasesContextDataProvider(
 			ILogger<ActiveReleasesContextDataProvider> logger,
-			IReleaseHistoryProvider releaseHistoryProvider,
 			IActiveReleasesProvider activeReleasesProvider
 			)
 		{
 			_logger = logger;
-			_releaseHistoryProvider = releaseHistoryProvider;
 			_activeReleasesProvider = activeReleasesProvider;
 		}
 		public ActiveReleases LoadContextData()
